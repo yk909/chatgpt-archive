@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.crx-class {
+  color: pink;
+}
+
+.content-view-container {
+  --bg-main: rgb(52, 53, 65);
+  --bg-main-2: rgb(32, 33, 35);
+  --color-main: rgb(217, 217, 227);
+}
+
+.fcenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trans {
+  transition: all 0.3s ease-out;
+}
