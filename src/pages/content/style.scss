@@ -41,10 +41,7 @@
   background-color: var(--bg-card-hover);
 }
 
-input {
-  outline: none;
-}
-
-input:focus {
-  outline: none;
+mark.chatgpt-archive-highlight {
+  color: white;
+  background-color: green;
 }

@@ -42,7 +42,7 @@ export default function Panel({
       <div
         className="flex items-center flex-none"
         style={{
-          height: "44px",
+          height: styles.PANEL_LINE_HEIGHT,
         }}
       >
         <div className="flex-1"></div>
@@ -87,13 +87,28 @@ export default function Panel({
           </button>
         </form>
       </div>
+
       {loading ? (
         <Loading />
       ) : (
-        <ConversationList
-          data={conversationList}
-          currentId={currentConversationId}
-        />
+        <>
+          <div>
+            <div className="flex items-center py-2">
+              <div
+                className="flex-1"
+                style={{
+                  fontSize: "14px",
+                }}
+              >
+                Found {conversationList.length} result(s)
+              </div>
+            </div>
+          </div>
+          <ConversationList
+            data={conversationList}
+            currentId={currentConversationId}
+          />
+        </>
       )}
     </div>
   );

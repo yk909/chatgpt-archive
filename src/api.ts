@@ -69,17 +69,14 @@ export async function fetchAllConversations(token) {
 
 export async function fetchAllConversationsWithDetail(
   conversations: Conversation[],
-  token: string
+  token: string,
+  updateHandler: () => void
 ) {
-  const promises = [];
-  conversations.forEach((conversation) => {
-    promises.push(
-      fetch_conversation_detail(conversation.id, token).then((data) => {
-        return data.json();
-      })
-    );
+  const promises = conversations.map((c) => {
+    return () => {
+      updateHandler();
+      return fetch_conversation_detail(c.id, token);
+    };
   });
-  return Promise.all(promises).then((data) => {
-    return data;
-  });
+  return batchPromises(promises);
 }

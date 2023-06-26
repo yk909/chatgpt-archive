@@ -16,35 +16,6 @@ export default function App() {
   const currentConversationId = getCurrentConversationId();
 
   useEffect(() => {
-    // chrome.storage.local.get("accessToken", (data) => {
-    //   if (data.accessToken !== undefined && data.accessToken !== "") {
-    //     setToken(data.accessToken);
-    //   } else {
-    //     fetch_session().then((data) => {
-    //       if (!data.accessToken) return;
-    //       setToken(data.accessToken);
-    //       fetchAllConversations(token).then((data) => {
-    //         if (data) {
-    //           setConversationList(data);
-    //           setLoading(() => false);
-    //           setSearchTerm(() => "");
-    //           setDisplayData(() => data);
-    //         }
-    //       });
-    //     });
-    //   }
-    // });
-
-    // chrome.storage.local.get("conversationList", (data) => {
-    //   if (
-    //     data.conversationList !== undefined &&
-    //     data.conversationList.length !== 0
-    //   ) {
-    //     setConversationList(data.conversationList);
-    //     setLoading(() => false);
-    //     setDisplayData(() => data.conversationList);
-    //   }
-    // });
     chrome.runtime.sendMessage(
       { type: MESSAGE_ACTIONS.START_FETCHING_CONVERSATIONS },
       (res) => {
@@ -58,6 +29,19 @@ export default function App() {
         setConversationList(request.data);
         setLoading(() => false);
         setDisplayData(() => request.data);
+      } else if (
+        request.type === MESSAGE_ACTIONS.FINISH_SEARCHING_CONVERSATIONS
+      ) {
+        setDisplayData(() => request.data);
+        setLoading(() => false);
+      } else if (
+        request.type === MESSAGE_ACTIONS.UPDATE_FETCHING_CONVERSATION_DETAIL
+      ) {
+        // setToken(() => request.data);
+        console.log("receive detail update", {
+          progress: request.progress,
+          total: request.total,
+        });
       }
     });
   }, []);
@@ -67,11 +51,18 @@ export default function App() {
     console.log("form submitted");
     const term = e.currentTarget.term.value;
     setSearchTerm(() => term);
-    setDisplayData(() => {
-      const newList = conversationList.filter((item) =>
-        item.title.toLowerCase().includes(term.toLowerCase())
-      );
-      return newList;
+    // setDisplayData(() => {
+    //   const newList = conversationList.filter((item) =>
+    //     item.title.toLowerCase().includes(term.toLowerCase())
+    //   );
+    //   return newList;
+    // });
+    setLoading(() => true);
+    chrome.runtime.sendMessage({
+      type: MESSAGE_ACTIONS.FETCH_FILTERED_CONVERSATIONS,
+      data: {
+        title: term,
+      },
     });
   };
 
