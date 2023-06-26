@@ -7,6 +7,44 @@
 .con-item {
   border-radius: 12px;
 }
+
 .con-item {
   background-color: var(--bg-main);
+}
+
+#panel::-webkit-scrollbar {
+  width: 0px;
+}
+
+#panel .con-list::-webkit-scrollbar {
+  opacity: 0;
+  width: 4px;
+}
+
+#panel:hover .con-list::-webkit-scrollbar {
+  opacity: 1;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.icon-container:hover {
+  // background-color: var(--bg-icon-hover);
+}
+
+.card:hover {
+  background-color: var(--bg-card-hover);
+}
+
+.card:focus {
+  background-color: var(--bg-card-hover);
+}
+
+input {
+  outline: none;
+}
+
+input:focus {
+  outline: none;
 }
