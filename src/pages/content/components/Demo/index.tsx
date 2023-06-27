@@ -5,7 +5,7 @@ import refreshOnUpdate from "virtual:reload-on-update-in-view";
 refreshOnUpdate("pages/content");
 
 const root = document.createElement("div");
-root.id = "chrome-extension-boilerplate-react-vite-content-view-root";
+root.id = "chatgpt-archive-extension-root";
 document.querySelector("html").appendChild(root);
 
 createRoot(root).render(<App />);

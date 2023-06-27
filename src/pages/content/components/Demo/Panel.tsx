@@ -1,4 +1,4 @@
-import { styles } from "@src/constants";
+import { MESSAGE_ACTIONS, styles } from "@src/constants";
 import { HiX } from "react-icons/hi";
 import { List as ConversationList } from "./Conversation";
 import { Loading } from "./Loading";
@@ -6,6 +6,8 @@ import { Conversation } from "@src/types";
 import { Resizer } from "./Resizer";
 import { Container as IconContainer } from "./Icon";
 import { FiSearch } from "react-icons/fi";
+import { useEffect } from "react";
+import { RotateCw } from "lucide-react";
 
 export default function Panel({
   setOpen,
@@ -13,15 +15,45 @@ export default function Panel({
   conversationList,
   currentConversationId,
   loading,
-  handleFormSubmit,
+  setLoading,
 }: {
   setOpen: (state: boolean) => void;
   open: boolean;
   conversationList: Conversation[];
   currentConversationId: string;
   loading: boolean;
-  handleFormSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  setLoading: (state: () => boolean) => void;
 }) {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("form submitted");
+    const term = e.currentTarget.term.value;
+    setLoading(() => true);
+    chrome.runtime.sendMessage({
+      type: MESSAGE_ACTIONS.FETCH_FILTERED_CONVERSATIONS,
+      data: {
+        title: term,
+      },
+    });
+  };
+
+  function handleRefresh() {
+    chrome.runtime.sendMessage({
+      type: MESSAGE_ACTIONS.REFRESH,
+    });
+    setLoading(() => true);
+  }
+
+  useEffect(() => {
+    if (open) {
+      const searchInput = document.querySelector(
+        "#search-input"
+      ) as HTMLInputElement;
+      if (searchInput) {
+        searchInput.focus();
+      }
+    }
+  }, [open]);
   return (
     <div
       className="fixed top-0 right-0 flex flex-col h-screen p-3 overflow-hidden resize-x"
@@ -39,36 +71,50 @@ export default function Panel({
     >
       {/* Resizer */}
       <Resizer selector="#panel" />
+
+      {/* Header */}
       <div
-        className="flex items-center flex-none"
+        className="flex items-center flex-none mb-3"
         style={{
           height: styles.PANEL_LINE_HEIGHT,
         }}
       >
-        <div className="flex-1"></div>
-        <IconContainer>
-          <HiX
-            className="cursor-pointer"
+        <IconContainer
+          onClick={() => {
+            handleRefresh();
+          }}
+        >
+          <RotateCw
             style={{
               width: "20px",
               height: "20px",
             }}
-            onClick={() => setOpen(!open)}
+          />
+        </IconContainer>
+        <div className="flex-1"></div>
+        <IconContainer onClick={() => setOpen(!open)}>
+          <HiX
+            style={{
+              width: "20px",
+              height: "20px",
+            }}
           />
         </IconContainer>
       </div>
+
       <div className="flex mb-3">
         <form onSubmit={handleFormSubmit} className="flex items-center w-full">
           <input
             type="text"
             placeholder="Search"
             name="term"
-            className="flex-1 min-h-0 rounded-lg focus:outline-none card"
+            id="search-input"
+            className="flex-1 min-h-0 rounded-lg card"
             style={{
               height: "44px",
               outline: "none",
               borderColor: styles.COLOR_CARD_BORDER,
-              color: styles.COLOR_WHITE_1,
+              // color: styles.COLOR_WHITE_1,
               background: "transparent",
             }}
           />

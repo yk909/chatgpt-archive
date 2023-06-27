@@ -30,7 +30,7 @@ export async function fetch_conversation_detail(conversationId, token) {
       },
       method: "GET",
     }
-  );
+  ).then((response) => response.json());
 }
 
 export async function fetchAllConversationsGivenTotal(total_count, token) {

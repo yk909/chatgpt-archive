@@ -14,14 +14,14 @@ export function Item({
     <a
       href={`${CHATGPT_DOMAIN_URL}/c/${data.id}`}
       className={
-        "flex flex-col rounded-lg gap-1 trans " +
+        "flex rounded-lg gap-3 trans " +
         (active ? "bg-dark-1" : "hover:bg-card-hover")
       }
       style={{
         padding: styles.P_PAGE,
       }}
     >
-      <div className="flex items-center flex-none w-full gap-3">
+      <div className="flex flex-none fcenter">
         <svg
           stroke="currentColor"
           fill="none"
@@ -36,14 +36,12 @@ export function Item({
         >
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
-        <div className="text-sm font-medium">{data.title}</div>
       </div>
-      <div
-        className="flex-col flex-1"
-        style={{
-          marginLeft: "28px",
-        }}
-      >
+      <div className="flex-col flex-1">
+        <div
+          className="text-sm font-medium"
+          dangerouslySetInnerHTML={{ __html: data.title }}
+        ></div>
         <div
           className="text-gray-500"
           style={{

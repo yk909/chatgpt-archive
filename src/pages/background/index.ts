@@ -1,10 +1,13 @@
 import {
   fetchAllConversations,
   fetchAllConversationsWithDetail,
+  fetch_conversation_detail,
   fetch_session,
 } from "@src/api";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { initDB, db } from "@src/db";
+import { FetchFilteredConversationData } from "@src/types";
+import { batchPromises } from "@src/utils";
 import reloadOnUpdate from "virtual:reload-on-update-in-background-script";
 
 reloadOnUpdate("pages/background");
@@ -15,7 +18,7 @@ reloadOnUpdate("pages/background");
  */
 reloadOnUpdate("pages/content/style.scss");
 
-console.log("background loaded 0");
+console.log("background loaded 1");
 
 function saveConversationList(conversationList) {
   // chrome.storage.local.set({ conversationList });
@@ -25,16 +28,14 @@ function saveConversationList(conversationList) {
 }
 
 function saveConversationDetail(conversationId, conversationDetail) {
-  chrome.storage.local.set({ [conversationId]: conversationDetail });
-}
-
-function getConversationList() {
-  // return chrome.storage.local.get(["conversationList"]);
-  return db?.conversations.toArray();
-}
-
-function getConversationDetail(conversationId) {
-  return chrome.storage.local.get([conversationId]);
+  // chrome.storage.local.set({ [conversationId]: conversationDetail });
+  db.conversations
+    .update(conversationId, {
+      detail: conversationDetail,
+    })
+    .then(() => {
+      console.log("saved conversation " + conversationId + " to dexie");
+    });
 }
 
 function saveSession(session) {
@@ -65,7 +66,7 @@ async function fetchSessionAndConversationList() {
   return { session, conversationList };
 }
 
-async function handleStartFetchingConversations(tabId) {
+async function handleStartFetchingConversations(tabId, force = false) {
   const session = await getSession();
   if (!session) {
     return null;
@@ -74,10 +75,15 @@ async function handleStartFetchingConversations(tabId) {
   initDB(session.user.id);
 
   console.log("start fetching conversations", tabId);
-  let data = await db.conversations.orderBy("update_time").reverse().toArray();
-  console.log("get conversation list from storage", data);
-
-  if (!data || data.length === 0) {
+  let data;
+  if (!force) {
+    data = await db.conversations.orderBy("update_time").reverse().toArray();
+    console.log("get conversation list from storage", data);
+    if (!data || data.length === 0) {
+      data = await fetchAllConversations(session.accessToken);
+      await saveConversationList(data);
+    }
+  } else {
     data = await fetchAllConversations(session.accessToken);
     await saveConversationList(data);
   }
@@ -93,42 +99,60 @@ async function handleStartFetchingAllConversationDetails(tabId) {
   if (!session) {
     return null;
   }
+
   const con_list = await db.conversations
     .orderBy("update_time")
     .reverse()
+    .limit(15)
     .toArray();
   let i = 0;
   function handleUpdateProgress() {
     i = i + 1;
-    chrome.tabs.sendMessage(tabId, {
-      type: MESSAGE_ACTIONS.UPDATE_FETCHING_CONVERSATION_DETAIL,
-      progress: i,
-      total: con_list.length,
-    });
+    console.log("update progress", i);
+    // chrome.tabs.sendMessage(tabId, {
+    //   type: MESSAGE_ACTIONS.UPDATE_FETCHING_CONVERSATION_DETAIL,
+    //   progress: i,
+    //   total: con_list.length,
+    // });
   }
-  const conversationDetail = await fetchAllConversationsWithDetail(
-    con_list,
-    session.accessToken,
-    handleUpdateProgress
-  );
+  console.log("start fetching all conversation details");
+
+  const promises = con_list.map((c) => {
+    return async () => {
+      handleUpdateProgress();
+      const d = await fetch_conversation_detail(c.id, session.accessToken);
+      console.log("fetched conversation detail", d);
+      saveConversationDetail(c.id, d);
+      return d;
+    };
+  });
+  const conversationDetailList = await batchPromises(promises);
+
+  // const conversationDetail = await fetchAllConversationsWithDetail(
+  //   con_list,
+  //   session.accessToken,
+  //   handleUpdateProgress
+  // );
   chrome.tabs.sendMessage(tabId, {
     type: MESSAGE_ACTIONS.FINISH_FETCHING_CONVERSATION_DETAIL,
-    data: conversationDetail,
+    data: conversationDetailList,
   });
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("background received message ", {
     type: request.type,
-    tabId: sender.tab.id,
   });
   switch (request.type) {
-    case MESSAGE_ACTIONS.START_FETCHING_CONVERSATIONS:
-      console.log("start fetching session and conversations");
+    case MESSAGE_ACTIONS.INIT: {
+      console.log("Initializing");
+      console.log("Start swtich");
       handleStartFetchingConversations(sender.tab.id);
       break;
-    case MESSAGE_ACTIONS.FETCH_FILTERED_CONVERSATIONS:
-      const { title } = request.data;
+    }
+    case MESSAGE_ACTIONS.FETCH_FILTERED_CONVERSATIONS: {
+      const reqData: FetchFilteredConversationData = request.data;
+      const { title } = reqData;
       console.log("fetch filtered conversations", request.data);
       db.conversations
         .orderBy("update_time")
@@ -139,6 +163,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
         .toArray()
         .then((data) => {
+          data = data.map((d) => {
+            return {
+              ...d,
+              title: d.title.replace(
+                new RegExp(title, "i"),
+                `<mark class="chatgpt-archive-highlight">${title}</mark>`
+              ),
+            };
+          });
           console.log("res data", data);
           chrome.tabs.sendMessage(sender.tab.id, {
             type: MESSAGE_ACTIONS.FINISH_SEARCHING_CONVERSATIONS,
@@ -146,8 +179,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           });
         });
       break;
-    case MESSAGE_ACTIONS.START_FETCHING_CONVERSATION_DETAIL:
+    }
+
+    case MESSAGE_ACTIONS.REFRESH: {
+      console.log("refresh");
+      handleStartFetchingConversations(sender.tab.id, true);
+      break;
+    }
+
+    case MESSAGE_ACTIONS.START_FETCHING_CONVERSATION_DETAIL: {
       console.log("start fetching conversation detail");
       handleStartFetchingAllConversationDetails(sender.tab.id);
+      break;
+    }
+    default: {
+      console.log("unknown message type", request.type);
+    }
   }
 });

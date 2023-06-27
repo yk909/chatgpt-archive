@@ -6,3 +6,7 @@ export interface Conversation {
   update_time: string;
   created_time: string;
 }
+
+export interface FetchFilteredConversationData {
+  title: string;
+}

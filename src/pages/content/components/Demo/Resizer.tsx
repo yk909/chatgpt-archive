@@ -17,11 +17,11 @@ export function Resizer({ selector }: { selector: string }) {
     // if (!mouseDown) return;
     if (!window.mouseDown) return;
 
-    console.log("mouse move", window.mouseDown);
+    // console.log("mouse move", window.mouseDown);
 
     const panel = document.querySelector(selector) as HTMLDivElement;
     const width = window.innerWidth - e.pageX;
-    console.log("width", width);
+    // console.log("width", width);
     if (panel && width > MIN_WIDTH) {
       panel.style.width = `${width}px`;
     }

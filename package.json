@@ -1,19 +1,20 @@
 {
-  "name": "ChatGPT-Archive",
+  "name": "chatgpt-archive",
   "version": "0.0.1",
   "description": "ChatGPT Archive is a Chrome extension designed to enhance the experience of users interacting with OpenAI's ChatGPT. This extension provides additional functionality that complements the standard capabilities of the AI model, focusing particularly on preserving, managing, and retrieving chat data.",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "build": "tsc --noEmit && vite build",
     "build:watch": "cross-env __DEV__=true vite build --watch",
-    "build:hmr": "rollup --config utils/reload/rollup.config.ts",
+    "build:hmr": "rollup --config utils/reload/rollup.config.ts --configPlugin typescript",
     "wss": "node utils/reload/initReloadServer.js",
     "dev": "npm run build:hmr && (run-p wss build:watch)",
     "test": "jest"
   },
-  "type": "module",
   "dependencies": {
     "dexie": "^3.2.4",
+    "lucide-react": "^0.252.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1"
@@ -23,7 +24,7 @@
     "@testing-library/react": "14.0.0",
     "@types/chrome": "0.0.238",
     "@types/jest": "29.5.2",
-    "@types/node": "20.3.2",
+    "@types/node": "^20.3.2",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "@types/ws": "^8.5.5",

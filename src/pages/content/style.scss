@@ -17,16 +17,15 @@
 }
 
 #panel .con-list::-webkit-scrollbar {
-  opacity: 0;
-  width: 4px;
+  width: 6px;
 }
 
-#panel:hover .con-list::-webkit-scrollbar {
-  opacity: 1;
+#panel .con-list::-webkit-scrollbar-thumb {
+  visibility: hidden;
 }
 
-.scrollbar::-webkit-scrollbar {
-  width: 4px;
+#panel:hover .con-list::-webkit-scrollbar-thumb {
+  visibility: visible;
 }
 
 .icon-container:hover {
@@ -44,4 +43,9 @@
 mark.chatgpt-archive-highlight {
   color: white;
   background-color: green;
+}
+
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }

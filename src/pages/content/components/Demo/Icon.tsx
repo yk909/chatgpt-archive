@@ -6,14 +6,17 @@ export function Container({
     height: "36px",
   },
   children,
+  onClick,
 }: {
   style?: CSSProperties;
   children: React.ReactNode;
+  onClick?: () => void;
 }) {
   return (
     <div
-      className="rounded-full trans hover:bg-slate-100/20 fcenter"
+      className="rounded-full cursor-pointer trans hover:bg-slate-100/20 fcenter"
       style={style}
+      onClick={onClick}
     >
       {children}
     </div>
