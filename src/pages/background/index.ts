@@ -139,6 +139,8 @@ async function handleStartFetchingAllConversationDetails(tabId) {
   });
 }
 
+const APP_STATE_KEY = "appState";
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("background received message ", {
     type: request.type,
@@ -146,10 +148,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.type) {
     case MESSAGE_ACTIONS.INIT: {
       console.log("Initializing");
-      console.log("Start swtich");
       handleStartFetchingConversations(sender.tab.id);
+
+      // fetch and send app state
+      chrome.storage.local.get(APP_STATE_KEY, (state) => {
+        state = state || { toggleState: false };
+        console.log("app state", state[APP_STATE_KEY]);
+        chrome.tabs.sendMessage(sender.tab.id, {
+          type: MESSAGE_ACTIONS.FETCHING_APP_STATE,
+          data: state[APP_STATE_KEY],
+        });
+      });
       break;
     }
+
+    case MESSAGE_ACTIONS.SAVE_APP_STATE: {
+      console.log("saving app state", request.data);
+      chrome.storage.local.set({
+        appState: {
+          ...chrome.storage.local.get(APP_STATE_KEY),
+          ...request.data,
+        },
+      });
+      break;
+    }
+
     case MESSAGE_ACTIONS.FETCH_FILTERED_CONVERSATIONS: {
       const reqData: FetchFilteredConversationData = request.data;
       const { title } = reqData;
@@ -192,6 +215,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       handleStartFetchingAllConversationDetails(sender.tab.id);
       break;
     }
+
     default: {
       console.log("unknown message type", request.type);
     }

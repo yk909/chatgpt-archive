@@ -8,4 +8,8 @@ const root = document.createElement("div");
 root.id = "chatgpt-archive-extension-root";
 document.querySelector("html").appendChild(root);
 
-createRoot(root).render(<App />);
+if (window.location.pathname.includes("auth/login")) {
+  console.log("Please login first");
+} else {
+  createRoot(root).render(<App />);
+}

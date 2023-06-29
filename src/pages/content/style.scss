@@ -1,7 +1,7 @@
 @import "@assets/style/theme.scss";
 
-.content-view {
-  font-size: 30px;
+.content-view-container {
+  font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
 }
 
 .con-item {
@@ -12,8 +12,45 @@
   background-color: var(--bg-main);
 }
 
-#panel::-webkit-scrollbar {
-  width: 0px;
+// panel
+
+#panel {
+  width: 400px;
+  background: var(--bg-main-2);
+  color: var(--color-main);
+}
+
+.side-toggle-hover {
+  transform: translateX(100%);
+  z-index: 999;
+  transition: all 0.2s ease-out;
+}
+
+#panel.open {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.side-toggle-hover.open {
+  transform: translateX(0);
+}
+
+.side-toggle-main-window {
+  transition: all 0.2s ease-out;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+.side-toggle-main-window.side-open {
+  right: 400px;
+}
+
+// con-list
+
+#panel .con-list {
+  overflow-y: auto;
 }
 
 #panel .con-list::-webkit-scrollbar {
@@ -32,11 +69,15 @@
   // background-color: var(--bg-icon-hover);
 }
 
-.card:hover {
+div.card:hover {
   background-color: var(--bg-card-hover);
 }
 
-.card:focus {
+div.card:focus {
+  background-color: var(--bg-card-hover);
+}
+
+input.card:focus {
   background-color: var(--bg-card-hover);
 }
 
@@ -48,4 +89,43 @@ mark.chatgpt-archive-highlight {
 input:focus {
   outline: none !important;
   box-shadow: none !important;
+}
+
+// checkbox
+
+.checkbox-container {
+  cursor: pointer;
+  --color-checkmark: #059669;
+  --color-bg: #fff;
+}
+
+.checkbox-container input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-container label {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.checkbox-container label>.checkmark {
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  background-color: var(--color-bg);
+  border-radius: 8px;
+  border: none;
+  color: transparent;
+  transition: all 0.2s ease-out;
+}
+
+.checkbox-container input[type="checkbox"]:checked+label>.checkmark {
+  transform: scale(0.9);
+  background-color: var(--color-checkmark);
+  border: none;
+  color: var(--color-bg);
 }

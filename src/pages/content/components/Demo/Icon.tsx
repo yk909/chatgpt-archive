@@ -14,7 +14,7 @@ export function Container({
 }) {
   return (
     <div
-      className="rounded-full cursor-pointer trans hover:bg-slate-100/20 fcenter"
+      className="rounded-full cursor-pointer trans hover:bg-slate-100/20 fcenter active:bg-slate-100/70"
       style={style}
       onClick={onClick}
     >
