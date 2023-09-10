@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Conversation } from "@src/types";
 import { getCurrentConversationId } from "@src/utils";
-import { Thumb } from "./Thumb";
+import { Thumb } from "../Thumb";
 import { fetch_session, fetchAllConversations } from "@src/api";
-import Panel from "./Panel";
+import Panel from "../Panel";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { SelectionProviderWrapper } from "./context";
 

@@ -1,19 +1,19 @@
 import { MESSAGE_ACTIONS, styles } from "@src/constants";
 import { HiX } from "react-icons/hi";
 import { List as ConversationList } from "./Conversation";
-import { Loading } from "./Loading";
+import { Loading } from "./Demo/Loading";
 import { Conversation } from "@src/types";
-import { Resizer } from "./Resizer";
-import { Container as IconContainer } from "./Icon";
+import { Resizer } from "./Demo/Resizer";
+import { Container as IconContainer } from "./Demo/Icon";
 import { FiSearch } from "react-icons/fi";
 import { useEffect } from "react";
 import { RotateCw, X, MoreHorizontal } from "lucide-react";
 import { categorizeConversations } from "@src/utils";
 import { useState } from "react";
-import { useSelection } from "./context";
-import { CheckboxInput } from "./Input";
+import { useSelection } from "./Demo/context";
+import { CheckboxInput } from "./Demo/Input";
 
-export default function Panel({
+export default function ContentPanel({
   setOpen,
   open,
   conversationList,

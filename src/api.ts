@@ -1,10 +1,24 @@
 import { Conversation } from "./types";
 import { batchPromises } from "./utils";
 
-export async function fetch_session() {
-  return await fetch("https://chat.openai.com/api/auth/session").then(
-    (response) => response.json()
-  );
+export async function getAccessToken() {
+  try {
+    const res = await fetch("https://chat.openai.com/api/auth/session").then(
+      (response) => response.json()
+    );
+    if (res.accessToken)
+      return {
+        accessToken: res.accessToken,
+        id: res.user.id,
+        name: res.user.name,
+        email: res.user.email,
+        avatarUrl: res.user.picture,
+      };
+    console.warn("no access token from get access token:", res);
+  } catch (err) {
+    console.error("error getting access token:", err);
+  }
+  return null;
 }
 
 export async function fetch_conversations(offset, limit, order, token) {
@@ -65,6 +79,30 @@ export async function fetchAllConversations(token) {
   );
   console.log("done fetching", all_conversations);
   return all_conversations;
+}
+
+export async function fetchNewConversations(token, currentLatestDate) {
+  console.log("fetching new conversations......");
+  const new_conversations = [];
+  let data;
+  let shouldStop = false;
+  let offset = 0;
+  const pageSize = 10;
+  while (!shouldStop) {
+    data = await fetch_conversations(offset, pageSize, "updated", token);
+    data.items.forEach((c) => {
+      if (shouldStop) return;
+      const d = new Date(c.update_time);
+      if (d > currentLatestDate) {
+        new_conversations.push(c);
+      } else {
+        shouldStop = true;
+      }
+    });
+    offset += pageSize;
+  }
+  console.log("done fetching latest conversations:", new_conversations);
+  return new_conversations;
 }
 
 export async function fetchAllConversationsWithDetail(

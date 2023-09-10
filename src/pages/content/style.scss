@@ -1,8 +1,8 @@
 @import "@assets/style/theme.scss";
-
-.content-view-container {
-  font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
-}
+@import "./styles/BottomNavBar.scss";
+@import "./styles/Panel.scss";
+@import "./styles/Pill.scss";
+@import "./styles/Card.scss";
 
 .con-item {
   border-radius: 12px;
@@ -12,74 +12,7 @@
   background-color: var(--bg-main);
 }
 
-// panel
-
-#panel {
-  width: 400px;
-  background: var(--bg-main-2);
-  color: var(--color-main);
-}
-
-.side-toggle-hover {
-  transform: translateX(100%);
-  z-index: 999;
-  transition: all 0.2s ease-out;
-}
-
-#panel.open {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.side-toggle-hover.open {
-  transform: translateX(0);
-}
-
-.side-toggle-main-window {
-  transition: all 0.2s ease-out;
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-}
-
-.side-toggle-main-window.side-open {
-  right: 400px;
-}
-
 // con-list
-
-#panel .con-list {
-  overflow-y: auto;
-}
-
-#panel .con-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-#panel .con-list::-webkit-scrollbar-thumb {
-  visibility: hidden;
-}
-
-#panel:hover .con-list::-webkit-scrollbar-thumb {
-  visibility: visible;
-}
-
-.icon-container:hover {
-  // background-color: var(--bg-icon-hover);
-}
-
-div.card:hover {
-  background-color: var(--bg-card-hover);
-}
-
-div.card:focus {
-  background-color: var(--bg-card-hover);
-}
-
-input.card:focus {
-  background-color: var(--bg-card-hover);
-}
 
 mark.chatgpt-archive-highlight {
   color: white;

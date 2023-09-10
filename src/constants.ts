@@ -1,5 +1,7 @@
 export const CHATGPT_DOMAIN_URL = "https://chat.openai.com";
 
+export const ACCESS_TOKEN_KEY = "accessToken";
+
 export const styles = {
   P_PAGE: "12px",
   COLOR_DARK_1: "rgb(52, 53, 65)",
@@ -13,6 +15,25 @@ export const styles = {
 export const MESSAGE_ACTIONS = {
   INIT: "INIT",
   REFRESH: "REFRESH",
+
+  FETCH_CONVERSATIONS: "FETCH_CONVERSATIONS",
+  FETCH_FOLDERS: "FETCH_FOLDERS",
+
+  // bg to content
+  APPEND_CONVERSATIONS: "APPEND_CONVERSATIONS",
+  APPEND_FOLDERS: "APPEND_FOLDERS",
+
+  // folders creation
+  CREATE_NEW_FOLDER: "CREATE_NEW_FOLDER", // content to bg
+
+  // add conversation to folder
+  ADD_CONVERSATION_TO_FOLDER: "ADD_CONVERSATION_TO_FOLDER",
+
+  RESPONSE_STATUS: "RESPONSE_STATUS",
+  STATUS_SUCCESS: "STATUS_SUCCESS",
+
+
+  SEARCH: "SEARCH",
 
   FETCHING_APP_STATE: "FETCHING_APP_STATE",
   SAVE_APP_STATE: "SAVE_APP_STATE",
@@ -28,3 +49,4 @@ export const MESSAGE_ACTIONS = {
 
   TOGGLE_PANEL: "TOGGLE_PANEL",
 };
+

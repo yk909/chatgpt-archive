@@ -1,29 +1,22 @@
-import React from "react";
-import { styles } from "@src/constants";
 import { BsClockHistory } from "react-icons/bs";
-import { Spinner } from "./Loading";
+import { Spinner } from "./Demo/Loading";
+import { useAtom } from "jotai";
+import { loadingAtom, panelOpenAtom } from "../context";
 
-export function Thumb({
-  setOpen,
-  open,
-  loading,
-}: {
-  setOpen: (state: boolean) => void;
-  open: boolean;
-  loading: boolean;
-}) {
+export function Thumb() {
+  const [open, setOpen] = useAtom(panelOpenAtom);
+  const [loading, setLoading] = useAtom(loadingAtom);
+
   return (
     <div>
       <button
-        className="flex items-center justify-center hover:opacity-80 trans"
+        className="flex items-center justify-center hover:opacity-80 trans bg-background text-foreground"
         style={{
           width: "50px",
           height: "40px",
           position: "fixed",
           top: "80px",
           right: "0",
-          background: styles.COLOR_DARK_1,
-          color: styles.COLOR_WHITE_1,
           cursor: "pointer",
           transform: open ? "translateX(100%)" : "translateX(0%)",
           transition: "all 0.3s ease-out",

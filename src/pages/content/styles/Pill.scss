@@ -1,0 +1,13 @@
+.pill-group {
+    display: flex;
+    padding: 4px;
+    border-radius: 9999px;
+    width: fit-content;
+    background: hsl(var(--background-2));
+}
+
+.pill {
+    padding: 4px 16px;
+    font-size: 14px;
+    transition: all 0.2s ease-out;
+}
