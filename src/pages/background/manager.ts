@@ -62,6 +62,7 @@ export class BackgroundManager {
     this.handleAddConversationToFolder =
       this.handleAddConversationToFolder.bind(this);
     this.handleRenameFolder = this.handleRenameFolder.bind(this);
+    this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
 
     this.messageHandlerMap = {
       [MESSAGE_ACTIONS.INIT]: this.handleInit,
@@ -72,12 +73,21 @@ export class BackgroundManager {
       [MESSAGE_ACTIONS.ADD_CONVERSATION_TO_FOLDER]:
         this.handleAddConversationToFolder,
       [MESSAGE_ACTIONS.RENAME_FOLDER]: this.handleRenameFolder,
+      [MESSAGE_ACTIONS.DELETE_FOLDER]: this.handleDeleteFolder,
     };
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("background received message ", request);
       if (this.messageHandlerMap[request.type]) {
-        this.messageHandlerMap[request.type](request, sender, sendResponse);
+        try {
+          this.messageHandlerMap[request.type](request, sender, sendResponse);
+        } catch (err) {
+          console.error("error during handling message", err);
+          this.sendResponseStatus(sender, {
+            status: "ERROR",
+            message: err.message,
+          });
+        }
       } else {
         console.log("unknown request type", request.type);
       }
@@ -110,6 +120,15 @@ export class BackgroundManager {
     await this.sendAllConversations(sender.tab.id);
     // await this.sendFirstPageConversations(sender.tab.id);
     // let c = await fetchAllConversations(ac);
+  }
+
+  async sendResponseStatus(sender, status) {
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.RESPONSE_STATUS,
+      data: {
+        status,
+      },
+    });
   }
 
   async handleFetchConversations(request, sender, _) {
@@ -150,64 +169,50 @@ export class BackgroundManager {
 
   async handleAddConversationToFolder(request, sender, _) {
     const { conversationId, folderId } = request.data;
-    try {
-      const res = await db.addConversationToFolder(conversationId, folderId);
-      console.log("success addConversationToFolder");
-      sendMessageToTab(sender.tab.id, {
-        type: MESSAGE_ACTIONS.RESPONSE_STATUS,
-        data: {
-          status: "SUCCESS",
-        },
-      });
+    await db.addConversationToFolder(conversationId, folderId);
+    console.log("success addConversationToFolder");
+    this.sendResponseStatus(sender, {
+      status: "SUCCESS",
+      message: "Successfully added conversation to folder",
+    });
 
-      // refresh data
-      const data = await db.getManyFolders(undefined, undefined);
-      console.log("sending append folder data", data);
-      sendMessageToTab(sender.tab.id, {
-        type: MESSAGE_ACTIONS.FETCH_FOLDERS,
-        data,
-      });
-    } catch (err) {
-      console.warn("error during addConversationToFolder:", err.message);
-      sendMessageToTab(sender.tab.id, {
-        type: MESSAGE_ACTIONS.RESPONSE_STATUS,
-        data: {
-          status: "ERROR",
-          message: err.message,
-        },
-      });
-    }
+    // refresh data
+    const data = await db.getManyFolders(undefined, undefined);
+    console.log("sending append folder data", data);
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.FETCH_FOLDERS,
+      data,
+    });
   }
 
   async handleRenameFolder(request, sender, _) {
     const { folderId, name } = request.data;
-    try {
-      const res = await db.renameFolder(folderId, name);
-      console.log("success renameFolder");
-      sendMessageToTab(sender.tab.id, {
-        type: MESSAGE_ACTIONS.RESPONSE_STATUS,
-        data: {
-          status: "SUCCESS",
-        },
-      });
+    await db.renameFolder(folderId, name);
+    console.log("success renameFolder");
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.RESPONSE_STATUS,
+      data: {
+        status: "SUCCESS",
+      },
+    });
 
-      // refresh data
-      const data = await db.getManyFolders(undefined, undefined);
-      console.log("sending append folder data", data);
-      sendMessageToTab(sender.tab.id, {
-        type: MESSAGE_ACTIONS.FETCH_FOLDERS,
-        data,
-      });
-    } catch (err) {
-      console.warn("error during renameFolder:", err.message);
-      sendMessageToTab(sender.tab.id, {
-        type: MESSAGE_ACTIONS.RESPONSE_STATUS,
-        data: {
-          status: "ERROR",
-          message: err.message,
-        },
-      });
-    }
+    // refresh data
+    const data = await db.getManyFolders(undefined, undefined);
+    console.log("sending append folder data", data);
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.FETCH_FOLDERS,
+      data,
+    });
+  }
+
+  async handleDeleteFolder(request, sender, _) {
+    const { folderId } = request.data;
+    await db.deleteFolder(folderId);
+    console.log("delete folder successful", { folderId });
+    this.sendResponseStatus(sender, {
+      status: "SUCCESS",
+    });
+    this.sendAllFolderData(sender.tab.id);
   }
 
   async getOrRefreshSession() {

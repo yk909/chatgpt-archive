@@ -8,6 +8,7 @@ import {
   FolderEdit,
   MessageSquare,
   MoreHorizontal,
+  Trash2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,7 +26,7 @@ import {
 } from "@src/components/ui/dialog";
 import { DialogForm } from "@src/components/DialogForm";
 import { useEffect } from "react";
-import { renameFolder } from "../messages";
+import { deleteFolder, renameFolder } from "../messages";
 
 function FolderMoreButton({ folderId }: { folderId: string }) {
   const [open, setOpen] = useState(false);
@@ -93,6 +94,16 @@ function FolderMoreButton({ folderId }: { folderId: string }) {
                   <span>Rename</span>
                 </div>
               </DialogTrigger>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                deleteFolder(folderId);
+              }}
+            >
+              <div className="flex items-center text-red-500">
+                <Trash2 className="icon-dropdown-menu-item" />
+                <span>Delete</span>
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         )}

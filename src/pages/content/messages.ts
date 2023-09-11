@@ -62,3 +62,10 @@ export function renameFolder(folderId: string, name: string) {
     data: { folderId, name },
   });
 }
+
+export function deleteFolder(folderId: string) {
+  chrome.runtime.sendMessage({
+    type: MESSAGE_ACTIONS.DELETE_FOLDER,
+    data: { folderId },
+  });
+}

@@ -166,6 +166,15 @@ export class RootDB extends Dexie {
       update_time: Date.now().toString(),
     });
   }
+
+  async deleteFolder(folderId: string) {
+    const folder = await db.folders.get(folderId);
+    if (!folder) {
+      throw new Error("No folder found with id" + folderId);
+    }
+    await db.folders.delete(folderId);
+    await db.conversationToFolder.where({ folderId }).delete();
+  }
 }
 
 let db: RootDB;
