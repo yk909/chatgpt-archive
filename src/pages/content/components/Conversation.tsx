@@ -32,12 +32,13 @@ import {
 import { useAtom } from "jotai";
 import { addConversationToFolder, fetchMoreFolders } from "../messages";
 
-function MoreDropdown(
-  { conversationId, setOpen }: {
-    conversationId: string;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  },
-) {
+function MoreDropdown({
+  conversationId,
+  setOpen,
+}: {
+  conversationId: string;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [folders] = useAtom(folderListAtom);
   const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
 
@@ -97,7 +98,7 @@ function MoreDropdownButton({ conversationId }: { conversationId: string }) {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger>
-        <div className="icon-container icon-container-sm card-hover-show opacity-0">
+        <div className="opacity-0 icon-container icon-container-sm card-hover-show">
           <MoreHorizontal
             style={{
               width: 20,
@@ -113,7 +114,7 @@ function MoreDropdownButton({ conversationId }: { conversationId: string }) {
   );
 }
 
-function Item({
+export function ConversationCard({
   data,
   selected,
   toggle,
@@ -132,41 +133,38 @@ function Item({
   return (
     <div className={"flex gap-3 card " + (active ? "bg-dark-1" : "")}>
       <div className="flex flex-none fcenter">
-        {!selectionEnabled
-          ? (
-            <div className="relative group fcenter">
-              <Checkbox
-                id={"c-" + data.id}
-                checked={selected}
-                className="relative z-10 opacity-0 group-hover:opacity-100"
-                onClick={handleToggle}
-              />
-              <MessageSquare
-                size={20}
-                className="absolute group-hover:opacity-0 trans"
-              />
-            </div>
-          )
-          : (
+        {!selectionEnabled ? (
+          <div className="relative group fcenter">
             <Checkbox
               id={"c-" + data.id}
               checked={selected}
+              className="relative z-10 opacity-0 group-hover:opacity-100"
               onClick={handleToggle}
             />
-          )}
+            <MessageSquare
+              size={20}
+              className="absolute group-hover:opacity-0 trans"
+            />
+          </div>
+        ) : (
+          <Checkbox
+            id={"c-" + data.id}
+            checked={selected}
+            onClick={handleToggle}
+          />
+        )}
       </div>
       <div
-        className="flex-col flex-1 cursor-pointer"
+        className="flex-col flex-1 min-w-0 cursor-pointer"
         onClick={(e) => {
           e.preventDefault();
           loadConversation(data.id);
         }}
       >
         <div
-          className="text-sm"
+          className="text-sm truncate"
           dangerouslySetInnerHTML={{ __html: data.title }}
-        >
-        </div>
+        ></div>
         <div
           className="text-gray-500"
           style={{
@@ -177,7 +175,7 @@ function Item({
         </div>
       </div>
 
-      <div className="flex-none flex items-center gap-1">
+      <div className="flex items-center flex-none gap-1">
         <MoreDropdownButton conversationId={data.id} />
       </div>
     </div>
@@ -198,7 +196,7 @@ export function List({
   return (
     <div className="flex flex-col w-full">
       {data.map((item) => (
-        <Item
+        <ConversationCard
           key={item.id}
           data={item}
           selected={selection.has(item.id)}

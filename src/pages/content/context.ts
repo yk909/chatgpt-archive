@@ -1,3 +1,4 @@
+import { Conversation, Folder } from "@src/types";
 import { atom, useAtom } from "jotai";
 
 export const panelOpenAtom = atom<boolean>(false);
@@ -6,15 +7,18 @@ export const searchBoxOpenAtom = atom<boolean>(false);
 
 export const oUserAtom = atom<any>(null);
 
-export const conversationListAtom = atom<any[]>([]);
-export const folderListAtom = atom<any[]>([]);
+export const conversationListAtom = atom<Conversation[]>([]);
+export const folderListAtom = atom<Folder[]>([]);
+export const displayConversationListAtom = atom<Conversation[]>([]);
 
 export const selectionAtom = atom<Set<any>>(new Set());
 export const selectionEnabledAtom = atom<boolean>(false);
 
 export const pageAtom = atom<number>(1);
 
-export const bgResponseStatusAtom = atom<{ status?: number }>({});
+export const bgResponseStatusAtom = atom<{ status?: string; message?: string }>(
+  {}
+);
 
 export function useSelection() {
   const [selection, setSelection] = useAtom(selectionAtom);

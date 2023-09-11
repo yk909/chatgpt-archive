@@ -8,9 +8,7 @@ import { useState } from "react";
 
 function DarkModeSwitch() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return document
-      .querySelector("html")
-      ?.classList.contains("dark");
+    return document.querySelector("html")?.classList.contains("dark");
   });
   return (
     <div className="flex items-center gap-2">
@@ -20,13 +18,9 @@ function DarkModeSwitch() {
         onCheckedChange={(value) => {
           setDarkMode(value);
           if (value) {
-            document
-              .querySelector("html")
-              .classList.add("dark");
+            document.querySelector("html").classList.add("dark");
           } else {
-            document
-              .querySelector("html")
-              .classList.remove("dark");
+            document.querySelector("html").classList.remove("dark");
           }
         }}
       />
@@ -45,14 +39,16 @@ function RefreshButton() {
   }
 
   return (
-    <div 
-      className={"icon-container icon-container-md " + (isRefreshing ? "spinning" : "")} 
+    <div
+      className={
+        // "icon-container icon-container-md " + (isRefreshing ? "spinning" : "")
+        "icon-container icon-container-md"
+      }
       onClick={handleRefresh}
     >
       <RotateCw />
     </div>
-  )
-
+  );
 }
 
 export default function Header() {

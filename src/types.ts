@@ -18,10 +18,18 @@ export type Folder = {
   update_time: string;
   created_time: string;
   children: Conversation[];
-}
+};
 
 export type FolderCreationData = {
   name: string;
   color?: string;
   children: string[];
-}
+};
+
+export type MessageHandler = (request: any, sender, sendResponse) => void;
+
+export type KeyboardShortcutItem = {
+  name: string;
+  callback: () => void;
+  keyCondition: (e: KeyboardEvent) => boolean;
+};

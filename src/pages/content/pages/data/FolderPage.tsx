@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ListView } from "@src/pages/content/components/ListView";
-import { folderListAtom } from "../../context";
+import { bgResponseStatusAtom, folderListAtom } from "../../context";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { FolderList } from "@src/pages/content/components/Folder";
 import { createNewFolder, fetchMoreFolders } from "../../messages";
@@ -13,12 +13,10 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@src/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import { Input } from "@src/components/ui/input";
-import { SpinnerIcon } from "@src/components/Spinner";
+import { DialogForm } from "@src/components/DialogForm";
+import { useAtom } from "jotai";
 
 type CreateNewFolderForm = {
   name: string;
@@ -26,12 +24,9 @@ type CreateNewFolderForm = {
 };
 
 function CreateNewFolderButton() {
-  const {
-    register,
-    handleSubmit,
-  } = useForm<CreateNewFolderForm>();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
 
   const onSubmit = (data: CreateNewFolderForm) => {
     console.log("submit form", data);
@@ -40,46 +35,34 @@ function CreateNewFolderButton() {
   };
 
   useEffect(() => {
-    const messageHandler = (request, sender, _) => {
-      if (request.type === MESSAGE_ACTIONS.STATUS_SUCCESS) {
-        console.log("create status success", request);
-        setLoading(() => false);
-        setOpen(false);
-      }
-    };
-    chrome.runtime.onMessage.addListener(messageHandler);
-
-    return () => {
-      chrome.runtime.onMessage.removeListener(messageHandler);
+    if (open && responseStatus.status === "SUCCESS") {
+      setOpen(false);
     }
-  }, []);
+  }, [responseStatus]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {/** 
-        <div className="icon-container icon-container-sm">
+        <div className="icon-container icon-container-md">
           <Plus />
         </div>
-        **/}
-        <Button size="icon" variant="outline"><Plus className="icon-sm" /></Button>
+        {/* <Button size="icon" variant="outline">
+          <Plus className="icon-sm" />
+        </Button> */}
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create a new folder</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-3 my-6">
-            <Input {...register("name", { required: true })} />
-          </div>
-          <DialogFooter>
-            <div className="flex items-center gap-4">
-              {loading && <SpinnerIcon size={24} />}
-              <Button variant="default" type="submit">Create</Button>
-            </div>
-          </DialogFooter>
-        </form>
-      </DialogContent>
+      <DialogForm
+        title="Create a new folder"
+        inputs={[
+          {
+            label: "Name",
+            name: "name",
+            type: "text",
+            placeholder: "Enter the name of the folder",
+          },
+        ]}
+        onSubmit={onSubmit}
+        setOpen={setOpen}
+      />
     </Dialog>
   );
 }
@@ -92,7 +75,10 @@ export function FolderPage() {
       </div>
       <ListView
         dataAtom={folderListAtom}
-        fetchMore={fetchMoreFolders}
+        onLoadMore={(page) => {
+          console.log("folder load more", page);
+          fetchMoreFolders(page, 20);
+        }}
         fetch_message_type={MESSAGE_ACTIONS.FETCH_FOLDERS}
         append_message_type={MESSAGE_ACTIONS.APPEND_FOLDERS}
         renderData={({ data, selection, toggle }) => (
@@ -103,7 +89,7 @@ export function FolderPage() {
             selection={selection}
           />
         )}
-        id="con-list"
+        id="folder-list"
       />
     </>
   );

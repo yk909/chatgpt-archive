@@ -23,7 +23,7 @@ export function getCurrentConversationId(): string {
 
 export async function batchPromises<T>(
   funcs: Array<() => Promise<T>>,
-  limit = 5,
+  limit = 5
 ): Promise<T[]> {
   const results: T[] = [];
   const totalFuncs = funcs.length;
@@ -42,7 +42,10 @@ export async function batchPromises<T>(
   return results;
 }
 
-export function categorizeConversations(conversations: Conversation[]) {
+export function categorizeConversations(
+  conversations: Conversation[],
+  byAttribute: keyof Conversation
+) {
   const result = {
     Today: [],
     Yesterday: [],
@@ -55,7 +58,7 @@ export function categorizeConversations(conversations: Conversation[]) {
     result[
       new Date(new Date().getFullYear(), currentMonth - i, 1).toLocaleString(
         "default",
-        { month: "long" },
+        { month: "long" }
       )
     ] = [];
   }
@@ -73,7 +76,7 @@ export function categorizeConversations(conversations: Conversation[]) {
   thirtyDaysAgo.setDate(today.getDate() - 30);
 
   conversations.forEach((article) => {
-    const articleDate = new Date(article.update_time);
+    const articleDate = new Date(article[byAttribute]);
 
     if (articleDate >= today) {
       result.Today.push(article);
@@ -97,8 +100,8 @@ export function categorizeConversations(conversations: Conversation[]) {
 export function extractConversationListFromPage() {
   const conTitleList = Array.from(
     document.querySelectorAll(
-      "#__next > div.overflow-hidden.w-full.h-full.relative.flex.z-0 > div.dark.flex-shrink-0.overflow-x-hidden.bg-gray-900 > div > div > div > nav > div.flex-col.flex-1.transition-opacity.duration-500.overflow-y-auto.-mr-2 > div > div > span:nth-child(1) > div > ol > li > a > div",
-    ),
+      "#__next > div.overflow-hidden.w-full.h-full.relative.flex.z-0 > div.dark.flex-shrink-0.overflow-x-hidden.bg-gray-900 > div > div > div > nav > div.flex-col.flex-1.transition-opacity.duration-500.overflow-y-auto.-mr-2 > div > div > span:nth-child(1) > div > ol > li > a > div"
+    )
   ).map((el: HTMLDivElement) => {
     return el.innerText;
   });

@@ -29,6 +29,9 @@ export const MESSAGE_ACTIONS = {
   // add conversation to folder
   ADD_CONVERSATION_TO_FOLDER: "ADD_CONVERSATION_TO_FOLDER",
 
+  // rename folder
+  RENAME_FOLDER: "RENAME_FOLDER",
+
   RESPONSE_STATUS: "RESPONSE_STATUS",
   STATUS_SUCCESS: "STATUS_SUCCESS",
 
@@ -50,3 +53,7 @@ export const MESSAGE_ACTIONS = {
   TOGGLE_PANEL: "TOGGLE_PANEL",
 };
 
+
+
+export const CTRL_KEY = "Control";
+export const ALT_KEY = "Alt";

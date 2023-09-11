@@ -27,7 +27,7 @@ export class RootDB extends Dexie {
     limit: number | undefined = undefined,
     offset: number | undefined = undefined,
     orderBy = "update_time",
-    desc = true,
+    desc = true
   ) {
     let q = this.conversations.orderBy(orderBy);
     if (desc) {
@@ -54,7 +54,7 @@ export class RootDB extends Dexie {
     limit: number | undefined = undefined,
     offset: number | undefined = undefined,
     orderBy = "update_time",
-    desc = true,
+    desc = true
   ) {
     let q = this.folders.orderBy(orderBy);
     if (desc) {
@@ -68,11 +68,13 @@ export class RootDB extends Dexie {
     }
     const folders = await q.toArray();
     const conIdSet = new Set();
-    const fChildrenList = (await Promise.allSettled(
-      folders.map((f) =>
-        db.conversationToFolder.where({ folderId: f.id }).toArray()
-      ),
-    )).map((p) => p["status"] === "fulfilled" ? p["value"] : []);
+    const fChildrenList = (
+      await Promise.allSettled(
+        folders.map((f) =>
+          db.conversationToFolder.where({ folderId: f.id }).toArray()
+        )
+      )
+    ).map((p) => (p["status"] === "fulfilled" ? p["value"] : []));
     for (let i = 0; i < fChildrenList.length; i++) {
       for (let j = 0; j < fChildrenList[i].length; j++) {
         conIdSet.add(fChildrenList[i][j].conversationId);
@@ -85,21 +87,19 @@ export class RootDB extends Dexie {
         ...obj,
         [key]: conList[i],
       }),
-      {},
+      {}
     );
     console.log("fChildrenList", fChildrenList);
     for (let i = 0; i < folders.length; i++) {
       const f = folders[i];
-      f.children = fChildrenList[i].map((r) =>
-        conversationIdMap[r.conversationId]
+      f.children = fChildrenList[i].map(
+        (r) => conversationIdMap[r.conversationId]
       );
     }
     return folders;
   }
 
-  async createNewFolder(
-    data: FolderCreationData,
-  ) {
+  async createNewFolder(data: FolderCreationData) {
     const folderId = crypto.randomUUID();
     const curDatetime = Date.now().toString();
     if (data.children.length !== 0) {
@@ -137,10 +137,12 @@ export class RootDB extends Dexie {
     if (!folder) {
       throw new Error("No folder found with id");
     }
-    const cTof = await db.conversationToFolder.where({
-      conversationId: conId,
-      folderId,
-    }).toArray();
+    const cTof = await db.conversationToFolder
+      .where({
+        conversationId: conId,
+        folderId,
+      })
+      .toArray();
     if (cTof.length !== 0) {
       throw new Error("Conversation already exists in folder");
     }
@@ -152,6 +154,17 @@ export class RootDB extends Dexie {
     });
     // return db.transaction("rw", db.conversations, db.folders, async () => {
     // });
+  }
+
+  async renameFolder(folderId: string, name: string) {
+    const folder = await db.folders.get(folderId);
+    if (!folder) {
+      throw new Error("No folder found with id");
+    }
+    return db.folders.update(folderId, {
+      name,
+      update_time: Date.now().toString(),
+    });
   }
 }
 

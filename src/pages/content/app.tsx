@@ -7,7 +7,13 @@ import { useEffect } from "react";
 import { init } from "./messages";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { useAtom } from "jotai";
-import { bgResponseStatusAtom, folderListAtom } from "./context";
+import {
+  bgResponseStatusAtom,
+  conversationListAtom,
+  folderListAtom,
+  panelOpenAtom,
+} from "./context";
+import { useBgMessage, useKeyboardShortcut } from "./hook";
 
 const router = createMemoryRouter([
   {
@@ -17,6 +23,33 @@ const router = createMemoryRouter([
   },
 ]);
 
+const KEYBOARD_SHORTCUTS_GLBOAL = [
+  {
+    name: "closePanel",
+    keyCondition: (e: KeyboardEvent) => e.key === "Escape",
+  },
+  {
+    name: "togglePanel",
+    keyCondition: (e: KeyboardEvent) => e.ctrlKey && e.key === "k",
+  },
+];
+
+const KEYBOARD_SHORTCUTS_NAME_TO_CONDITION = {
+  closePanel: (e: KeyboardEvent) => e.key === "Escape",
+  togglePanel: (e: KeyboardEvent) => e.ctrlKey && e.key === "k",
+};
+
+const KEYBOARD_SHORTCUTS_CONVERSATION = [
+  {
+    name: "gotoNextConversation",
+    keyCondition: (e: KeyboardEvent) => e.ctrlKey && e.key === "ArrowDown",
+  },
+  {
+    name: "gotoPreviousConversation",
+    keyCondition: (e: KeyboardEvent) => e.ctrlKey && e.key === "ArrowUp",
+  },
+];
+
 export default function App() {
   // define states
 
@@ -25,28 +58,40 @@ export default function App() {
   // define effects
   const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
   const [folders, setFolders] = useAtom(folderListAtom);
+  const [conversations, setConversations] = useAtom(conversationListAtom);
+  const [open, setOpen] = useAtom(panelOpenAtom);
+
+  useBgMessage({
+    [MESSAGE_ACTIONS.RESPONSE_STATUS]: (request, sender, _) => {
+      setResponseStatus(request.data);
+    },
+    [MESSAGE_ACTIONS.FETCH_FOLDERS]: (request, sender, _) => {
+      setFolders(request.data);
+    },
+    [MESSAGE_ACTIONS.FETCH_CONVERSATIONS]: (request, sender, _) => {
+      setConversations(request.data);
+    },
+  });
+
+  const keyFunctions = {
+    closePanel: () => {
+      setOpen(() => false);
+    },
+    togglePanel: () => {
+      setOpen((prev) => !prev);
+    },
+  };
+  
+  useKeyboardShortcut(
+    Object.keys(keyFunctions).map((name) => ({
+      name,
+      keyCondition: KEYBOARD_SHORTCUTS_NAME_TO_CONDITION[name],
+      callback: keyFunctions[name],
+    }))
+  );
 
   useEffect(() => {
     init();
-
-    const handler = (request, sender, _) => {
-      switch (request.type) {
-        case MESSAGE_ACTIONS.RESPONSE_STATUS: {
-          setResponseStatus(request.data);
-          break;
-        }
-        case MESSAGE_ACTIONS.FETCH_FOLDERS: {
-          setFolders(request.data);
-          break;
-        }
-      }
-    };
-
-    chrome.runtime.onMessage.addListener(handler);
-
-    return () => {
-      chrome.runtime.onMessage.removeListener(handler);
-    }
   }, []);
 
   return (
