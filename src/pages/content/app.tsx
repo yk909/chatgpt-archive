@@ -15,6 +15,10 @@ import {
 } from "./context";
 import { useBgMessage, useKeyboardShortcut } from "./hook";
 
+import { Toaster } from "@src/components/ui/toaster";
+import { useToast } from "@src/components/ui/use-toast";
+import { SuccessIcon } from "@src/components/Icon";
+
 const router = createMemoryRouter([
   {
     path: "/",
@@ -60,10 +64,21 @@ export default function App() {
   const [folders, setFolders] = useAtom(folderListAtom);
   const [conversations, setConversations] = useAtom(conversationListAtom);
   const [open, setOpen] = useAtom(panelOpenAtom);
+  const { toast } = useToast();
 
   useBgMessage({
     [MESSAGE_ACTIONS.RESPONSE_STATUS]: (request, sender, _) => {
       setResponseStatus(request.data);
+      console.log("response status", request.data);
+      if (request.data.status === "SUCCESS") {
+        console.log("showing toast");
+        toast({
+          description: request.data.message,
+          icon: <SuccessIcon />,
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     },
     [MESSAGE_ACTIONS.FETCH_FOLDERS]: (request, sender, _) => {
       setFolders(request.data);
@@ -81,7 +96,7 @@ export default function App() {
       setOpen((prev) => !prev);
     },
   };
-  
+
   useKeyboardShortcut(
     Object.keys(keyFunctions).map((name) => ({
       name,
@@ -98,6 +113,7 @@ export default function App() {
     <div className="content-view-container dark">
       <Thumb />
       <RouterProvider router={router} />
+      <Toaster />
     </div>
   );
 }

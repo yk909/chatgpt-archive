@@ -167,13 +167,18 @@ export class RootDB extends Dexie {
     });
   }
 
-  async deleteFolder(folderId: string) {
-    const folder = await db.folders.get(folderId);
-    if (!folder) {
-      throw new Error("No folder found with id" + folderId);
+  async deleteFolder(folderIdList: string[]) {
+    const folderExists = await Promise.all(
+      folderIdList.map((folderId) => db.folders.get(folderId))
+    );
+    if (folderExists.some((f) => !f)) {
+      throw new Error("Some folders do not exist");
     }
-    await db.folders.delete(folderId);
-    await db.conversationToFolder.where({ folderId }).delete();
+    await db.folders.bulkDelete(folderIdList);
+    for (let i = 0; i < folderIdList.length; i++) {
+      const folderId = folderIdList[i];
+      await db.conversationToFolder.where({ folderId }).delete();
+    }
   }
 }
 

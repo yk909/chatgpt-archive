@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { ListView } from "@src/pages/content/components/ListView";
-import { bgResponseStatusAtom, folderListAtom } from "../../context";
+import {
+  bgResponseStatusAtom,
+  folderListAtom,
+  loadingAtom,
+} from "../../context";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { FolderList } from "@src/pages/content/components/Folder";
-import { createNewFolder, fetchMoreFolders } from "../../messages";
-import { Plus } from "lucide-react";
-import { SelectionActionBar } from "@src/pages/content/components/SelectionActionBar";
+import {
+  createNewFolder,
+  deleteFolder,
+  fetchMoreFolders,
+} from "../../messages";
+import { MoreHorizontal, Plus, Trash2 } from "lucide-react";
+import {
+  ClearSelectionButton,
+  SelectAllButton,
+  SelectionActionBar,
+} from "@src/pages/content/components/SelectionActionBar";
 
 import {
   Dialog,
@@ -17,6 +29,7 @@ import {
 } from "@src/components/ui/dialog";
 import { DialogForm } from "@src/components/DialogForm";
 import { useAtom } from "jotai";
+import { Spinner } from "@src/components/Spinner";
 
 type CreateNewFolderForm = {
   name: string;
@@ -69,32 +82,62 @@ function CreateNewFolderButton() {
 
 export function FolderPage() {
   const [folders] = useAtom(folderListAtom);
+  const [loading] = useAtom(loadingAtom);
   return (
     <>
       <div className="flex items-center">
         <CreateNewFolderButton />
       </div>
-      <ListView
-        dataAtom={folderListAtom}
-        renderData={({ data, selection, toggle }) => (
-          <FolderList
-            data={data}
-            selectionEnabled={selection.size !== 0}
-            toggle={toggle}
-            selection={selection}
-          />
-        )}
-        id="folder-list"
-        renderSelectionBar={({ selection, setSelection }) => (
-          <SelectionActionBar
-            enabled={selection.size !== 0}
-            handleClear={() => setSelection(new Set())}
-            handleSelectAll={() => {
-              setSelection(new Set(folders.map((c: any) => c.id)));
-            }}
-          />
-        )}
-      />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <ListView
+          dataAtom={folderListAtom}
+          renderData={({ data, selection, toggle }) => (
+            <FolderList
+              data={data}
+              selectionEnabled={selection.size !== 0}
+              toggle={toggle}
+              selection={selection}
+            />
+          )}
+          id="folder-list"
+          renderSelectionBar={({ selection, setSelection }) => (
+            <SelectionActionBar
+              enabled={selection.size !== 0}
+              left={() => {
+                return (
+                  <>
+                    <SelectAllButton
+                      onClick={() => {
+                        setSelection(new Set(folders.map((c: any) => c.id)));
+                      }}
+                    />
+                    <ClearSelectionButton setSelection={setSelection} />
+                  </>
+                );
+              }}
+              right={() => (
+                <>
+                  <div
+                    className="text-red-500 icon-container icon-container-sm"
+                    onClick={() => {
+                      console.log("delete folders", selection);
+                      deleteFolder(Array.from(selection));
+                      setSelection(new Set());
+                    }}
+                  >
+                    <Trash2 />
+                  </div>
+                  <div className="icon-container icon-container-sm">
+                    <MoreHorizontal />
+                  </div>
+                </>
+              )}
+            />
+          )}
+        />
+      )}
     </>
   );
 }

@@ -19,21 +19,16 @@ export function SelectionActionBar({
         transform: enabled ? "translateY(0)" : "translateY(100%)",
       }}
     >
-      <div className="flex items-center gap-2">{left()}</div>
+      <div className="flex items-center gap-2">{left && left()}</div>
 
       <div className="flex-1 min-w-0"></div>
 
-      <div className="flex items-center gap-2">
-        {right()}
-        <div className="icon-container icon-container-sm">
-          <MoreHorizontal />
-        </div>
-      </div>
+      <div className="flex items-center gap-2">{right && right()}</div>
     </div>
   );
 }
 
-export function SelectionAllButton({ onClick }: { onClick: () => void }) {
+export function SelectAllButton({ onClick }: { onClick: () => void }) {
   return (
     <div
       className="icon-container icon-container-sm"
@@ -43,6 +38,24 @@ export function SelectionAllButton({ onClick }: { onClick: () => void }) {
       }}
     >
       <Check />
+    </div>
+  );
+}
+
+export function ClearSelectionButton({
+  setSelection,
+}: {
+  setSelection: React.Dispatch<React.SetStateAction<Set<string>>>;
+}) {
+  return (
+    <div
+      className="icon-container icon-container-sm"
+      onClick={(e) => {
+        e.preventDefault();
+        setSelection(new Set());
+      }}
+    >
+      <XSquare />
     </div>
   );
 }

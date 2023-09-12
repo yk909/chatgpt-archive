@@ -101,6 +101,9 @@ export class BackgroundManager {
     await this.getOrRefreshSession();
     // console.log("access token", this.getCurrentUserAccessToken());
 
+    await this.sendAllFolderData(sender.tab.id);
+    await this.sendAllConversations(sender.tab.id);
+
     const ac = this.getCurrentUserAccessToken();
 
     const latestConItem = await db.getLatestConversation();
@@ -110,24 +113,24 @@ export class BackgroundManager {
 
       const newItems = await fetchNewConversations(ac, latestDate);
       await db.putManyConversations(newItems);
+
+      if (newItems.length > 0) {
+        await this.sendAllConversations(sender.tab.id);
+      }
     } else {
       console.log("nothing in db. fetching all conversations");
       const conList = await fetchAllConversations(ac);
       await db.putManyConversations(conList);
     }
 
-    await this.sendAllFolderData(sender.tab.id);
-    await this.sendAllConversations(sender.tab.id);
     // await this.sendFirstPageConversations(sender.tab.id);
     // let c = await fetchAllConversations(ac);
   }
 
-  async sendResponseStatus(sender, status) {
+  async sendResponseStatus(sender, data) {
     sendMessageToTab(sender.tab.id, {
       type: MESSAGE_ACTIONS.RESPONSE_STATUS,
-      data: {
-        status,
-      },
+      data,
     });
   }
 
@@ -157,12 +160,9 @@ export class BackgroundManager {
       color,
       children,
     });
-    sendMessageToTab(sender.tab.id, {
-      type: MESSAGE_ACTIONS.RESPONSE_STATUS,
-      data: {
-        status: "SUCCESS",
-        message: "Successfully created new folder",
-      },
+    await this.sendResponseStatus(sender, {
+      status: "SUCCESS",
+      message: "Successfully created new folder",
     });
     await this.sendAllFolderData(sender.tab.id);
   }
@@ -171,7 +171,7 @@ export class BackgroundManager {
     const { conversationId, folderId } = request.data;
     await db.addConversationToFolder(conversationId, folderId);
     console.log("success addConversationToFolder");
-    this.sendResponseStatus(sender, {
+    await this.sendResponseStatus(sender, {
       status: "SUCCESS",
       message: "Successfully added conversation to folder",
     });
@@ -193,6 +193,7 @@ export class BackgroundManager {
       type: MESSAGE_ACTIONS.RESPONSE_STATUS,
       data: {
         status: "SUCCESS",
+        message: "Successfully renamed folder",
       },
     });
 
@@ -206,11 +207,12 @@ export class BackgroundManager {
   }
 
   async handleDeleteFolder(request, sender, _) {
-    const { folderId } = request.data;
-    await db.deleteFolder(folderId);
-    console.log("delete folder successful", { folderId });
-    this.sendResponseStatus(sender, {
+    const { folderIdList } = request.data;
+    await db.deleteFolder(folderIdList);
+    console.log("delete folder successful", { folderIdList });
+    await this.sendResponseStatus(sender, {
       status: "SUCCESS",
+      message: `Successfully deleted ${folderIdList.length} folder(s)`,
     });
     this.sendAllFolderData(sender.tab.id);
   }

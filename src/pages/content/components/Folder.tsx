@@ -97,7 +97,7 @@ function FolderMoreButton({ folderId }: { folderId: string }) {
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                deleteFolder(folderId);
+                deleteFolder([folderId]);
               }}
             >
               <div className="flex items-center text-red-500">

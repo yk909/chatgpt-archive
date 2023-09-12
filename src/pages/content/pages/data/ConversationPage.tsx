@@ -13,7 +13,7 @@ import { useState } from "react";
 import { PAGE_SIZE } from "@src/pages/background/config";
 import { Spinner } from "@src/components/Spinner";
 import { useAtom } from "jotai";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,7 +21,11 @@ import {
   SelectItem,
 } from "@src/components/ui/select";
 import { useEffect } from "react";
-import { SelectionActionBar } from "@src/pages/content/components/SelectionActionBar";
+import {
+  ClearSelectionButton,
+  SelectAllButton,
+  SelectionActionBar,
+} from "@src/pages/content/components/SelectionActionBar";
 
 const ORDER_BY_OPTIONS = [
   {
@@ -113,10 +117,27 @@ export function ConversationPage() {
           renderSelectionBar={({ selection, setSelection }) => (
             <SelectionActionBar
               enabled={selection.size !== 0}
-              handleClear={() => setSelection(new Set())}
-              handleSelectAll={() => {
-                setSelection(new Set(conversationList.map((c: any) => c.id)));
+              left={() => {
+                return (
+                  <>
+                    <SelectAllButton
+                      onClick={() => {
+                        setSelection(
+                          new Set(conversationList.map((c: any) => c.id))
+                        );
+                      }}
+                    />
+                    <ClearSelectionButton setSelection={setSelection} />
+                  </>
+                );
               }}
+              right={() => (
+                <>
+                  <div className="icon-container icon-container-sm">
+                    <MoreHorizontal />
+                  </div>
+                </>
+              )}
             />
           )}
         />

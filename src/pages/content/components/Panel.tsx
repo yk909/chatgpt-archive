@@ -1,14 +1,12 @@
 import { useAtom } from "jotai";
-import { loadingAtom, panelOpenAtom } from "../context";
+import { panelOpenAtom } from "../context";
 import { cn } from "../../../lib/utils";
 import Header from "./Header";
 import BottomNavBar from "./BottomNavBar";
 import { Outlet } from "react-router-dom";
-import { SelectionActionBar } from "./SelectionActionBar";
 
 export default function Panel() {
-  const [loading, setLoading] = useAtom(loadingAtom);
-  const [open, setOpen] = useAtom(panelOpenAtom);
+  const [open] = useAtom(panelOpenAtom);
 
   return (
     <div
