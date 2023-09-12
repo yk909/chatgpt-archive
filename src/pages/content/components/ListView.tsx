@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
 import { Spinner } from "@src/components/Spinner";
 import { SelectionActionBar } from "@src/pages/content/components/SelectionActionBar";
@@ -36,24 +36,26 @@ function useLoadMoreLine(onChange, options) {
 export function ListView({
   dataAtom,
   id,
-  onLoadMore,
-  fetch_message_type,
-  append_message_type,
   renderData,
+  renderSelectionBar,
 }: {
   dataAtom: PrimitiveAtom<any[]>;
   id: string;
-  onLoadMore?: (page: number) => void;
-  fetch_message_type?: string;
-  append_message_type?: string;
   renderData: (data: any) => React.ReactNode;
+  renderSelectionBar?: ({
+    selection,
+    setSelection,
+  }: {
+    selection: Set<string>;
+    setSelection: React.Dispatch<React.SetStateAction<Set<string>>>;
+  }) => React.ReactNode;
 }) {
   const [state, setState] = useState({
     page: 1,
     loadingMore: false,
   });
   const [displayData, setDiaplayData] = useState([]);
-  const [selection, setSelection] = useState(new Set());
+  const [selection, setSelection] = useState<Set<string>>(new Set());
   const [data] = useAtom(dataAtom);
 
   console.log("[render] list view", { displayData, state });
@@ -111,13 +113,7 @@ export function ListView({
         {renderData({ data: displayData, selection, setSelection, toggle })}
         <div className="flex-none w-full h-8" ref={ref}></div>
       </div>
-      <SelectionActionBar
-        enabled={selection.size !== 0}
-        handleClear={() => setSelection(new Set())}
-        handleSelectAll={() => {
-          setSelection(new Set(data.map((c: any) => c.id)));
-        }}
-      />
+      {renderSelectionBar && renderSelectionBar({ selection, setSelection })}
     </div>
   );
 }

@@ -21,6 +21,7 @@ import {
   SelectItem,
 } from "@src/components/ui/select";
 import { useEffect } from "react";
+import { SelectionActionBar } from "@src/pages/content/components/SelectionActionBar";
 
 const ORDER_BY_OPTIONS = [
   {
@@ -77,11 +78,6 @@ export function ConversationPage() {
       ) : (
         <ListView
           dataAtom={conversationListAtom}
-          onLoadMore={(page) => {
-            fetchMoreConversations(page, PAGE_SIZE);
-          }}
-          fetch_message_type={MESSAGE_ACTIONS.FETCH_CONVERSATIONS}
-          append_message_type={MESSAGE_ACTIONS.APPEND_CONVERSATIONS}
           renderData={({ data, selection, toggle }) =>
             data.length === 0 ? (
               <div>No data</div>
@@ -114,6 +110,15 @@ export function ConversationPage() {
             )
           }
           id="con-list"
+          renderSelectionBar={({ selection, setSelection }) => (
+            <SelectionActionBar
+              enabled={selection.size !== 0}
+              handleClear={() => setSelection(new Set())}
+              handleSelectAll={() => {
+                setSelection(new Set(conversationList.map((c: any) => c.id)));
+              }}
+            />
+          )}
         />
       )}
     </>

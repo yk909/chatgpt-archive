@@ -5,7 +5,7 @@ import { MESSAGE_ACTIONS } from "@src/constants";
 import { FolderList } from "@src/pages/content/components/Folder";
 import { createNewFolder, fetchMoreFolders } from "../../messages";
 import { Plus } from "lucide-react";
-import { Button } from "@src/components/ui/button";
+import { SelectionActionBar } from "@src/pages/content/components/SelectionActionBar";
 
 import {
   Dialog,
@@ -68,6 +68,7 @@ function CreateNewFolderButton() {
 }
 
 export function FolderPage() {
+  const [folders] = useAtom(folderListAtom);
   return (
     <>
       <div className="flex items-center">
@@ -75,12 +76,6 @@ export function FolderPage() {
       </div>
       <ListView
         dataAtom={folderListAtom}
-        onLoadMore={(page) => {
-          console.log("folder load more", page);
-          fetchMoreFolders(page, 20);
-        }}
-        fetch_message_type={MESSAGE_ACTIONS.FETCH_FOLDERS}
-        append_message_type={MESSAGE_ACTIONS.APPEND_FOLDERS}
         renderData={({ data, selection, toggle }) => (
           <FolderList
             data={data}
@@ -90,6 +85,15 @@ export function FolderPage() {
           />
         )}
         id="folder-list"
+        renderSelectionBar={({ selection, setSelection }) => (
+          <SelectionActionBar
+            enabled={selection.size !== 0}
+            handleClear={() => setSelection(new Set())}
+            handleSelectAll={() => {
+              setSelection(new Set(folders.map((c: any) => c.id)));
+            }}
+          />
+        )}
       />
     </>
   );
