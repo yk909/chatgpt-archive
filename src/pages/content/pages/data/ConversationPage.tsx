@@ -46,7 +46,7 @@ export function ConversationPage() {
   useEffect(() => {
     setConversationList((p) => {
       return p.sort((a, b) => {
-        return new Date(a[orderBy]).getTime() - new Date(b[orderBy]).getTime();
+        return new Date(b[orderBy]).getTime() - new Date(a[orderBy]).getTime();
       });
     });
   }, [orderBy]);
@@ -64,7 +64,7 @@ export function ConversationPage() {
             >
               <SelectTrigger>
                 <ArrowUpDown className="w-4 h-4 mr-2" />
-                <span className="text-sm">Order by</span>
+                <span className="mr-2 text-sm">Order by</span>
               </SelectTrigger>
               <SelectContent align="end">
                 {ORDER_BY_OPTIONS.map((option, i) => (
