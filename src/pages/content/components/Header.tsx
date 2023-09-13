@@ -1,4 +1,4 @@
-import { styles } from "@src/constants";
+import { CONTENT_VIEW_CONTAINER_ID, styles } from "@src/constants";
 import { useAtom } from "jotai";
 import { loadingAtom, panelOpenAtom, searchBoxOpenAtom } from "../context";
 import { refresh } from "../messages";
@@ -8,7 +8,9 @@ import { useState } from "react";
 
 function DarkModeSwitch() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return document.querySelector("html")?.classList.contains("dark");
+    return document
+      .getElementById(CONTENT_VIEW_CONTAINER_ID)
+      .classList.contains("dark");
   });
   return (
     <div className="flex items-center gap-2">
@@ -18,9 +20,13 @@ function DarkModeSwitch() {
         onCheckedChange={(value) => {
           setDarkMode(value);
           if (value) {
-            document.querySelector("html").classList.add("dark");
+            document
+              .getElementById(CONTENT_VIEW_CONTAINER_ID)
+              .classList.add("dark");
           } else {
-            document.querySelector("html").classList.remove("dark");
+            document
+              .getElementById(CONTENT_VIEW_CONTAINER_ID)
+              .classList.remove("dark");
           }
         }}
       />
