@@ -5,7 +5,7 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { PANEL_NAV_ITEMS } from "./config";
 import { useEffect } from "react";
 import { init } from "./messages";
-import { MESSAGE_ACTIONS } from "@src/constants";
+import { CONTENT_VIEW_CONTAINER_ID, MESSAGE_ACTIONS } from "@src/constants";
 import { useAtom } from "jotai";
 import {
   bgResponseStatusAtom,
@@ -76,7 +76,6 @@ export default function App() {
           description: request.data.message,
           icon: <SuccessIcon />,
           duration: 3000,
-          isClosable: true,
         });
       }
     },
@@ -110,10 +109,10 @@ export default function App() {
   }, []);
 
   return (
-    <div className="content-view-container dark">
+    <>
       <Thumb />
       <RouterProvider router={router} />
       <Toaster />
-    </div>
+    </>
   );
 }
