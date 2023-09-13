@@ -63,6 +63,7 @@ export class BackgroundManager {
       this.handleAddConversationToFolder.bind(this);
     this.handleRenameFolder = this.handleRenameFolder.bind(this);
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
 
     this.messageHandlerMap = {
       [MESSAGE_ACTIONS.INIT]: this.handleInit,
@@ -74,6 +75,7 @@ export class BackgroundManager {
         this.handleAddConversationToFolder,
       [MESSAGE_ACTIONS.RENAME_FOLDER]: this.handleRenameFolder,
       [MESSAGE_ACTIONS.DELETE_FOLDER]: this.handleDeleteFolder,
+      [MESSAGE_ACTIONS.SEARCH]: this.handleSearch,
     };
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -99,15 +101,17 @@ export class BackgroundManager {
   async handleInit(request, sender, sendResponse) {
     console.log("start handle init");
     await this.getOrRefreshSession();
-    // console.log("access token", this.getCurrentUserAccessToken());
-
-    await this.sendAllFolderData(sender.tab.id);
-    await this.sendAllConversations(sender.tab.id);
-
     const ac = this.getCurrentUserAccessToken();
 
+    await this.sendAllConversations(sender.tab.id);
+    await this.sendAllFolderData(sender.tab.id);
+
     const latestConItem = await db.getLatestConversation();
-    if (latestConItem) {
+    if (!latestConItem) {
+      const conList = await fetchAllConversations(ac);
+      await db.putManyConversations(conList);
+      await this.sendAllConversations(sender.tab.id);
+    } else {
       const latestDate = new Date(latestConItem.update_time);
       console.log("latest conversation", latestDate);
 
@@ -117,14 +121,7 @@ export class BackgroundManager {
       if (newItems.length > 0) {
         await this.sendAllConversations(sender.tab.id);
       }
-    } else {
-      console.log("nothing in db. fetching all conversations");
-      const conList = await fetchAllConversations(ac);
-      await db.putManyConversations(conList);
     }
-
-    // await this.sendFirstPageConversations(sender.tab.id);
-    // let c = await fetchAllConversations(ac);
   }
 
   async sendResponseStatus(sender, data) {
@@ -135,8 +132,13 @@ export class BackgroundManager {
   }
 
   async handleFetchConversations(request, sender, _) {
-    const { pageSize, page } = request.data;
-    const data = await db.getManyConversations(pageSize, (page - 1) * pageSize);
+    const { pageSize, page, sortBy, desc } = request.data;
+    const data = await db.getManyConversations(
+      pageSize,
+      (page - 1) * pageSize,
+      sortBy,
+      desc
+    );
     console.log("sending append conversation data", data);
     sendMessageToTab(sender.tab.id, {
       type: MESSAGE_ACTIONS.APPEND_CONVERSATIONS,
@@ -155,7 +157,7 @@ export class BackgroundManager {
 
   async handleCreateNewFolder(request, sender, _) {
     const { name, color, children } = request.data;
-    const data = await db.createNewFolder({
+    await db.createNewFolder({
       name,
       color,
       children,
@@ -217,6 +219,15 @@ export class BackgroundManager {
     this.sendAllFolderData(sender.tab.id);
   }
 
+  async handleSearch(request, sender, _) {
+    const { query } = request.data;
+    const conversations = await db.searchConversations(query);
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.SEARCH,
+      data: { conversations },
+    });
+  }
+
   async getOrRefreshSession() {
     const user = await getAccessToken();
     if (!user) return null;
@@ -260,16 +271,25 @@ export class BackgroundManager {
     });
   }
 
-  async sendAllConversations(tabId: string) {
-    const data = await db.getManyConversations(undefined, undefined);
+  async sendAllConversations(
+    tabId: string,
+    sortBy = "update_time",
+    desc = true
+  ) {
+    const data = await db.getManyConversations(
+      undefined,
+      undefined,
+      sortBy,
+      desc
+    );
     sendMessageToTab(tabId, {
       type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,
       data,
     });
   }
 
-  async sendAllFolderData(tabId: string) {
-    const data = await db.getManyFolders(undefined, undefined);
+  async sendAllFolderData(tabId: string, sortBy = "update_time", desc = true) {
+    const data = await db.getManyFolders(undefined, undefined, sortBy, desc);
     sendMessageToTab(tabId, {
       type: MESSAGE_ACTIONS.FETCH_FOLDERS,
       data,

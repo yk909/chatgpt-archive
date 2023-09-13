@@ -3,6 +3,7 @@
     color: var(--card-foreground);
     border-radius: var(--radius);
     padding: 12px var(--content-px);
+    transition: all 0.2s ease-in-out;
 }
 
 .card:hover, .card:focus {

@@ -7,10 +7,10 @@ export function refresh() {
   });
 }
 
-export function search(term: string) {
+export function search(query: string) {
   chrome.runtime.sendMessage({
     type: MESSAGE_ACTIONS.SEARCH,
-    payload: { term },
+    data: { query },
   });
 }
 export function init() {
@@ -19,12 +19,19 @@ export function init() {
   });
 }
 
-export function fetchMoreConversations(page: number, pageSize: number) {
+export function fetchConversations(
+  page: number,
+  pageSize: number,
+  sortBy: string,
+  desc: boolean
+) {
   chrome.runtime.sendMessage({
-    type: MESSAGE_ACTIONS.APPEND_CONVERSATIONS,
+    type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,
     data: {
       page,
       pageSize,
+      sortBy,
+      desc,
     },
   });
 }

@@ -1,6 +1,6 @@
 import { CONTENT_VIEW_CONTAINER_ID, styles } from "@src/constants";
 import { useAtom } from "jotai";
-import { loadingAtom, panelOpenAtom, searchBoxOpenAtom } from "../context";
+import { loadingAtom, panelOpenAtom, searchOpenAtom } from "../context";
 import { refresh } from "../messages";
 import { Moon, RotateCw, Search, Sun, X } from "lucide-react";
 import { Switch } from "@src/components/ui/switch";
@@ -59,7 +59,7 @@ function RefreshButton() {
 
 export default function Header() {
   const [open, setOpen] = useAtom(panelOpenAtom);
-  const [searchBoxOpen, setSearchBoxOpen] = useAtom(searchBoxOpenAtom);
+  const [searchBoxOpen, setSearchBoxOpen] = useAtom(searchOpenAtom);
 
   return (
     <div
@@ -73,7 +73,6 @@ export default function Header() {
         className="icon-container icon-container-md"
         onClick={() => {
           setSearchBoxOpen(!searchBoxOpen);
-          // setOpen(false);
         }}
       >
         <Search />

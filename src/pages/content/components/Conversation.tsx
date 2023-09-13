@@ -1,9 +1,8 @@
-import { CHATGPT_DOMAIN_URL, styles } from "@src/constants";
 import { Conversation } from "@src/types";
 import { formatDates, loadConversation } from "@src/utils";
 import { FolderInput, MessageSquare, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@src/components/ui/checkbox";
-import { bgResponseStatusAtom, folderListAtom, useSelection } from "../context";
+import { bgResponseStatusAtom, folderListAtom } from "../context";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,11 +64,7 @@ function MoreDropdown({
         </DropdownMenuSubTrigger>
         <DropdownMenuSubContent className="p-0">
           <Command>
-            <CommandInput
-              className="border-none"
-              placeholder="Choose a folder"
-              autoFocus
-            />
+            <CommandInput placeholder="Choose a folder" autoFocus />
             <CommandList>
               <CommandEmpty>No folders found</CommandEmpty>
               <CommandGroup>

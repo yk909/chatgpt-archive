@@ -12,12 +12,14 @@ import {
   conversationListAtom,
   folderListAtom,
   panelOpenAtom,
+  searchOpenAtom,
 } from "./context";
 import { useBgMessage, useKeyboardShortcut } from "./hook";
 
 import { Toaster } from "@src/components/ui/toaster";
 import { useToast } from "@src/components/ui/use-toast";
 import { SuccessIcon } from "@src/components/Icon";
+import { SearchPrompt } from "./components/SearchPrompt";
 
 const router = createMemoryRouter([
   {
@@ -41,6 +43,7 @@ const KEYBOARD_SHORTCUTS_GLBOAL = [
 const KEYBOARD_SHORTCUTS_NAME_TO_CONDITION = {
   closePanel: (e: KeyboardEvent) => e.key === "Escape",
   togglePanel: (e: KeyboardEvent) => e.ctrlKey && e.key === "k",
+  toggleSearch: (e: KeyboardEvent) => e.ctrlKey && e.key === "j",
 };
 
 const KEYBOARD_SHORTCUTS_CONVERSATION = [
@@ -64,6 +67,7 @@ export default function App() {
   const [folders, setFolders] = useAtom(folderListAtom);
   const [conversations, setConversations] = useAtom(conversationListAtom);
   const [open, setOpen] = useAtom(panelOpenAtom);
+  const [searchOpen, setSearchOpen] = useAtom(searchOpenAtom);
   const { toast } = useToast();
 
   useBgMessage({
@@ -94,6 +98,9 @@ export default function App() {
     togglePanel: () => {
       setOpen((prev) => !prev);
     },
+    toggleSearch: () => {
+      setSearchOpen((prev) => !prev);
+    },
   };
 
   useKeyboardShortcut(
@@ -112,6 +119,7 @@ export default function App() {
     <>
       <Thumb />
       <RouterProvider router={router} />
+      <SearchPrompt />
       <Toaster />
     </>
   );

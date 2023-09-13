@@ -58,7 +58,7 @@ export function ListView({
   const [selection, setSelection] = useState<Set<string>>(new Set());
   const [data] = useAtom(dataAtom);
 
-  console.log("[render] list view", { displayData, state });
+  console.log("[render] list view", { displayData, state, data });
 
   const handleLoadMore = (isIntersecting: boolean) => {
     console.log("start handleLoadMore, intersecting:", isIntersecting);

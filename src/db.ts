@@ -28,13 +28,17 @@ export class RootDB extends Dexie {
     });
   }
 
-  getManyConversations(
+  async getManyConversations(
     limit: number | undefined = undefined,
     offset: number | undefined = undefined,
-    orderBy = "update_time",
+    sortBy = "update_time",
     desc = true
   ) {
-    let q = this.conversations.orderBy(orderBy);
+    const c = await this.conversations.count();
+    if (c === 0) {
+      return [];
+    }
+    let q = this.conversations.orderBy(sortBy);
     if (desc) {
       q = q.reverse();
     }
@@ -58,10 +62,14 @@ export class RootDB extends Dexie {
   async getManyFolders(
     limit: number | undefined = undefined,
     offset: number | undefined = undefined,
-    orderBy = "update_time",
+    sortBy = "update_time",
     desc = true
   ) {
-    let q = this.folders.orderBy(orderBy);
+    const c = await this.folders.count();
+    if (c === 0) {
+      return [];
+    }
+    let q = this.folders.orderBy(sortBy);
     if (desc) {
       q = q.reverse();
     }
@@ -184,13 +192,34 @@ export class RootDB extends Dexie {
       await db.conversationToFolder.where({ folderId }).delete();
     }
   }
+
+  async searchConversations(
+    query: string,
+    sortBy = "update_time",
+    desc = true
+  ) {
+    const conversations = (
+      await db.conversations.orderBy("update_time").reverse().toArray()
+    )
+      .map((d) => {
+        const regex2 = new RegExp(query, "gi");
+        // const occurrences = (d.contentString?.match(regex2) || []).length;
+        const occurrences = (d.title.match(regex2) || []).length;
+        return { ...d, keywordCount: occurrences };
+      })
+      .filter((c) => {
+        const regex = new RegExp(query, "i");
+        return regex.test(c.title) || c.keywordCount > 0;
+      });
+
+    return conversations;
+  }
 }
 
 let db: RootDB;
 
 export function initDB(username: string) {
   db = new RootDB(username);
-  console.log("db", db);
 }
 
 export { db };

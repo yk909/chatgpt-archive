@@ -1,16 +1,9 @@
-import { MESSAGE_ACTIONS } from "@src/constants";
-import {
-  conversationListAtom,
-  displayConversationListAtom,
-  loadingAtom,
-} from "@src/pages/content/context";
+import { conversationListAtom, loadingAtom } from "@src/pages/content/context";
 import { List as ConversationList } from "@src/pages/content/components/Conversation";
-import { fetchMoreConversations } from "@src/pages/content/messages";
 import { ListView } from "@src/pages/content/components/ListView";
 import { categorizeConversations } from "@src/utils";
 import { type Conversation } from "@src/types";
 import { useState } from "react";
-import { PAGE_SIZE } from "@src/pages/background/config";
 import { Spinner } from "@src/components/Spinner";
 import { useAtom } from "jotai";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
@@ -27,29 +20,83 @@ import {
   SelectionActionBar,
 } from "@src/pages/content/components/SelectionActionBar";
 
-const ORDER_BY_OPTIONS = [
+const SortByOptions: Record<
+  string,
   {
-    label: "Last updated",
-    value: "update_time",
+    label: string;
+    key: keyof Conversation;
+    params: {
+      orderBy: keyof Conversation;
+      desc: boolean;
+    };
+    sortFunction: (a: Conversation, b: Conversation) => number;
+  }
+> = {
+  update_time_asc: {
+    label: "Last updated (1-9)",
+    key: "update_time",
+    params: {
+      orderBy: "update_time",
+      desc: false,
+    },
+    sortFunction: (a: Conversation, b: Conversation) => {
+      return (
+        new Date(b.update_time).getTime() - new Date(a.update_time).getTime()
+      );
+    },
   },
-  {
-    label: "Created time",
-    value: "create_time",
+  update_time_desc: {
+    label: "Last updated (9-1)",
+    key: "update_time",
+    params: {
+      orderBy: "update_time",
+      desc: true,
+    },
+    sortFunction: (a: Conversation, b: Conversation) => {
+      return (
+        new Date(a.update_time).getTime() - new Date(b.update_time).getTime()
+      );
+    },
   },
-];
+  create_time_asc: {
+    label: "Created time (1-9)",
+    key: "create_time",
+    params: {
+      orderBy: "create_time",
+      desc: false,
+    },
+    sortFunction: (a: Conversation, b: Conversation) => {
+      return (
+        new Date(a.create_time).getTime() - new Date(b.create_time).getTime()
+      );
+    },
+  },
+  create_time_desc: {
+    label: "Created time (9-1)",
+    key: "create_time",
+    params: {
+      orderBy: "create_time",
+      desc: true,
+    },
+    sortFunction: (a: Conversation, b: Conversation) => {
+      return (
+        new Date(a.create_time).getTime() - new Date(b.create_time).getTime()
+      );
+    },
+  },
+};
 
 export function ConversationPage() {
-  const [orderBy, setOrderBy] = useState<keyof Conversation>("update_time");
+  const [sortByKey, setSortByKey] = useState<keyof typeof SortByOptions>(
+    "update_time_asc" as keyof typeof SortByOptions
+  );
   const [loading, seLoading] = useAtom(loadingAtom);
   const [conversationList, setConversationList] = useAtom(conversationListAtom);
 
   useEffect(() => {
-    setConversationList((p) => {
-      return p.sort((a, b) => {
-        return new Date(b[orderBy]).getTime() - new Date(a[orderBy]).getTime();
-      });
-    });
-  }, [orderBy]);
+    console.log("sort by", sortByKey);
+    // setConversationList((p) => p.sort(SortByOptions[sortByKey].sortFunction));
+  }, [sortByKey]);
 
   return (
     <>
@@ -58,7 +105,7 @@ export function ConversationPage() {
           <div className="flex items-center gap-2">
             <Select
               onValueChange={(v) => {
-                setOrderBy(v as keyof Conversation);
+                setSortByKey(v as keyof typeof SortByOptions);
               }}
               defaultValue="update_time"
             >
@@ -67,9 +114,9 @@ export function ConversationPage() {
                 <span className="mr-2 text-sm">Order by</span>
               </SelectTrigger>
               <SelectContent align="end">
-                {ORDER_BY_OPTIONS.map((option, i) => (
-                  <SelectItem key={i} value={option.value}>
-                    {option.label}
+                {Object.keys(SortByOptions).map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {SortByOptions[key].label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -86,31 +133,31 @@ export function ConversationPage() {
             data.length === 0 ? (
               <div>No data</div>
             ) : (
-              Object.entries(categorizeConversations(data, orderBy)).map(
-                ([key, value], i) => {
-                  if (value.length === 0) return <></>;
-                  return (
-                    <div className="relative" key={i}>
-                      <div
-                        className="sticky top-0 py-3 text-sm text-slate-300 bg-background"
-                        style={{
-                          paddingLeft: "12px",
-                          fontSize: "13px",
-                          zIndex: `${10 + i * 2}`,
-                        }}
-                      >
-                        {key}
-                      </div>
-                      <ConversationList
-                        data={value}
-                        selectionEnabled={selection.size !== 0}
-                        toggle={toggle}
-                        selection={selection}
-                      />
+              Object.entries(
+                categorizeConversations(data, SortByOptions[sortByKey].key)
+              ).map(([key, value], i) => {
+                if (value.length === 0) return <></>;
+                return (
+                  <div className="relative" key={i}>
+                    <div
+                      className="sticky top-0 py-3 text-sm text-slate-300 bg-background"
+                      style={{
+                        paddingLeft: "12px",
+                        fontSize: "13px",
+                        zIndex: `${10 + i * 2}`,
+                      }}
+                    >
+                      {key}
                     </div>
-                  );
-                }
-              )
+                    <ConversationList
+                      data={value}
+                      selectionEnabled={selection.size !== 0}
+                      toggle={toggle}
+                      selection={selection}
+                    />
+                  </div>
+                );
+              })
             )
           }
           id="con-list"
