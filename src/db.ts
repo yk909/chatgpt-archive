@@ -1,25 +1,30 @@
 import Dexie from "dexie";
-import { Conversation, Folder, FolderCreationData } from "./types";
+import {
+  Conversation,
+  Folder,
+  FolderCreationData,
+  FolderWithoutChildren,
+} from "./types";
 
 type ConversationToFolderData = {
   conversationId: string;
   folderId: string;
-  created_time: string;
+  create_time: string;
   update_time: string;
 };
 
 export class RootDB extends Dexie {
   conversations: Dexie.Table<Conversation, string>;
-  folders: Dexie.Table<Folder, string>;
+  folders: Dexie.Table<FolderWithoutChildren, string>;
   conversationToFolder: Dexie.Table<ConversationToFolderData, number>;
 
   constructor(username: string) {
     super("ca-db-" + username);
     this.version(1).stores({
-      conversations: "&id, title, created_time, update_time",
-      folders: "&id, name, created_time, update_time",
+      conversations: "&id, title, create_time, update_time",
+      folders: "&id, name, create_time, update_time",
       conversationToFolder:
-        "++id, conversationId, folderId, created_time, update_time",
+        "++id, conversationId, folderId, create_time, update_time",
     });
   }
 
@@ -67,7 +72,7 @@ export class RootDB extends Dexie {
       q = q.limit(limit);
     }
     const folders = await q.toArray();
-    const conIdSet = new Set();
+    const conIdSet = new Set<string>();
     const fChildrenList = (
       await Promise.allSettled(
         folders.map((f) =>
@@ -89,7 +94,6 @@ export class RootDB extends Dexie {
       }),
       {}
     );
-    console.log("fChildrenList", fChildrenList);
     for (let i = 0; i < folders.length; i++) {
       const f = folders[i];
       f.children = fChildrenList[i].map(
@@ -114,7 +118,7 @@ export class RootDB extends Dexie {
           folderId,
           conversationId: conId,
           update_time: curDatetime,
-          created_time: curDatetime,
+          create_time: curDatetime,
         });
       }
     }
@@ -123,7 +127,7 @@ export class RootDB extends Dexie {
       ...data,
       id: folderId,
       update_time: curDatetime,
-      created_time: curDatetime,
+      create_time: curDatetime,
     };
     return this.folders.add(folder);
   }
@@ -150,7 +154,7 @@ export class RootDB extends Dexie {
       conversationId: conId,
       folderId,
       update_time: Date.now().toString(),
-      created_time: Date.now().toString(),
+      create_time: Date.now().toString(),
     });
     // return db.transaction("rw", db.conversations, db.folders, async () => {
     // });

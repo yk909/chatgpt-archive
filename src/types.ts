@@ -4,26 +4,27 @@ export interface Conversation {
   current_node: string | null;
   mapping: null;
   update_time: string;
-  created_time: string;
+  create_time: string;
 }
 
 export interface FetchFilteredConversationData {
   title: string;
 }
 
-export type Folder = {
-  id: string;
-  name: string;
-  color?: string;
-  update_time: string;
-  created_time: string;
-  children: Conversation[];
-};
-
 export type FolderCreationData = {
   name: string;
   color?: string;
   children: string[];
+};
+
+export type FolderWithoutChildren = {
+  id: string;
+  update_time: string;
+  create_time: string;
+} & FolderCreationData;
+
+export type Folder = FolderWithoutChildren & {
+  children: Conversation[];
 };
 
 export type MessageHandler = (request: any, sender, sendResponse) => void;
