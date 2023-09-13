@@ -19,20 +19,13 @@ import {
   SelectionActionBar,
 } from "@src/pages/content/components/SelectionActionBar";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTrigger,
-} from "@src/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@src/components/ui/dialog";
 import { DialogForm } from "@src/components/DialogForm";
 import { useAtom } from "jotai";
 import { Spinner } from "@src/components/Spinner";
 
 type CreateNewFolderForm = {
-  name: string;
+  newFolderName: string;
   color?: string;
 };
 
@@ -42,9 +35,8 @@ function CreateNewFolderButton() {
   const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
 
   const onSubmit = (data: CreateNewFolderForm) => {
-    console.log("submit form", data);
     setLoading(() => true);
-    createNewFolder({ ...data, children: [] });
+    createNewFolder({ name: data.newFolderName, children: [] });
   };
 
   useEffect(() => {
@@ -64,13 +56,14 @@ function CreateNewFolderButton() {
         </Button> */}
       </DialogTrigger>
       <DialogForm
-        title="Create a new folder"
+        title="Create a New Folder"
         inputs={[
           {
-            label: "Name",
-            name: "name",
+            label: "New Folder Name",
+            name: "newFolderName",
             type: "text",
-            placeholder: "Enter the name of the folder",
+            placeholder: "Enter the name of the new folder",
+            autoComplete: "off",
           },
         ]}
         onSubmit={onSubmit}
