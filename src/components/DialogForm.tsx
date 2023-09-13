@@ -1,3 +1,4 @@
+import React from "react";
 import {
   DialogContent,
   DialogHeader,
@@ -22,12 +23,12 @@ export function DialogForm<FormValues>({
   setOpen,
 }: {
   title: string;
-  inputs: {
+  inputs: ({
     label: string;
     name: string;
     type: string;
     placeholder?: string;
-  }[];
+  } & React.ComponentProps<"input">)[];
   onSubmit: (data: FormValues) => void;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   showLabel?: boolean;
@@ -53,13 +54,10 @@ export function DialogForm<FormValues>({
       </DialogHeader>
       <form onSubmit={handleSubmit(onSubmit)} className="">
         <div className="py-8 space-y-3">
-          {inputs.map((input, i) => (
+          {inputs.map(({ label, name, ...inputProps }, i) => (
             <div className="space-y-2" key={i}>
-              {showLabel && <Label>{input.label}</Label>}
-              <Input
-                placeholder={input.placeholder}
-                {...register(input.name, { required: true })}
-              />
+              {showLabel && <Label>{label}</Label>}
+              <Input {...inputProps} {...register(name, { required: true })} />
             </div>
           ))}
         </div>

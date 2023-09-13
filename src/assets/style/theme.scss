@@ -19,7 +19,7 @@
   transition: all 0.2s ease-out;
 }
 
-:root {
+#chatgpt-archive-content-view-container {
   --bg-main: rgb(52, 53, 65);
   --bg-main-2: rgb(32, 33, 35);
   --fg-main: rgb(217, 217, 227);
@@ -57,7 +57,7 @@
   --primary: var(--primary-500);
   --secondary: 216 49% 86%;
   --accent: var(--primary-200);
-  
+
   --text-2: var(--bg-200);
   --background-2: var(--bg-100);
 
@@ -91,9 +91,12 @@
   --page-px: 8px;
   --content-px: 12px;
   --header-h: 4rem;
+
+  background-color: hsl(var(--background));;
+  color: hsl(var(--text));
 }
 
-:root.dark {
+#chatgpt-archive-content-view-container.dark {
   --text: var(--bg-50);
   --background: var(--bg-950);
   --secondary: 216 48% 6%;
@@ -145,7 +148,7 @@
 
 .button-primary {
   background-color: hsl(var(--text)) !important;
-  color:  hsl(var(--background)) !important;
+  color: hsl(var(--background)) !important;
   transition: all 0.15s ease-out;
 }
 
@@ -159,4 +162,9 @@
 
 .border-window {
   border-color: hsl(var(--border));
+}
+
+
+.bg-background {
+  background-color: hsl(var(--background)) !important;
 }

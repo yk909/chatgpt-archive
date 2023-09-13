@@ -51,3 +51,6 @@ export const MESSAGE_ACTIONS = {
 
 export const CTRL_KEY = "Control";
 export const ALT_KEY = "Alt";
+
+export const CONTENT_VIEW_CONTAINER_ID =
+  "chatgpt-archive-content-view-container";
