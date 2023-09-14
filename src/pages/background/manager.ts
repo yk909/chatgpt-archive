@@ -59,8 +59,8 @@ export class BackgroundManager {
     this.handleRefresh = this.handleRefresh.bind(this);
     this.handleFetchFolders = this.handleFetchFolders.bind(this);
     this.handleCreateNewFolder = this.handleCreateNewFolder.bind(this);
-    this.handleAddConversationToFolder =
-      this.handleAddConversationToFolder.bind(this);
+    this.handleAddConversationToFolder = this.handleAddConversationToFolder
+      .bind(this);
     this.handleRenameFolder = this.handleRenameFolder.bind(this);
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
@@ -137,7 +137,7 @@ export class BackgroundManager {
       pageSize,
       (page - 1) * pageSize,
       sortBy,
-      desc
+      desc,
     );
     console.log("sending append conversation data", data);
     sendMessageToTab(sender.tab.id, {
@@ -222,9 +222,11 @@ export class BackgroundManager {
   async handleSearch(request, sender, _) {
     const { query } = request.data;
     const conversations = await db.searchConversations(query);
+    const folders = await db.searchFolders(query);
+    console.log("finishe search", { conversations, folders });
     sendMessageToTab(sender.tab.id, {
       type: MESSAGE_ACTIONS.SEARCH,
-      data: { conversations },
+      data: { conversations, folders },
     });
   }
 
@@ -274,13 +276,13 @@ export class BackgroundManager {
   async sendAllConversations(
     tabId: string,
     sortBy = "update_time",
-    desc = true
+    desc = true,
   ) {
     const data = await db.getManyConversations(
       undefined,
       undefined,
       sortBy,
-      desc
+      desc,
     );
     sendMessageToTab(tabId, {
       type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,

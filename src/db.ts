@@ -32,7 +32,7 @@ export class RootDB extends Dexie {
     limit: number | undefined = undefined,
     offset: number | undefined = undefined,
     sortBy = "update_time",
-    desc = true
+    desc = true,
   ) {
     const c = await this.conversations.count();
     if (c === 0) {
@@ -63,7 +63,7 @@ export class RootDB extends Dexie {
     limit: number | undefined = undefined,
     offset: number | undefined = undefined,
     sortBy = "update_time",
-    desc = true
+    desc = true,
   ) {
     const c = await this.folders.count();
     if (c === 0) {
@@ -85,7 +85,7 @@ export class RootDB extends Dexie {
       await Promise.allSettled(
         folders.map((f) =>
           db.conversationToFolder.where({ folderId: f.id }).toArray()
-        )
+        ),
       )
     ).map((p) => (p["status"] === "fulfilled" ? p["value"] : []));
     for (let i = 0; i < fChildrenList.length; i++) {
@@ -100,12 +100,12 @@ export class RootDB extends Dexie {
         ...obj,
         [key]: conList[i],
       }),
-      {}
+      {},
     );
     for (let i = 0; i < folders.length; i++) {
       const f = folders[i];
       f.children = fChildrenList[i].map(
-        (r) => conversationIdMap[r.conversationId]
+        (r) => conversationIdMap[r.conversationId],
       );
     }
     return folders;
@@ -181,7 +181,7 @@ export class RootDB extends Dexie {
 
   async deleteFolder(folderIdList: string[]) {
     const folderExists = await Promise.all(
-      folderIdList.map((folderId) => db.folders.get(folderId))
+      folderIdList.map((folderId) => db.folders.get(folderId)),
     );
     if (folderExists.some((f) => !f)) {
       throw new Error("Some folders do not exist");
@@ -196,10 +196,10 @@ export class RootDB extends Dexie {
   async searchConversations(
     query: string,
     sortBy = "update_time",
-    desc = true
+    desc = true,
   ) {
     const conversations = (
-      await db.conversations.orderBy("update_time").reverse().toArray()
+      await this.getManyConversations(undefined, undefined, sortBy, true)
     )
       .map((d) => {
         const regex2 = new RegExp(query, "gi");
@@ -213,6 +213,21 @@ export class RootDB extends Dexie {
       });
 
     return conversations;
+  }
+
+  async searchFolders(
+    query: string,
+    sortBy = "update_time",
+  ) {
+    const data = (
+      await this.getManyFolders(undefined, undefined, sortBy, true)
+    )
+      .filter((f) => {
+        const reg = new RegExp(query, "i");
+        return reg.test(f.name);
+      });
+
+    return data;
   }
 }
 
