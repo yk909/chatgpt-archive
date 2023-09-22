@@ -107,7 +107,7 @@ export function ConversationPage() {
               onValueChange={(v) => {
                 setSortByKey(v as keyof typeof SortByOptions);
               }}
-              defaultValue="update_time"
+              defaultValue="update_time_desc"
             >
               <SelectTrigger>
                 <ArrowUpDown className="w-4 h-4 mr-2" />
