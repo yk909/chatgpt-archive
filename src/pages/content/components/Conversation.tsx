@@ -12,13 +12,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@src/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@src/components/ui/dialog";
 import { useEffect, useState } from "react";
 import {
   Command,
@@ -128,29 +121,31 @@ export function ConversationCard({
   return (
     <div className={"flex gap-3 card " + (active ? "bg-dark-1" : "")}>
       <div className="flex flex-none fcenter">
-        {!selectionEnabled ? (
-          <div className="relative group fcenter">
+        {!selectionEnabled
+          ? (
+            <div className="relative group fcenter">
+              <Checkbox
+                id={"c-" + data.id}
+                checked={selected}
+                className="relative z-10 opacity-0 group-hover:opacity-100"
+                onClick={handleToggle}
+              />
+              <MessageSquare
+                size={20}
+                className="absolute group-hover:opacity-0 trans"
+              />
+            </div>
+          )
+          : (
             <Checkbox
               id={"c-" + data.id}
               checked={selected}
-              className="relative z-10 opacity-0 group-hover:opacity-100"
               onClick={handleToggle}
             />
-            <MessageSquare
-              size={20}
-              className="absolute group-hover:opacity-0 trans"
-            />
-          </div>
-        ) : (
-          <Checkbox
-            id={"c-" + data.id}
-            checked={selected}
-            onClick={handleToggle}
-          />
-        )}
+          )}
       </div>
       <div
-        className="flex-col flex-1 min-w-0 cursor-pointer"
+        className="flex-col flex-1 min-w-0 cursor-pointer gap-1"
         onClick={(e) => {
           e.preventDefault();
           loadConversation(data.id);
@@ -159,13 +154,9 @@ export function ConversationCard({
         <div
           className="text-sm truncate"
           dangerouslySetInnerHTML={{ __html: data.title }}
-        ></div>
-        <div
-          className="text-gray-500"
-          style={{
-            fontSize: "12px",
-          }}
         >
+        </div>
+        <div className="text-muted-foreground text-xs">
           Last update: {formatDates(data.update_time)}
         </div>
       </div>

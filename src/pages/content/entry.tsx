@@ -8,7 +8,12 @@ refreshOnUpdate("pages/content");
 
 const root = document.createElement("div");
 root.id = CONTENT_VIEW_CONTAINER_ID;
-document.querySelector("html").appendChild(root);
+document.body.appendChild(root);
+
+const rootIntoShadow = document.createElement("div");
+
+// const shadowRoot = root.attachShadow({ mode: "open" });
+// shadowRoot.appendChild(rootIntoShadow);
 
 if (window.location.pathname.includes("auth/login")) {
   console.log("Please login first");
@@ -16,6 +21,6 @@ if (window.location.pathname.includes("auth/login")) {
   createRoot(root).render(
     <Provider>
       <App />
-    </Provider>
+    </Provider>,
   );
 }

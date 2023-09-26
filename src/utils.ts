@@ -23,7 +23,7 @@ export function getCurrentConversationId(): string {
 
 export async function batchPromises<T>(
   funcs: Array<() => Promise<T>>,
-  limit = 5
+  limit = 5,
 ): Promise<T[]> {
   const results: T[] = [];
   const totalFuncs = funcs.length;
@@ -44,7 +44,7 @@ export async function batchPromises<T>(
 
 export function categorizeConversations(
   conversations: Conversation[],
-  byAttribute: keyof Conversation
+  byAttribute: keyof Conversation,
 ) {
   const result = {
     Today: [],
@@ -58,7 +58,7 @@ export function categorizeConversations(
     result[
       new Date(new Date().getFullYear(), currentMonth - i, 1).toLocaleString(
         "default",
-        { month: "long" }
+        { month: "long" },
       )
     ] = [];
   }
@@ -100,8 +100,8 @@ export function categorizeConversations(
 export function extractConversationListFromPage() {
   const conTitleList = Array.from(
     document.querySelectorAll(
-      "#__next > div.overflow-hidden.w-full.h-full.relative.flex.z-0 > div.dark.flex-shrink-0.overflow-x-hidden.bg-gray-900 > div > div > div > nav > div.flex-col.flex-1.transition-opacity.duration-500.overflow-y-auto.-mr-2 > div > div > span:nth-child(1) > div > ol > li > a > div"
-    )
+      "#__next > div.overflow-hidden.w-full.h-full.relative.flex.z-0 > div.dark.flex-shrink-0.overflow-x-hidden.bg-gray-900 > div > div > div > nav > div.flex-col.flex-1.transition-opacity.duration-500.overflow-y-auto.-mr-2 > div > div > span:nth-child(1) > div > ol > li > a > div",
+    ),
   ).map((el: HTMLDivElement) => {
     return el.innerText;
   });
@@ -110,4 +110,12 @@ export function extractConversationListFromPage() {
 
 export function loadConversation(conversationId: string) {
   window.location.href = `${CHATGPT_DOMAIN_URL}/c/${conversationId}`;
+}
+
+export async function sleep(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
 }
