@@ -13,10 +13,19 @@ type ConversationToFolderData = {
   update_time: string;
 };
 
+type messageToFolderData = {
+  conversationId: string;
+  messageId: string;
+  folderId: string;
+  create_time: string;
+  update_time: string;
+}
+
 export class RootDB extends Dexie {
   conversations: Dexie.Table<Conversation, string>;
   folders: Dexie.Table<FolderWithoutChildren, string>;
   conversationToFolder: Dexie.Table<ConversationToFolderData, number>;
+  messageToFolder: Dexie.Table<messageToFolderData, number>;
 
   constructor(username: string) {
     super("ca-db-" + username);
@@ -25,6 +34,9 @@ export class RootDB extends Dexie {
       folders: "&id, name, create_time, update_time",
       conversationToFolder:
         "++id, conversationId, folderId, create_time, update_time",
+      messageToFolder: 
+        "++id, conversationId, messageId, folderId, create_time, update_time"
+        
     });
   }
 
@@ -228,6 +240,18 @@ export class RootDB extends Dexie {
       });
 
     return data;
+  }
+
+  async saveConversationDetails(details: any[]) {
+    const updateParams = details.map((c) => ({
+      key: c.conversation_id,
+      changes: {
+        messageStr: Object.values(c.mapping).map((m: any) => m.message.content.parts.join(" ")).join(" "),
+        mapping: c.mapping,
+        update_time: c.update_time.toString()
+      }
+    }));
+    await db.conversations.bulkUpdate(updateParams);
   }
 }
 

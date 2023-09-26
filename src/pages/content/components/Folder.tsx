@@ -115,7 +115,7 @@ function FolderMoreButton({ folderId }: { folderId: string }) {
   );
 }
 
-function FolderItem({
+export function FolderItem({
   data,
   selection,
   selectionEnabled,
@@ -137,7 +137,7 @@ function FolderItem({
     setOpen((p) => !p);
   };
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col flex-1 min-w-0">
       <div className="flex items-center gap-3 card">
         <div className="flex-none">
           {!selectionEnabled ? (

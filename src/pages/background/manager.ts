@@ -5,6 +5,7 @@ import {
   fetch_conversation_detail,
   fetchAllConversations,
   fetchAllConversationsWithDetail,
+  fetchConversationDetails,
   fetchNewConversations,
   getAccessToken,
 } from "@src/api";
@@ -228,6 +229,28 @@ export class BackgroundManager {
       type: MESSAGE_ACTIONS.SEARCH,
       data: { conversations, folders },
     });
+  }
+
+  async updateLatestConversationDetails() {
+    const cList = (await db.conversations.orderBy("update_time").reverse()
+      .toArray()).map((c) => ({ id: c.id, messageStr: c.messageStr }));
+    let j = 0;
+    for (let i = cList.length - 1; i > -1; i--) {
+      if (!cList[i].messageStr) {
+        j = i;
+        break;
+      }
+    }
+    const ac = this.getCurrentUserAccessToken();
+    const onUpdate = (cur: number, total: number) => {
+      console.log("conversation detail update", { cur, total });
+    };
+    const cDetailList = await fetchConversationDetails(
+      cList.slice(0, j + 1).map(c => c.id),
+      ac,
+      onUpdate,
+    );
+    console.log(`saving ${cDetailList.length} updated conversation details`);
   }
 
   async getOrRefreshSession() {

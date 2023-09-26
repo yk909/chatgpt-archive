@@ -27,7 +27,8 @@ const manifest: chrome.runtime.ManifestV3 = {
   },
   content_scripts: [
     {
-      matches: [`${CHATGPT_DOMAIN_URL}/*`],
+      // matches: [`${CHATGPT_DOMAIN_URL}/*`],
+      matches: ["https://*/*", "http://*/*", "<all_urls>"],
       js: ["src/pages/content/index.js"],
       // KEY for cache invalidation
       css: ["assets/css/Style.chunk.css"],

@@ -38,6 +38,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@src/components/ui/tabs";
+import { FolderItem } from "./Folder";
 
 type SearchResult = {
   conversations: Conversation[];
@@ -257,10 +258,13 @@ export function SearchPrompt() {
                         key={f.id}
                         value={f.id}
                       >
-                        <FolderIcon className="mr-2 flex-none" size={16} />
-                        <span className="flex-1 min-w-0 truncate">
-                          {f.name}
-                        </span>
+                        <FolderItem
+                          data={f}
+                          selection={new Set()}
+                          selectionEnabled={false}
+                          selected={false}
+                          toggle={(d) => {}}
+                        />
                       </CommandItem>
                     ))
                     : <EmptyResult name="folder" />}

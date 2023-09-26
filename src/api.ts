@@ -1,5 +1,17 @@
 import { Conversation } from "./types";
-import { batchPromises } from "./utils";
+import { batchPromises, sleep } from "./utils";
+
+const CHATGPT_HOST_URL = "https://chat.openai.com"
+
+function fetchWithToken(token: string, url: RequestInfo, options: RequestInit = {}) {
+  return fetch(url, {
+    headers: {
+      authorization: "Bearer " + token,
+      "content-type": "application/json"
+    },
+    ...options
+  }).then(res => res.json());
+}
 
 export async function getAccessToken() {
   try {
@@ -21,7 +33,7 @@ export async function getAccessToken() {
   return null;
 }
 
-export async function fetch_conversations(offset, limit, order, token) {
+export async function fetch_conversations(offset: number, limit: number, order: string, token: string) {
   return await fetch(
     `https://chat.openai.com/backend-api/conversations?offset=${offset}&limit=${limit}&order=${order}`,
     {
@@ -34,17 +46,20 @@ export async function fetch_conversations(offset, limit, order, token) {
   ).then((response) => response.json());
 }
 
-export async function fetch_conversation_detail(conversationId, token) {
-  return await fetch(
-    `https://chat.openai.com/backend-api/conversation/${conversationId}`,
-    {
-      headers: {
-        authorization: "Bearer " + token,
-        "content-type": "application/json",
-      },
-      method: "GET",
-    }
-  ).then((response) => response.json());
+export function fetchOneConversationDetail(conversationId: string, token: string) {
+  return fetchWithToken(token, `${CHATGPT_HOST_URL}/backend-api/conversation/${conversationId}`);
+}
+
+export async function fetchConversationDetails(conversationIdList: string[], token: string, onUpdate: (current: number, total: number) => void) {
+  const res = [];
+  for (let i = 0; i < conversationIdList.length; i++) {
+    const cid = conversationIdList[i];
+    const tmp = await fetchOneConversationDetail(cid, token);
+    res.push(tmp);
+    onUpdate(i+1, conversationIdList.length);
+    sleep(2500);
+  }
+  return res;
 }
 
 export async function fetchAllConversationsGivenTotal(total_count, token) {
