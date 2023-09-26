@@ -92,7 +92,8 @@
   --content-px: 12px;
   --header-h: 4rem;
 
-  background-color: hsl(var(--background));;
+  background-color: hsl(var(--background));
+  ;
   color: hsl(var(--text));
 }
 
@@ -171,4 +172,18 @@
 
 .bg-background[data-state="active"] {
   background-color: hsl(var(--background)) !important;
+}
+
+.animate-dynamic-h-container {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s,
+}
+
+.animate-dynamic-h-container[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.animate-dynamic-h-content {
+  overflow: hidden; 
 }

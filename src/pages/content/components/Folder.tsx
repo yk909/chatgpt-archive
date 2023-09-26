@@ -188,13 +188,10 @@ export function FolderItem({
       </div>
 
       <div
-        className="grid"
-        style={{
-          gridTemplateRows: open ? "1fr" : "0fr",
-          transition: "grid-template-rows 0.3s",
-        }}
+        className="animate-dynamic-h-container"
+        data-open={open ? "true" : "false"}
       >
-        <div className="flex flex-col ml-8 overflow-hidden">
+        <div className="flex flex-col ml-8 animate-dynamic-h-content">
           {data.children.map((item) => (
             <ConversationCard
               key={item.id}
