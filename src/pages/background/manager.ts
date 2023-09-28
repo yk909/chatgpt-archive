@@ -60,8 +60,8 @@ export class BackgroundManager {
     this.handleRefresh = this.handleRefresh.bind(this);
     this.handleFetchFolders = this.handleFetchFolders.bind(this);
     this.handleCreateNewFolder = this.handleCreateNewFolder.bind(this);
-    this.handleAddConversationToFolder = this.handleAddConversationToFolder
-      .bind(this);
+    this.handleAddConversationToFolder =
+      this.handleAddConversationToFolder.bind(this);
     this.handleRenameFolder = this.handleRenameFolder.bind(this);
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
@@ -138,7 +138,7 @@ export class BackgroundManager {
       pageSize,
       (page - 1) * pageSize,
       sortBy,
-      desc,
+      desc
     );
     console.log("sending append conversation data", data);
     sendMessageToTab(sender.tab.id, {
@@ -232,8 +232,9 @@ export class BackgroundManager {
   }
 
   async updateLatestConversationDetails() {
-    const cList = (await db.conversations.orderBy("update_time").reverse()
-      .toArray()).map((c) => ({ id: c.id, messageStr: c.messageStr }));
+    const cList = (
+      await db.conversations.orderBy("update_time").reverse().toArray()
+    ).map((c) => ({ id: c.id, messageStr: c.messageStr }));
     let j = 0;
     for (let i = cList.length - 1; i > -1; i--) {
       if (!cList[i].messageStr) {
@@ -246,9 +247,9 @@ export class BackgroundManager {
       console.log("conversation detail update", { cur, total });
     };
     const cDetailList = await fetchConversationDetails(
-      cList.slice(0, j + 1).map(c => c.id),
+      cList.slice(0, j + 1).map((c) => c.id),
       ac,
-      onUpdate,
+      onUpdate
     );
     console.log(`saving ${cDetailList.length} updated conversation details`);
   }
@@ -299,13 +300,13 @@ export class BackgroundManager {
   async sendAllConversations(
     tabId: string,
     sortBy = "update_time",
-    desc = true,
+    desc = true
   ) {
     const data = await db.getManyConversations(
       undefined,
       undefined,
       sortBy,
-      desc,
+      desc
     );
     sendMessageToTab(tabId, {
       type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,
