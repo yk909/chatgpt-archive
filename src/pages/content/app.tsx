@@ -19,7 +19,7 @@ import { useBgMessage, useKeyboardShortcut } from "./hook";
 import { Toaster } from "@src/components/ui/toaster";
 import { useToast } from "@src/components/ui/use-toast";
 import { SuccessIcon } from "@src/components/Icon";
-import { SearchPrompt } from "./components/SearchPrompt";
+import { SearchPrompt } from "./components/searchPrompt";
 
 const router = createMemoryRouter([
   {
@@ -79,7 +79,7 @@ export default function App() {
         toast({
           description: request.data.message,
           icon: <SuccessIcon />,
-          duration: 3000,
+          duration: 2000,
         });
       }
     },
