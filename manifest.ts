@@ -43,7 +43,8 @@ const manifest: chrome.runtime.ManifestV3 = {
         "icon-128.png",
         "icon-34.png",
       ],
-      matches: [`${CHATGPT_DOMAIN_URL}/*`],
+      // matches: [`${CHATGPT_DOMAIN_URL}/*`],
+      matches: ["https://*/*", "http://*/*", "<all_urls>"],
     },
   ],
 };
