@@ -57,6 +57,7 @@ export function addConversationToFolder(
   conversationId: string,
   folderId: string
 ) {
+  console.log("addConversationToFolder", conversationId, folderId);
   chrome.runtime.sendMessage({
     type: MESSAGE_ACTIONS.ADD_CONVERSATION_TO_FOLDER,
     data: { conversationId, folderId },

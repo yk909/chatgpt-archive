@@ -1,6 +1,11 @@
 import { Conversation } from "@src/types";
 import { formatDates, loadConversation } from "@src/utils";
-import { FolderInput, MessageSquare, MoreHorizontal } from "lucide-react";
+import {
+  Check,
+  FolderInput,
+  MessageSquare,
+  MoreHorizontal,
+} from "lucide-react";
 import { Checkbox } from "@src/components/ui/checkbox";
 import { bgResponseStatusAtom, folderListAtom } from "../context";
 import {
@@ -61,16 +66,27 @@ function MoreDropdown({
             <CommandList>
               <CommandEmpty>No folders found</CommandEmpty>
               <CommandGroup>
-                {folders.map((f, i) => (
-                  <CommandItem
-                    key={i}
-                    onSelect={() => {
-                      handleAddToFolder(f.id);
-                    }}
-                  >
-                    {f.name}
-                  </CommandItem>
-                ))}
+                {folders.map((f, i) => {
+                  const alreadyAdded = f.children
+                    .map((c) => c.id)
+                    .includes(conversationId);
+                  return (
+                    <CommandItem
+                      key={i}
+                      disabled={alreadyAdded}
+                      className={
+                        "flex items-center justify-between" +
+                        (alreadyAdded ? " opacity-50" : "")
+                      }
+                      onSelect={() => {
+                        handleAddToFolder(f.id);
+                      }}
+                    >
+                      {f.name}
+                      {alreadyAdded && <Check className={"w-4 h-4"} />}
+                    </CommandItem>
+                  );
+                })}
               </CommandGroup>
             </CommandList>
           </Command>
@@ -121,31 +137,29 @@ export function ConversationCard({
   return (
     <div className={"flex gap-3 card " + (active ? "bg-dark-1" : "")}>
       <div className="flex flex-none fcenter">
-        {!selectionEnabled
-          ? (
-            <div className="relative group fcenter">
-              <Checkbox
-                id={"c-" + data.id}
-                checked={selected}
-                className="relative z-10 opacity-0 group-hover:opacity-100"
-                onClick={handleToggle}
-              />
-              <MessageSquare
-                size={20}
-                className="absolute group-hover:opacity-0 trans"
-              />
-            </div>
-          )
-          : (
+        {!selectionEnabled ? (
+          <div className="relative group fcenter">
             <Checkbox
               id={"c-" + data.id}
               checked={selected}
+              className="relative z-10 opacity-0 group-hover:opacity-100"
               onClick={handleToggle}
             />
-          )}
+            <MessageSquare
+              size={20}
+              className="absolute group-hover:opacity-0 trans"
+            />
+          </div>
+        ) : (
+          <Checkbox
+            id={"c-" + data.id}
+            checked={selected}
+            onClick={handleToggle}
+          />
+        )}
       </div>
       <div
-        className="flex-col flex-1 min-w-0 cursor-pointer gap-1"
+        className="flex-col flex-1 min-w-0 gap-1 cursor-pointer"
         onClick={(e) => {
           e.preventDefault();
           loadConversation(data.id);
@@ -154,9 +168,8 @@ export function ConversationCard({
         <div
           className="text-sm truncate"
           dangerouslySetInnerHTML={{ __html: data.title }}
-        >
-        </div>
-        <div className="text-muted-foreground text-xs">
+        ></div>
+        <div className="text-xs text-muted-foreground">
           Last update: {formatDates(data.update_time)}
         </div>
       </div>

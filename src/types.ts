@@ -21,7 +21,7 @@ export type FolderWithoutChildren = {
   id: string;
   update_time: string;
   create_time: string;
-} & FolderCreationData;
+} & Omit<FolderCreationData, "children">;
 
 export type Folder = FolderWithoutChildren & {
   children: Conversation[];
