@@ -112,7 +112,7 @@ export function SearchPrompt() {
                 value={tab}
                 onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
               >
-                <div className="px-2 pt-2">
+                <div className="flex items-center justify-between px-2 pt-2">
                   <TabsList>
                     {Object.keys(SEARCH_TABS).map((t, i) => (
                       <TabsTrigger value={t} key={i}>
