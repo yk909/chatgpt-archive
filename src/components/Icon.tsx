@@ -1,4 +1,4 @@
-import { Check, Folder, MessageSquare } from "lucide-react";
+import { Check, ChevronRight, Folder, MessageSquare } from "lucide-react";
 
 export function SuccessIcon() {
   return (
@@ -39,5 +39,30 @@ export function FolderIcon({ size }: { size: "sm" | "md" | "lg" }) {
         height: sizeMap[size],
       }}
     />
+  );
+}
+
+export function ToggleIcon({
+  onClick,
+  open,
+}: {
+  onClick: () => void;
+  open: boolean;
+}) {
+  return (
+    <div
+      className="transition-transform icon-container icon-container-sm"
+      onClick={onClick}
+      style={{
+        transform: open ? "rotate(90deg)" : "",
+      }}
+    >
+      <ChevronRight
+        style={{
+          width: 20,
+          height: 20,
+        }}
+      />
+    </div>
   );
 }

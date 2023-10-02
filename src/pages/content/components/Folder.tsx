@@ -27,6 +27,7 @@ import {
 import { DialogForm } from "@src/components/DialogForm";
 import { useEffect } from "react";
 import { deleteFolder, renameFolder } from "../messages";
+import { ToggleIcon } from "@src/components/Icon";
 
 function FolderMoreButton({ folderId }: { folderId: string }) {
   const [open, setOpen] = useState(false);
@@ -115,6 +116,17 @@ function FolderMoreButton({ folderId }: { folderId: string }) {
   );
 }
 
+export function FolderInfo({ folder }: { folder: Folder }) {
+  return (
+    <div className="flex-1 min-w-0 cursor-pointer">
+      <div className="text-sm">{folder.name}</div>
+      <div className="text-xs text-gray-400">
+        {`${folder.children.length} items`}
+      </div>
+    </div>
+  );
+}
+
 export function FolderItem({
   data,
   selection,
@@ -161,29 +173,11 @@ export function FolderItem({
             />
           )}
         </div>
-        <div className="flex-1 min-w-0 cursor-pointer">
-          <div className="text-sm">{data.name}</div>
-          <div className="text-xs text-gray-400">
-            {`${data.children.length} items`}
-          </div>
-        </div>
+        <FolderInfo folder={data} />
 
         <div className="flex items-center flex-none gap-1">
           <FolderMoreButton folderId={data.id} />
-          <div
-            className="transition-transform icon-container icon-container-sm"
-            onClick={handleOpenToggle}
-            style={{
-              transform: open ? "rotate(90deg)" : "",
-            }}
-          >
-            <ChevronRight
-              style={{
-                width: 20,
-                height: 20,
-              }}
-            />
-          </div>
+          <ToggleIcon onClick={handleOpenToggle} open={open} />
         </div>
       </div>
 
