@@ -81,6 +81,7 @@ export class BackgroundManager {
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("background received message ", request);
+      if (!db) initDB(this.currentUser.info.id);
       if (this.messageHandlerMap[request.type]) {
         try {
           this.messageHandlerMap[request.type](request, sender, sendResponse);
