@@ -123,11 +123,13 @@ export function ConversationCard({
   selected,
   toggle,
   selectionEnabled,
+  noSelect = false,
 }: {
   data: Conversation;
-  selected: boolean;
-  toggle: (id: string) => void;
-  selectionEnabled: boolean;
+  selected?: boolean;
+  toggle?: (id: string) => void;
+  selectionEnabled?: boolean;
+  noSelect?: boolean;
 }) {
   const active = false;
   const handleToggle = (e: any) => {
@@ -137,7 +139,9 @@ export function ConversationCard({
   return (
     <div className={"flex gap-3 card " + (active ? "bg-dark-1" : "")}>
       <div className="flex flex-none fcenter">
-        {!selectionEnabled ? (
+        {noSelect ? (
+          <MessageSquare size={20} className="trans" />
+        ) : !selectionEnabled ? (
           <div className="relative group fcenter">
             <Checkbox
               id={"c-" + data.id}
