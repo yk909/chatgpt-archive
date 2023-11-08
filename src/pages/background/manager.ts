@@ -3,12 +3,11 @@ import { FetchFilteredConversationData } from "@src/types";
 import { ACCESS_TOKEN_KEY, MESSAGE_ACTIONS } from "@src/constants";
 import {
   fetchAllConversations,
-  fetchAllConversationsWithDetail,
   fetchConversationDetails,
   fetchNewConversations,
   getAccessToken,
 } from "@src/api";
-import { sendMessageToTab } from "./utils";
+import { extractMessageString, sendMessageToTab } from "./utils";
 import { PAGE_SIZE } from "./config";
 
 type UserInfo = {
@@ -64,10 +63,12 @@ export class BackgroundManager {
     this.handleRenameFolder = this.handleRenameFolder.bind(this);
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleFetchConversations = this.handleFetchConversations.bind(this);
 
     this.messageHandlerMap = {
       [MESSAGE_ACTIONS.INIT]: this.handleInit,
-      [MESSAGE_ACTIONS.APPEND_CONVERSATIONS]: this.handleFetchConversations,
+      // [MESSAGE_ACTIONS.APPEND_CONVERSATIONS]: this.handleFetchConversations,
+      [MESSAGE_ACTIONS.FETCH_CONVERSATIONS]: this.handleFetchConversations,
       [MESSAGE_ACTIONS.REFRESH]: this.handleRefresh,
       [MESSAGE_ACTIONS.APPEND_FOLDERS]: this.handleFetchFolders,
       [MESSAGE_ACTIONS.CREATE_NEW_FOLDER]: this.handleCreateNewFolder,
@@ -98,7 +99,7 @@ export class BackgroundManager {
   }
 
   async handleInit(request, sender, sendResponse) {
-    console.log("start handle init");
+    console.log("start handle init", db);
     await this.getOrRefreshSession();
     const ac = this.getCurrentUserAccessToken();
 
@@ -107,12 +108,15 @@ export class BackgroundManager {
 
     const latestConItem = await db.getLatestConversation();
     if (!latestConItem) {
+      // no conversation, fetch all conversations
       const conList = await fetchAllConversations(ac);
       await db.putManyConversations(conList);
       await this.sendAllConversations(sender.tab.id);
     } else {
+      // only fetch the new ones based on the latest conversation
+
       const latestDate = new Date(latestConItem.update_time);
-      console.log("latest conversation", latestDate);
+      // console.log("latest conversation", latestDate);
 
       const newItems = await fetchNewConversations(ac, latestDate);
       await db.putManyConversations(newItems);
@@ -120,6 +124,47 @@ export class BackgroundManager {
       if (newItems.length > 0) {
         await this.sendAllConversations(sender.tab.id);
       }
+    }
+
+    // update conversation details
+    const conWithoutDetails = await db.getConversationWithoutMessage();
+
+    const onUpdate = async (current: number, total: number, curVal: any) => {
+      const msgStr = extractMessageString(curVal);
+      await db.conversations.update(curVal.conversation_id, {
+        messageStr: msgStr,
+      });
+      console.log("conversation detail update", {
+        current,
+        total,
+        val: curVal.conversation_id,
+        // msgStr,
+      });
+      sendMessageToTab(sender.tab.id, {
+        type: MESSAGE_ACTIONS.PROGRESS,
+        data: { current, total },
+      });
+    };
+
+    if (conWithoutDetails.length > 0) {
+      console.log(
+        "start fetching conversation details for",
+        conWithoutDetails.length
+      );
+      sendMessageToTab(sender.tab.id, {
+        type: MESSAGE_ACTIONS.PROGRESS,
+        data: {
+          current: 0,
+          total: conWithoutDetails.length,
+        },
+      });
+      const cDetailList = await fetchConversationDetails(
+        conWithoutDetails,
+        ac,
+        onUpdate
+      );
+      // console.log("fetched conversation details", cDetailList);
+      console.log(`saving ${cDetailList.length} updated conversation details`);
     }
   }
 
@@ -134,24 +179,29 @@ export class BackgroundManager {
     const { pageSize, page, sortBy, desc } = request.data;
     const data = await db.getManyConversations(
       pageSize,
-      (page - 1) * pageSize,
+      page && (page - 1) * pageSize,
       sortBy,
       desc
     );
     console.log("sending append conversation data", data);
     sendMessageToTab(sender.tab.id, {
-      type: MESSAGE_ACTIONS.APPEND_CONVERSATIONS,
+      type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,
       data,
     });
   }
 
   async handleFetchFolders(request, sender, _) {
-    console.log("handle fetch folders");
     await this.sendAllFolderData(sender.tab.id);
   }
 
   async handleRefresh(request, sender, _) {
     this.handleInit(request, sender, _);
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.REFRESH,
+      data: {
+        isRefreshing: false,
+      },
+    });
   }
 
   async handleCreateNewFolder(request, sender, _) {
@@ -220,6 +270,7 @@ export class BackgroundManager {
 
   async handleSearch(request, sender, _) {
     const { query } = request.data;
+    if (!db) initDB(this.currentUser.info.id);
     const conversations = await db.searchConversations(query);
     const folders = await db.searchFolders(query);
     console.log("finishe search", { conversations, folders });

@@ -5,6 +5,7 @@ export interface Conversation {
   mapping: null;
   update_time: string;
   create_time: string;
+  messageStr: string | undefined;
 }
 
 export interface FetchFilteredConversationData {

@@ -19,17 +19,10 @@ export function init() {
   });
 }
 
-export function fetchConversations(
-  page: number,
-  pageSize: number,
-  sortBy: string,
-  desc: boolean
-) {
+export function fetchConversations(sortBy: string, desc: boolean) {
   chrome.runtime.sendMessage({
     type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,
     data: {
-      page,
-      pageSize,
       sortBy,
       desc,
     },

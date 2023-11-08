@@ -19,7 +19,7 @@ type messageToFolderData = {
   folderId: string;
   create_time: string;
   update_time: string;
-}
+};
 
 export class RootDB extends Dexie {
   conversations: Dexie.Table<Conversation, string>;
@@ -34,9 +34,8 @@ export class RootDB extends Dexie {
       folders: "&id, name, create_time, update_time",
       conversationToFolder:
         "++id, conversationId, folderId, create_time, update_time",
-      messageToFolder: 
-        "++id, conversationId, messageId, folderId, create_time, update_time"
-        
+      messageToFolder:
+        "++id, conversationId, messageId, folderId, create_time, update_time",
     });
   }
 
@@ -44,7 +43,7 @@ export class RootDB extends Dexie {
     limit: number | undefined = undefined,
     offset: number | undefined = undefined,
     sortBy = "update_time",
-    desc = true,
+    desc = true
   ) {
     const c = await this.conversations.count();
     if (c === 0) {
@@ -60,7 +59,19 @@ export class RootDB extends Dexie {
     if (limit) {
       q = q.limit(limit);
     }
-    return q.toArray();
+    return (await q.toArray()).map((c) => ({
+      ...c,
+      messageStr: undefined,
+    }));
+  }
+
+  async getConversationWithoutMessage(): Promise<string[]> {
+    const c = await this.conversations.count();
+    if (c === 0) {
+      return [];
+    }
+    let q = this.conversations.orderBy("update_time").reverse();
+    return (await q.toArray()).filter((c) => !c.messageStr).map((c) => c.id);
   }
 
   putManyConversations(conversations: Conversation[]) {
@@ -75,7 +86,7 @@ export class RootDB extends Dexie {
     limit: number | undefined = undefined,
     offset: number | undefined = undefined,
     sortBy = "update_time",
-    desc = true,
+    desc = true
   ) {
     const c = await this.folders.count();
     if (c === 0) {
@@ -97,7 +108,7 @@ export class RootDB extends Dexie {
       await Promise.allSettled(
         folders.map((f) =>
           db.conversationToFolder.where({ folderId: f.id }).toArray()
-        ),
+        )
       )
     ).map((p) => (p["status"] === "fulfilled" ? p["value"] : []));
     for (let i = 0; i < fChildrenList.length; i++) {
@@ -112,12 +123,12 @@ export class RootDB extends Dexie {
         ...obj,
         [key]: conList[i],
       }),
-      {},
+      {}
     );
     for (let i = 0; i < folders.length; i++) {
       const f = folders[i];
       f.children = fChildrenList[i].map(
-        (r) => conversationIdMap[r.conversationId],
+        (r) => conversationIdMap[r.conversationId]
       );
     }
     return folders;
@@ -193,7 +204,7 @@ export class RootDB extends Dexie {
 
   async deleteFolder(folderIdList: string[]) {
     const folderExists = await Promise.all(
-      folderIdList.map((folderId) => db.folders.get(folderId)),
+      folderIdList.map((folderId) => db.folders.get(folderId))
     );
     if (folderExists.some((f) => !f)) {
       throw new Error("Some folders do not exist");
@@ -208,36 +219,36 @@ export class RootDB extends Dexie {
   async searchConversations(
     query: string,
     sortBy = "update_time",
-    desc = true,
+    desc = true
   ) {
     const conversations = (
-      await this.getManyConversations(undefined, undefined, sortBy, true)
+      await this.conversations.orderBy(sortBy).reverse().toArray()
     )
       .map((d) => {
         const regex2 = new RegExp(query, "gi");
-        // const occurrences = (d.contentString?.match(regex2) || []).length;
-        const occurrences = (d.title.match(regex2) || []).length;
-        return { ...d, keywordCount: occurrences };
+        const msgCount = (d.messageStr?.match(regex2) || []).length;
+        const titleCount = (d.title.match(regex2) || []).length;
+        return { ...d, keywordCount: titleCount + msgCount };
       })
       .filter((c) => {
         const regex = new RegExp(query, "i");
         return regex.test(c.title) || c.keywordCount > 0;
-      });
+      })
+      .map((c) => ({
+        ...c,
+        messageStr: undefined,
+      }));
 
     return conversations;
   }
 
-  async searchFolders(
-    query: string,
-    sortBy = "update_time",
-  ) {
+  async searchFolders(query: string, sortBy = "update_time") {
     const data = (
       await this.getManyFolders(undefined, undefined, sortBy, true)
-    )
-      .filter((f) => {
-        const reg = new RegExp(query, "i");
-        return reg.test(f.name);
-      });
+    ).filter((f) => {
+      const reg = new RegExp(query, "i");
+      return reg.test(f.name);
+    });
 
     return data;
   }
@@ -246,10 +257,12 @@ export class RootDB extends Dexie {
     const updateParams = details.map((c) => ({
       key: c.conversation_id,
       changes: {
-        messageStr: Object.values(c.mapping).map((m: any) => m.message.content.parts.join(" ")).join(" "),
+        messageStr: Object.values(c.mapping)
+          .map((m: any) => m.message.content.parts.join(" "))
+          .join(" "),
         mapping: c.mapping,
-        update_time: c.update_time.toString()
-      }
+        update_time: c.update_time.toString(),
+      },
     }));
     await db.conversations.bulkUpdate(updateParams);
   }

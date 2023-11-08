@@ -1,10 +1,15 @@
-import { CONTENT_VIEW_CONTAINER_ID, styles } from "@src/constants";
+import {
+  CONTENT_VIEW_CONTAINER_ID,
+  MESSAGE_ACTIONS,
+  styles,
+} from "@src/constants";
 import { useAtom } from "jotai";
 import { loadingAtom, panelOpenAtom, searchOpenAtom } from "../context";
 import { refresh } from "../messages";
 import { Moon, RotateCw, Search, Sun, X } from "lucide-react";
 import { Switch } from "@src/components/ui/switch";
 import { useState } from "react";
+import { useBgMessage } from "../hook";
 
 function DarkModeSwitch() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
@@ -36,6 +41,12 @@ function DarkModeSwitch() {
 
 function RefreshButton() {
   const [isRefreshing, setIsRefreshing] = useAtom(loadingAtom);
+
+  useBgMessage({
+    [MESSAGE_ACTIONS.REFRESH]: (request, sender, _) => {
+      setIsRefreshing(request.data.isRefreshing);
+    },
+  });
 
   function handleRefresh() {
     if (!isRefreshing) {

@@ -58,11 +58,6 @@ const KEYBOARD_SHORTCUTS_CONVERSATION = [
 ];
 
 export default function App() {
-  // define states
-
-  // define functions
-
-  // define effects
   const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
   const [folders, setFolders] = useAtom(folderListAtom);
   const [conversations, setConversations] = useAtom(conversationListAtom);

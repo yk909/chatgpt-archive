@@ -1,16 +1,20 @@
 import { Conversation } from "./types";
 import { batchPromises, sleep } from "./utils";
 
-const CHATGPT_HOST_URL = "https://chat.openai.com"
+const CHATGPT_HOST_URL = "https://chat.openai.com";
 
-function fetchWithToken(token: string, url: RequestInfo, options: RequestInit = {}) {
+function fetchWithToken(
+  token: string,
+  url: RequestInfo,
+  options: RequestInit = {}
+) {
   return fetch(url, {
     headers: {
       authorization: "Bearer " + token,
-      "content-type": "application/json"
+      "content-type": "application/json",
     },
-    ...options
-  }).then(res => res.json());
+    ...options,
+  }).then((res) => res.json());
 }
 
 export async function getAccessToken() {
@@ -33,7 +37,12 @@ export async function getAccessToken() {
   return null;
 }
 
-export async function fetch_conversations(offset: number, limit: number, order: string, token: string) {
+export async function fetchConversations(
+  offset: number,
+  limit: number,
+  order: string,
+  token: string
+) {
   return await fetch(
     `https://chat.openai.com/backend-api/conversations?offset=${offset}&limit=${limit}&order=${order}`,
     {
@@ -46,18 +55,32 @@ export async function fetch_conversations(offset: number, limit: number, order: 
   ).then((response) => response.json());
 }
 
-export function fetchOneConversationDetail(conversationId: string, token: string) {
-  return fetchWithToken(token, `${CHATGPT_HOST_URL}/backend-api/conversation/${conversationId}`);
+export function fetchOneConversationDetail(
+  conversationId: string,
+  token: string
+) {
+  return fetchWithToken(
+    token,
+    `${CHATGPT_HOST_URL}/backend-api/conversation/${conversationId}`
+  );
 }
 
-export async function fetchConversationDetails(conversationIdList: string[], token: string, onUpdate: (current: number, total: number) => void) {
+export async function fetchConversationDetails(
+  conversationIdList: string[],
+  token: string,
+  onUpdate: (current: number, total: number, curVal: any) => void
+) {
   const res = [];
   for (let i = 0; i < conversationIdList.length; i++) {
     const cid = conversationIdList[i];
-    const tmp = await fetchOneConversationDetail(cid, token);
-    res.push(tmp);
-    onUpdate(i+1, conversationIdList.length);
-    sleep(2500);
+    try {
+      const tmp = await fetchOneConversationDetail(cid, token);
+      res.push(tmp);
+      onUpdate(i + 1, conversationIdList.length, tmp);
+      await sleep(1200);
+    } catch (err) {
+      console.error("error fetching conversation detail:", err);
+    }
   }
   return res;
 }
@@ -69,7 +92,7 @@ export async function fetchAllConversationsGivenTotal(total_count, token) {
   const promise_funcs = [];
   for (let i = 0; i < page_count; i++) {
     promise_funcs.push(() =>
-      fetch_conversations(i * limit, limit, order, token)
+      fetchConversations(i * limit, limit, order, token)
     );
   }
   return batchPromises<{ items: Conversation[] }>(promise_funcs).then(
@@ -85,7 +108,7 @@ export async function fetchAllConversationsGivenTotal(total_count, token) {
 
 export async function fetchAllConversations(token) {
   console.log("fetching all conversations......");
-  const data = await fetch_conversations(0, 10, "updated", token);
+  const data = await fetchConversations(0, 10, "updated", token);
   if (!data.items) return null;
   const conversationCount = data.total;
   const all_conversations = await fetchAllConversationsGivenTotal(
@@ -104,7 +127,7 @@ export async function fetchNewConversations(token, currentLatestDate) {
   let offset = 0;
   const pageSize = 10;
   while (!shouldStop) {
-    data = await fetch_conversations(offset, pageSize, "updated", token);
+    data = await fetchConversations(offset, pageSize, "updated", token);
     data.items.forEach((c) => {
       if (shouldStop) return;
       const d = new Date(c.update_time);
@@ -120,16 +143,16 @@ export async function fetchNewConversations(token, currentLatestDate) {
   return new_conversations;
 }
 
-export async function fetchAllConversationsWithDetail(
-  conversations: Conversation[],
-  token: string,
-  updateHandler: () => void
-) {
-  const promises = conversations.map((c) => {
-    return () => {
-      updateHandler();
-      return fetch_conversation_detail(c.id, token);
-    };
-  });
-  return batchPromises(promises);
-}
+// export async function fetchAllConversationsWithDetail(
+//   conversations: Conversation[],
+//   token: string,
+//   updateHandler: () => void
+// ) {
+//   const promises = conversations.map((c) => {
+//     return () => {
+//       updateHandler();
+//       return fetchOneConversationDetail(c.id, token);
+//     };
+//   });
+//   return batchPromises(promises);
+// }

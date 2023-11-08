@@ -23,7 +23,7 @@ export function getCurrentConversationId(): string {
 
 export async function batchPromises<T>(
   funcs: Array<() => Promise<T>>,
-  limit = 5,
+  limit = 5
 ): Promise<T[]> {
   const results: T[] = [];
   const totalFuncs = funcs.length;
@@ -44,7 +44,7 @@ export async function batchPromises<T>(
 
 export function categorizeConversations(
   conversations: Conversation[],
-  byAttribute: keyof Conversation,
+  byAttribute: keyof Conversation
 ) {
   const result = {
     Today: [],
@@ -58,12 +58,13 @@ export function categorizeConversations(
     result[
       new Date(new Date().getFullYear(), currentMonth - i, 1).toLocaleString(
         "default",
-        { month: "long" },
+        { month: "long" }
       )
     ] = [];
   }
 
   const today = new Date();
+  const curYear = today.getFullYear();
   today.setHours(0, 0, 0, 0);
 
   const yesterday = new Date(today);
@@ -87,21 +88,36 @@ export function categorizeConversations(
     } else if (articleDate >= thirtyDaysAgo) {
       result["Previous 30 Days"].push(article);
     } else {
-      const month = articleDate.toLocaleString("default", { month: "long" });
+      let month = articleDate.toLocaleString("default", { month: "long" });
+      if (articleDate.getFullYear() !== curYear) {
+        month += " " + articleDate.getFullYear();
+      }
       if (result[month]) {
         result[month].push(article);
       }
     }
   });
 
-  return result;
+  const resultList = Object.entries(result).filter(
+    (item) => item[1].length > 0
+  );
+
+  // resultList.sort((a, b) => {
+  //   const aDate = new Date(a[0][byAttribute]);
+  //   const bDate = new Date(b[0][byAttribute]);
+  //   return bDate.getTime() - aDate.getTime();
+  // });
+
+  console.log("resultList", resultList);
+
+  return resultList;
 }
 
 export function extractConversationListFromPage() {
   const conTitleList = Array.from(
     document.querySelectorAll(
-      "#__next > div.overflow-hidden.w-full.h-full.relative.flex.z-0 > div.dark.flex-shrink-0.overflow-x-hidden.bg-gray-900 > div > div > div > nav > div.flex-col.flex-1.transition-opacity.duration-500.overflow-y-auto.-mr-2 > div > div > span:nth-child(1) > div > ol > li > a > div",
-    ),
+      "#__next > div.overflow-hidden.w-full.h-full.relative.flex.z-0 > div.dark.flex-shrink-0.overflow-x-hidden.bg-gray-900 > div > div > div > nav > div.flex-col.flex-1.transition-opacity.duration-500.overflow-y-auto.-mr-2 > div > div > span:nth-child(1) > div > ol > li > a > div"
+    )
   ).map((el: HTMLDivElement) => {
     return el.innerText;
   });

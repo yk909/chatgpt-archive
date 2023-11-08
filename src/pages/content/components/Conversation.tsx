@@ -176,6 +176,9 @@ export function ConversationCard({
         <div className="text-xs text-muted-foreground">
           Last update: {formatDates(data.update_time)}
         </div>
+        {/* <div className="text-xs text-muted-foreground">
+          Create time: {formatDates(data.create_time)}
+        </div> */}
       </div>
 
       <div className="flex items-center flex-none gap-1">

@@ -19,6 +19,7 @@ import {
   SelectAllButton,
   SelectionActionBar,
 } from "@src/pages/content/components/SelectionActionBar";
+import { fetchConversations } from "../../messages";
 
 const SortByOptions: Record<
   string,
@@ -26,17 +27,17 @@ const SortByOptions: Record<
     label: string;
     key: keyof Conversation;
     params: {
-      orderBy: keyof Conversation;
+      sortBy: keyof Conversation;
       desc: boolean;
     };
     sortFunction: (a: Conversation, b: Conversation) => number;
   }
 > = {
   update_time_asc: {
-    label: "Last updated (1-9)",
+    label: "Last updated (1 → 9)",
     key: "update_time",
     params: {
-      orderBy: "update_time",
+      sortBy: "update_time",
       desc: false,
     },
     sortFunction: (a: Conversation, b: Conversation) => {
@@ -46,10 +47,10 @@ const SortByOptions: Record<
     },
   },
   update_time_desc: {
-    label: "Last updated (9-1)",
+    label: "Last updated (9 → 1)",
     key: "update_time",
     params: {
-      orderBy: "update_time",
+      sortBy: "update_time",
       desc: true,
     },
     sortFunction: (a: Conversation, b: Conversation) => {
@@ -59,10 +60,10 @@ const SortByOptions: Record<
     },
   },
   create_time_asc: {
-    label: "Created time (1-9)",
+    label: "Created time (1 → 9)",
     key: "create_time",
     params: {
-      orderBy: "create_time",
+      sortBy: "create_time",
       desc: false,
     },
     sortFunction: (a: Conversation, b: Conversation) => {
@@ -72,10 +73,10 @@ const SortByOptions: Record<
     },
   },
   create_time_desc: {
-    label: "Created time (9-1)",
+    label: "Created time (9 → 1)",
     key: "create_time",
     params: {
-      orderBy: "create_time",
+      sortBy: "create_time",
       desc: true,
     },
     sortFunction: (a: Conversation, b: Conversation) => {
@@ -95,6 +96,8 @@ export function ConversationPage() {
 
   useEffect(() => {
     console.log("sort by", sortByKey);
+    const { sortBy, desc } = SortByOptions[sortByKey].params;
+    fetchConversations(sortBy, desc);
     // setConversationList((p) => p.sort(SortByOptions[sortByKey].sortFunction));
   }, [sortByKey]);
 
@@ -103,7 +106,7 @@ export function ConversationPage() {
       <div className="flex items-center">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Select
+            {/* <Select
               onValueChange={(v) => {
                 setSortByKey(v as keyof typeof SortByOptions);
               }}
@@ -120,7 +123,7 @@ export function ConversationPage() {
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
         </div>
       </div>
@@ -131,33 +134,33 @@ export function ConversationPage() {
           dataAtom={conversationListAtom}
           renderData={({ data, selection, toggle }) =>
             data.length === 0 ? (
-              <div>No data</div>
+              <div className="flex justify-center mt-8">No data</div>
             ) : (
-              Object.entries(
-                categorizeConversations(data, SortByOptions[sortByKey].key)
-              ).map(([key, value], i) => {
-                if (value.length === 0) return <></>;
-                return (
-                  <div className="relative" key={i}>
-                    <div
-                      className="sticky top-0 py-3 text-sm text-muted-foreground bg-background"
-                      style={{
-                        paddingLeft: "12px",
-                        fontSize: "13px",
-                        zIndex: `${10 + i * 2}`,
-                      }}
-                    >
-                      {key}
+              categorizeConversations(data, SortByOptions[sortByKey].key).map(
+                ([key, value], i) => {
+                  if (value.length === 0) return <></>;
+                  return (
+                    <div className="relative" key={i}>
+                      <div
+                        className="sticky top-0 py-3 text-sm text-muted-foreground bg-background"
+                        style={{
+                          paddingLeft: "12px",
+                          fontSize: "13px",
+                          zIndex: `${10 + i * 2}`,
+                        }}
+                      >
+                        {key}
+                      </div>
+                      <ConversationList
+                        data={value}
+                        selectionEnabled={selection.size !== 0}
+                        toggle={toggle}
+                        selection={selection}
+                      />
                     </div>
-                    <ConversationList
-                      data={value}
-                      selectionEnabled={selection.size !== 0}
-                      toggle={toggle}
-                      selection={selection}
-                    />
-                  </div>
-                );
-              })
+                  );
+                }
+              )
             )
           }
           id="con-list"

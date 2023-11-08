@@ -34,6 +34,11 @@ export const MESSAGE_ACTIONS = {
 
   SEARCH: "SEARCH",
 
+  // conversation detail update progress
+  PROGRESS: "PROGRESS",
+
+  // get conversation (for sorting and ordering)
+
   FETCHING_APP_STATE: "FETCHING_APP_STATE",
   SAVE_APP_STATE: "SAVE_APP_STATE",
 
