@@ -39,5 +39,3 @@ export function useKeyboardShortcut(callbackMap: KeyboardShortcutItem[]) {
     };
   }, []);
 }
-
-
