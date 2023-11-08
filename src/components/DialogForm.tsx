@@ -25,9 +25,6 @@ export function DialogForm<FormValues>({
   title: string;
   inputs: ({
     label: string;
-    name: string;
-    type: string;
-    placeholder?: string;
   } & React.ComponentProps<"input">)[];
   onSubmit: (data: FormValues) => void;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
