@@ -2,7 +2,6 @@ import { db, initDB } from "@src/db";
 import { FetchFilteredConversationData } from "@src/types";
 import { ACCESS_TOKEN_KEY, MESSAGE_ACTIONS } from "@src/constants";
 import {
-  fetch_conversation_detail,
   fetchAllConversations,
   fetchAllConversationsWithDetail,
   fetchConversationDetails,
@@ -81,7 +80,7 @@ export class BackgroundManager {
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("background received message ", request);
-      if (!db) initDB(this.currentUser.info.id);
+      if (!db && !!this.currentUser.info) initDB(this.currentUser.info.id);
       if (this.messageHandlerMap[request.type]) {
         try {
           this.messageHandlerMap[request.type](request, sender, sendResponse);
@@ -96,8 +95,6 @@ export class BackgroundManager {
         console.log("unknown request type", request.type);
       }
     });
-
-    console.log(this.messageHandlerMap);
   }
 
   async handleInit(request, sender, sendResponse) {
