@@ -44,6 +44,7 @@ function FolderMoreButton({ folderId }: { folderId: string }) {
           name: "name",
           type: "text",
           placeholder: "Enter a new name",
+          autoComplete: "off",
         },
       ],
       onSubmit: (data: any) => {
