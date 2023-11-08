@@ -4,6 +4,7 @@ import { cn } from "../../../lib/utils";
 import Header from "./Header";
 import BottomNavBar from "./BottomNavBar";
 import { Outlet } from "react-router-dom";
+import ProgressBar from "./ProgressBar";
 
 export default function Panel() {
   const [open] = useAtom(panelOpenAtom);
@@ -17,6 +18,7 @@ export default function Panel() {
       id="panel"
     >
       <Header />
+      <ProgressBar current={28} total={82} />
       <div className="relative flex flex-col flex-1 min-h-0 space-y-3">
         <Outlet />
       </div>
