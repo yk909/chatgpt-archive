@@ -119,13 +119,16 @@ export class RootDB extends Dexie {
       }),
       {}
     );
-    for (let i = 0; i < folders.length; i++) {
-      const f = folders[i];
-      f.children = fChildrenList[i].map(
+    // for (let i = 0; i < folders.length; i++) {
+    //   const f = folders[i];
+    //   f.children = fChildrenList[i].map( (r) => conversationIdMap[r.conversationId]);
+    // }
+    return folders.map((f, i) => ({
+      ...f,
+      children: fChildrenList[i].map(
         (r) => conversationIdMap[r.conversationId]
-      );
-    }
-    return folders;
+      ),
+    }));
   }
 
   async createNewFolder(data: FolderCreationData) {
@@ -181,8 +184,6 @@ export class RootDB extends Dexie {
       update_time: Date.now().toString(),
       create_time: Date.now().toString(),
     });
-    // return db.transaction("rw", db.conversations, db.folders, async () => {
-    // });
   }
 
   async renameFolder(folderId: string, name: string) {
@@ -222,16 +223,26 @@ export class RootDB extends Dexie {
         const regex2 = new RegExp(query, "gi");
         const msgCount = (d.messageStr?.match(regex2) || []).length;
         const titleCount = (d.title.match(regex2) || []).length;
-        return { ...d, keywordCount: titleCount + msgCount };
+        return {
+          ...d,
+          keywordCount: titleCount + msgCount,
+          messageStr: undefined,
+        };
       })
       .filter((c) => {
         const regex = new RegExp(query, "i");
         return regex.test(c.title) || c.keywordCount > 0;
-      })
-      .map((c) => ({
-        ...c,
-        messageStr: undefined,
-      }));
+      });
+    conversations.sort(
+      (a: ConversationWithKeywordCount, b: ConversationWithKeywordCount) => {
+        if (a.keywordCount !== b.keywordCount) {
+          return b.keywordCount - a.keywordCount;
+        }
+        return (
+          new Date(b.update_time).getTime() - new Date(a.update_time).getTime()
+        );
+      }
+    );
 
     return conversations;
   }
@@ -245,20 +256,6 @@ export class RootDB extends Dexie {
     });
 
     return data;
-  }
-
-  async saveConversationDetails(details: any[]) {
-    const updateParams = details.map((c) => ({
-      key: c.conversation_id,
-      changes: {
-        messageStr: Object.values(c.mapping)
-          .map((m: any) => m.message.content.parts.join(" "))
-          .join(" "),
-        mapping: c.mapping,
-        update_time: c.update_time.toString(),
-      },
-    }));
-    await db.conversations.bulkUpdate(updateParams);
   }
 }
 
