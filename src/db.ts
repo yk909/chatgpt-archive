@@ -1,10 +1,4 @@
 import Dexie from "dexie";
-import {
-  Conversation,
-  Folder,
-  FolderCreationData,
-  FolderWithoutChildren,
-} from "./types";
 
 type ConversationToFolderData = {
   conversationId: string;

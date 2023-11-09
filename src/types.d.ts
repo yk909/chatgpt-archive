@@ -1,4 +1,4 @@
-export interface Conversation {
+interface Conversation {
   id: string;
   title: string;
   current_node: string | null;
@@ -6,31 +6,41 @@ export interface Conversation {
   update_time: string;
   create_time: string;
   messageStr: string | undefined;
+  messages: Message[] | undefined;
 }
 
-export interface FetchFilteredConversationData {
+interface Message {
+  id: string;
+  conversationId: string;
+  content: string;
+  create_time: string;
+  update_time: string;
+  folderId: string | null;
+}
+
+interface FetchFilteredConversationData {
   title: string;
 }
 
-export type FolderCreationData = {
+type FolderCreationData = {
   name: string;
   color?: string;
   children: string[];
 };
 
-export type FolderWithoutChildren = {
+type FolderWithoutChildren = {
   id: string;
   update_time: string;
   create_time: string;
 } & Omit<FolderCreationData, "children">;
 
-export type Folder = FolderWithoutChildren & {
+type Folder = FolderWithoutChildren & {
   children: Conversation[];
 };
 
-export type MessageHandler = (request: any, sender, sendResponse) => void;
+type MessageHandler = (request: any, sender, sendResponse) => void;
 
-export type KeyboardShortcutItem = {
+type KeyboardShortcutItem = {
   name: string;
   callback: () => void;
   keyCondition: (e: KeyboardEvent) => boolean;
