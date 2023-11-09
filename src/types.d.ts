@@ -9,6 +9,10 @@ type Conversation = {
   messages: Message[] | undefined;
 };
 
+type ConversationWithKeywordCount = Conversation & {
+  keywordCount: number;
+}
+
 type Message = {
   id: string;
   conversationId: string;
