@@ -3,13 +3,14 @@ import { ALL_TAB_GROUP_SIZE } from "./config";
 
 export function MoreButton({
   data,
-  key,
+  name: key,
   onSelect,
 }: {
   data: any[];
-  key: string;
+  name: string;
   onSelect: () => void;
 }) {
+  console.log("render more button", { key, data });
   return (
     data &&
     data.length > ALL_TAB_GROUP_SIZE && (

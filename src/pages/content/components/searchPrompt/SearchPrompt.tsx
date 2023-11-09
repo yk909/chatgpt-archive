@@ -28,7 +28,7 @@ import { ALL_TAB_GROUP_SIZE } from "./config";
 import { MoreButton } from "./MoreButton";
 
 type SearchResult = {
-  conversations: Conversation[];
+  conversations: (Conversation & { keywordCount: number })[];
   folders: Folder[];
 };
 
@@ -50,10 +50,7 @@ export function SearchPrompt() {
 
   const [state, setState] = useState<{
     loading: boolean;
-    result: {
-      conversations: Conversation[];
-      folders: Folder[];
-    } | null;
+    result: SearchResult | null;
   }>({
     loading: false,
     result: null,
@@ -99,106 +96,115 @@ export function SearchPrompt() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <Command className="border rounded-lg shadow-md">
-        <SearchForm onSubmit={handleSeachSubmit} />
-        <CommandList className="max-h-[500px]">
-          {loading ? (
-            <CommandLoading />
-          ) : (
-            state.result !== null && (
-              <Tabs
-                defaultValue="all"
-                value={tab}
-                onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
-              >
-                <div className="flex items-center justify-between px-2 pt-2">
-                  <TabsList>
-                    {Object.keys(SEARCH_TABS).map((t, i) => (
-                      <TabsTrigger value={t} key={i}>
-                        {SEARCH_TABS[t].label}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-                </div>
-                <TabsContent value="all">
-                  <CommandGroup heading="Conversations">
+      <div
+        className="relative"
+        style={{
+          height: "580px",
+        }}
+      >
+        <Command className="absolute rounded-lg top-0 left-0 right-0 bottom-0 shadow-lg border">
+          <SearchForm onSubmit={handleSeachSubmit} />
+          <CommandList className="">
+            {loading ? (
+              <CommandLoading />
+            ) : (
+              state.result !== null && (
+                <Tabs
+                  defaultValue="all"
+                  value={tab}
+                  onValueChange={(v: keyof typeof SEARCH_TABS) =>
+                    setTab(() => v)
+                  }
+                >
+                  <div className="flex items-center justify-between px-2 pt-2">
+                    <TabsList>
+                      {Object.keys(SEARCH_TABS).map((t, i) => (
+                        <TabsTrigger value={t} key={i}>
+                          {SEARCH_TABS[t].label}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </div>
+                  <TabsContent value="all">
+                    <CommandGroup heading="Conversations">
+                      {conversations && conversations.length !== 0 ? (
+                        conversations
+                          .slice(0, ALL_TAB_GROUP_SIZE)
+                          .map((conversation, i) => (
+                            <ConversationItem
+                              key={conversation.id}
+                              conversation={conversation}
+                              onSelect={() => {
+                                handleConversationSelect(conversation.id);
+                              }}
+                            />
+                          ))
+                      ) : (
+                        <EmptyResult name="conversation" />
+                      )}
+
+                      <MoreButton
+                        data={conversations}
+                        name="conversations"
+                        onSelect={() => {
+                          setTab("conversations");
+                        }}
+                      />
+                    </CommandGroup>
+                    <CommandGroup heading="Folders">
+                      {folders && folders.length !== 0 ? (
+                        folders
+                          .slice(0, ALL_TAB_GROUP_SIZE)
+                          .map((f) => (
+                            <FolderItem
+                              key={f.id}
+                              folder={f}
+                              onSelect={() => {}}
+                            />
+                          ))
+                      ) : (
+                        <EmptyResult name="folder" />
+                      )}
+
+                      <MoreButton
+                        data={folders}
+                        name="folders"
+                        onSelect={() => {
+                          setTab("folders");
+                        }}
+                      />
+                    </CommandGroup>
+                  </TabsContent>
+                  <TabsContent value="conversations" className="px-2 py-1">
                     {conversations && conversations.length !== 0 ? (
-                      conversations
-                        .slice(0, ALL_TAB_GROUP_SIZE)
-                        .map((conversation, i) => (
-                          <ConversationItem
-                            key={conversation.id}
-                            conversation={conversation}
-                            onSelect={() => {
-                              handleConversationSelect(conversation.id);
-                            }}
-                          />
-                        ))
+                      conversations.map((conversation) => (
+                        <ConversationItem
+                          key={conversation.id}
+                          conversation={conversation}
+                          onSelect={() => {
+                            handleConversationSelect(conversation.id);
+                          }}
+                        />
+                      ))
                     ) : (
                       <EmptyResult name="conversation" />
                     )}
-
-                    <MoreButton
-                      data={conversations}
-                      key="conversations"
-                      onSelect={() => {
-                        setTab("conversations");
-                      }}
-                    />
-                  </CommandGroup>
-                  <CommandGroup heading="Folders">
+                  </TabsContent>
+                  <TabsContent value="folders" className="px-2 py-1">
                     {folders && folders.length !== 0 ? (
-                      folders
-                        .slice(0, ALL_TAB_GROUP_SIZE)
-                        .map((f) => (
-                          <FolderItem
-                            key={f.id}
-                            folder={f}
-                            onSelect={() => {}}
-                          />
-                        ))
+                      folders.map((f) => (
+                        <FolderItem key={f.id} folder={f} onSelect={() => {}} />
+                      ))
                     ) : (
                       <EmptyResult name="folder" />
                     )}
-
-                    <MoreButton
-                      data={folders}
-                      key="folders"
-                      onSelect={() => {
-                        setTab("folders");
-                      }}
-                    />
-                  </CommandGroup>
-                </TabsContent>
-                <TabsContent value="conversations" className="px-2 py-1">
-                  {conversations && conversations.length !== 0 ? (
-                    conversations.map((conversation) => (
-                      <ConversationItem
-                        key={conversation.id}
-                        conversation={conversation}
-                        onSelect={() => {
-                          handleConversationSelect(conversation.id);
-                        }}
-                      />
-                    ))
-                  ) : (
-                    <EmptyResult name="conversation" />
-                  )}
-                </TabsContent>
-                <TabsContent value="folders" className="px-2 py-1">
-                  {folders && folders.length !== 0 ? (
-                    folders.map((f) => (
-                      <FolderItem key={f.id} folder={f} onSelect={() => {}} />
-                    ))
-                  ) : (
-                    <EmptyResult name="folder" />
-                  )}
-                </TabsContent>
-              </Tabs>
-            )
-          )}
-        </CommandList>
-      </Command>
+                  </TabsContent>
+                </Tabs>
+              )
+            )}
+          </CommandList>
+        </Command>
+      </div>
     </CommandDialog>
   );
 }

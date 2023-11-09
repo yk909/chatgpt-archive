@@ -10,8 +10,6 @@ export function SearchForm({
 }: {
   onSubmit: (data: SearchFormValues) => void;
 }) {
-  console.log("render search form");
-
   return (
     <form>
       <div className="flex items-center px-3 py-1 border-b border-background-2">
