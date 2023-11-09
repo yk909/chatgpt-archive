@@ -1,4 +1,4 @@
-interface Conversation {
+type Conversation = {
   id: string;
   title: string;
   current_node: string | null;
@@ -7,20 +7,20 @@ interface Conversation {
   create_time: string;
   messageStr: string | undefined;
   messages: Message[] | undefined;
-}
+};
 
-interface Message {
+type Message = {
   id: string;
   conversationId: string;
   content: string;
   create_time: string;
   update_time: string;
   folderId: string | null;
-}
+};
 
-interface FetchFilteredConversationData {
+type FetchFilteredConversationData = {
   title: string;
-}
+};
 
 type FolderCreationData = {
   name: string;
