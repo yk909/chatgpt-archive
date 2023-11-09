@@ -1,6 +1,5 @@
 import { CommandItem } from "@src/components/ui/command";
 import { MessageIcon, ToggleIcon } from "@src/components/Icon";
-import { Folder } from "@src/types";
 import { FolderInfo } from "../Folder";
 import { ConversationCard } from "../Conversation";
 import React from "react";

@@ -1,5 +1,4 @@
 import { MESSAGE_ACTIONS } from "@src/constants";
-import { FolderCreationData } from "@src/types";
 
 export function refresh() {
   chrome.runtime.sendMessage({

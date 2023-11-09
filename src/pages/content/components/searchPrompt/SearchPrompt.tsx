@@ -11,7 +11,6 @@ import { useAtom } from "jotai";
 import { searchOpenAtom } from "../../context";
 import { useBgMessage } from "../../hook";
 import { MESSAGE_ACTIONS } from "@src/constants";
-import { Conversation, Folder } from "@src/types";
 import { search } from "../../messages";
 import { CommandLoading } from "cmdk";
 import { loadConversation } from "@src/utils";

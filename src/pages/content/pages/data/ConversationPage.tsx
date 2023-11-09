@@ -2,7 +2,6 @@ import { conversationListAtom, loadingAtom } from "@src/pages/content/context";
 import { List as ConversationList } from "@src/pages/content/components/Conversation";
 import { ListView } from "@src/pages/content/components/ListView";
 import { categorizeConversations } from "@src/utils";
-import { type Conversation } from "@src/types";
 import { useState } from "react";
 import { Spinner } from "@src/components/Spinner";
 import { useAtom } from "jotai";

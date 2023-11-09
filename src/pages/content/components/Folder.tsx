@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { formatDates, loadConversation } from "@src/utils";
-import { type Conversation, type Folder } from "@src/types";
 import { Checkbox } from "@src/components/ui/checkbox";
 import {
   ChevronRight,

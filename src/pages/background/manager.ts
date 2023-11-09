@@ -1,5 +1,4 @@
 import { db, initDB } from "@src/db";
-import { FetchFilteredConversationData } from "@src/types";
 import { ACCESS_TOKEN_KEY, MESSAGE_ACTIONS } from "@src/constants";
 import {
   fetchAllConversations,

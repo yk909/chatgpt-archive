@@ -1,4 +1,3 @@
-import { KeyboardShortcutItem, type MessageHandler } from "@src/types";
 import { useEffect } from "react";
 
 export function useBgMessage(eventMap: Record<string, MessageHandler>) {

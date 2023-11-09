@@ -1,4 +1,3 @@
-import { Conversation, Folder } from "@src/types";
 import { atom, useAtom } from "jotai";
 
 export const panelOpenAtom = atom<boolean>(false);

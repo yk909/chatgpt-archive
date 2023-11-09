@@ -1,4 +1,3 @@
-import { Conversation } from "@src/types";
 import { formatDates, loadConversation } from "@src/utils";
 import {
   Check,
