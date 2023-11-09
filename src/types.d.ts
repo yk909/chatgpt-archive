@@ -11,7 +11,10 @@ type Conversation = {
 
 type ConversationWithKeywordCount = Conversation & {
   keywordCount: number;
-}
+};
+
+type SortAttribute = "update_time" | "create_time";
+type SearchSortAttribute = "update_time" | "create_time" | "keywordCount";
 
 type Message = {
   id: string;

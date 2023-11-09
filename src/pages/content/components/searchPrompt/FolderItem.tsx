@@ -19,7 +19,7 @@ export function FolderItem({
       onSelect={onSelect}
       className="flex flex-col items-stretch"
     >
-      <div className="flex items-center">
+      <div className="flex items-center mx-2 w-full">
         <MessageIcon size="sm" />
         <FolderInfo folder={folder} />
         <div className="flex items-center flex-none gap-1">

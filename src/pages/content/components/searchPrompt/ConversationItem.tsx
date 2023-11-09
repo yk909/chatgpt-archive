@@ -8,21 +8,22 @@ export function ConversationItem({
   conversation: Conversation & { keywordCount: number };
   onSelect: () => void;
 }) {
-  console.log("render conversation item", { conversation });
   return (
     <CommandItem
       key={conversation.id}
       value={conversation.id}
       onSelect={onSelect}
     >
-      <MessageIcon size="sm" />
-      <span className="flex-1 inline-block min-w-0 truncate">
-        {conversation.title}
-      </span>
-      <div className="flex items-center flex-none gap-3">
-        <span className="inline-block text-green-600 text-bold">
-          {conversation.keywordCount}
+      <div className="flex items-center mx-2 w-full cursor-pointer">
+        <MessageIcon size="sm" />
+        <span className="flex-1 inline-block min-w-0 truncate">
+          {conversation.title}
         </span>
+        <div className="flex items-center flex-none gap-3">
+          <span className="inline-block text-green-500 font-semibold">
+            {conversation.keywordCount}
+          </span>
+        </div>
       </div>
     </CommandItem>
   );

@@ -1,4 +1,3 @@
-import { Conversation } from "./types";
 import { CHATGPT_DOMAIN_URL, styles } from "@src/constants";
 
 export function formatDates(s: string): string {
@@ -44,7 +43,7 @@ export async function batchPromises<T>(
 
 export function categorizeConversations(
   conversations: Conversation[],
-  byAttribute: keyof Conversation
+  byAttribute: SortAttribute
 ) {
   const result = {
     Today: [],
