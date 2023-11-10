@@ -24,24 +24,14 @@ import { SearchForm, SearchFormValues } from "./SearchForm";
 import { ConversationItem } from "./ConversationItem";
 
 import { EmptyResult } from "./EmptyResult";
-import { ALL_TAB_GROUP_SIZE } from "./config";
-import { MoreButton } from "./MoreButton";
+import { SEARCH_TABS } from "./config";
+import ConversationTabContent from "./tabs/ConversationTabContent";
+import AllTabContent from "./tabs/AllTabContent";
+import FolderTabContent from "./tabs/FolderTabContent";
 
 type SearchResult = {
   conversations: (Conversation & { keywordCount: number })[];
   folders: Folder[];
-};
-
-const SEARCH_TABS = {
-  all: {
-    label: "All",
-  },
-  conversations: {
-    label: "Conversations",
-  },
-  folders: {
-    label: "Folders",
-  },
 };
 
 const TabSubText = ({
@@ -79,6 +69,7 @@ export function SearchPrompt() {
         loading: false,
         result: null,
       }));
+      setTab("all");
       return;
     }
     console.log("search form submitted", data);
@@ -110,109 +101,39 @@ export function SearchPrompt() {
 
   let content = null;
   if (state.result !== null) {
-    content = (
-      <Tabs
-        defaultValue="all"
-        value={tab}
-        className="flex flex-col flex-1 min-h-0"
-        onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
-      >
-        <div className="flex items-center justify-between px-2 pt-2 flex-none">
-          <TabsList>
-            {Object.keys(SEARCH_TABS).map((t, i) => (
-              <TabsTrigger value={t} key={i}>
-                {SEARCH_TABS[t].label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <TabSubText tab={tab} result={state.result} />
-        </div>
+    content = loading ? (
+      <CommandLoading />
+    ) : (
+      <>
+        <Tabs
+          defaultValue="all"
+          value={tab}
+          className="flex flex-col flex-1 min-h-0"
+          onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
+        >
+          <div className="flex items-center justify-between px-2 pt-2 flex-none">
+            <TabsList>
+              {Object.keys(SEARCH_TABS).map((t, i) => (
+                <TabsTrigger value={t} key={i}>
+                  {SEARCH_TABS[t].label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <TabSubText tab={tab} result={state.result} />
+          </div>
 
-        <CommandList className="flex-1 min-h-0 relative">
-          {loading ? (
-            <CommandLoading />
-          ) : (
-            <>
-              <TabsContent value="all">
-                <CommandGroup heading="Conversations">
-                  {conversations && conversations.length !== 0 ? (
-                    conversations
-                      .slice(0, ALL_TAB_GROUP_SIZE)
-                      .map((conversation, i) => (
-                        <ConversationItem
-                          key={conversation.id}
-                          conversation={conversation}
-                          onSelect={() => {
-                            handleConversationSelect(conversation.id);
-                          }}
-                        />
-                      ))
-                  ) : (
-                    <EmptyResult name="conversation" />
-                  )}
-
-                  <MoreButton
-                    data={conversations}
-                    name="conversations"
-                    onSelect={() => {
-                      setTab("conversations");
-                    }}
-                  />
-                </CommandGroup>
-                <CommandGroup heading="Folders">
-                  {folders && folders.length !== 0 ? (
-                    folders
-                      .slice(0, ALL_TAB_GROUP_SIZE)
-                      .map((f) => (
-                        <FolderItem key={f.id} folder={f} onSelect={() => {}} />
-                      ))
-                  ) : (
-                    <EmptyResult name="folder" />
-                  )}
-
-                  <MoreButton
-                    data={folders}
-                    name="folders"
-                    onSelect={() => {
-                      setTab("folders");
-                    }}
-                  />
-                </CommandGroup>
-              </TabsContent>
-              <TabsContent
-                value="conversations"
-                className="px-2 py-1 min-h-0 flex-1 overflow-scroll absolute inset-0"
-              >
-                {conversations && conversations.length !== 0 ? (
-                  conversations.map((conversation) => (
-                    <ConversationItem
-                      key={conversation.id}
-                      conversation={conversation}
-                      onSelect={() => {
-                        handleConversationSelect(conversation.id);
-                      }}
-                    />
-                  ))
-                ) : (
-                  <EmptyResult name="conversation" />
-                )}
-              </TabsContent>
-              <TabsContent
-                value="folders"
-                className="px-2 py-1 min-h-0 flex-1 overflow-scroll absolute inset-0"
-              >
-                {folders && folders.length !== 0 ? (
-                  folders.map((f) => (
-                    <FolderItem key={f.id} folder={f} onSelect={() => {}} />
-                  ))
-                ) : (
-                  <EmptyResult name="folder" />
-                )}
-              </TabsContent>
-            </>
-          )}
-        </CommandList>
-      </Tabs>
+          <AllTabContent
+            {...state.result}
+            setTab={setTab}
+            handleConversationSelect={handleConversationSelect}
+          />
+          <ConversationTabContent
+            conversations={conversations}
+            handleConversationSelect={handleConversationSelect}
+          />
+          <FolderTabContent folders={folders} />
+        </Tabs>
+      </>
     );
   }
 
