@@ -1,22 +1,28 @@
 import React from "react";
 import { Check, MoreHorizontal, XSquare } from "lucide-react";
+import { cn } from "@src/lib/utils";
 
 export function SelectionActionBar({
+  className,
   enabled,
   left,
   right,
 }: {
+  className?: string;
   enabled: boolean;
   left: () => React.ReactNode;
   right: () => React.ReactNode;
 }) {
   return (
     <div
-      className="absolute bottom-0 left-0 right-0 z-20 flex items-center h-12 rounded-md bg-2 page-px page-mx trans"
+      className={cn(
+        "absolute bottom-0 left-0 right-0 z-20 flex items-center h-12 rounded-md bg-2 page-px page-mx trans",
+        className
+      )}
       style={{
         opacity: enabled ? 1 : 0,
         zIndex: enabled ? "999" : "-10",
-        transform: enabled ? "translateY(0)" : "translateY(100%)",
+        transform: enabled ? "translateY(0)" : "translateY(50%)",
       }}
     >
       <div className="flex items-center gap-2">{left && left()}</div>

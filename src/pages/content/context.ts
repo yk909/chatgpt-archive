@@ -13,3 +13,8 @@ export const displayConversationListAtom = atom<Conversation[]>([]);
 export const bgResponseStatusAtom = atom<{ status?: string; message?: string }>(
   {}
 );
+
+export const searchPromptConversationAtom = atom<
+  ConversationWithKeywordCount[]
+>([]);
+export const searchPromptFolderAtom = atom<Folder[]>([]);

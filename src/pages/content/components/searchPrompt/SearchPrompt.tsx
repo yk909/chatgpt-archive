@@ -8,7 +8,11 @@ import {
   CommandList,
 } from "@src/components/ui/command";
 import { useAtom } from "jotai";
-import { searchOpenAtom } from "../../context";
+import {
+  searchOpenAtom,
+  searchPromptConversationAtom,
+  searchPromptFolderAtom,
+} from "../../context";
 import { useBgMessage } from "../../hook";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { search } from "../../messages";
@@ -42,8 +46,15 @@ const TabSubText = ({
   result: SearchResult;
 }) => {
   return (
-    <div className="text-xs text-gray-400">
-      {tab !== "all" && <span>Total items: {result[tab].length}</span>}
+    <div className="tracking-wide text-sm mr-6">
+      {tab !== "all" && (
+        <span>
+          Total items:
+          <span className="inline-block ml-2 font-bold">
+            {result[tab].length}
+          </span>
+        </span>
+      )}
     </div>
   );
 };
@@ -51,6 +62,10 @@ const TabSubText = ({
 export function SearchPrompt() {
   const [open, setOpen] = useAtom(searchOpenAtom);
   const [tab, setTab] = useState<keyof typeof SEARCH_TABS>("all");
+  const [conversationAtom, setConversationAtom] = useAtom(
+    searchPromptConversationAtom
+  );
+  const [folderAtom, setFolderAtom] = useAtom(searchPromptFolderAtom);
 
   const [state, setState] = useState<{
     loading: boolean;
@@ -87,6 +102,8 @@ export function SearchPrompt() {
         loading: false,
         result: data,
       }));
+      setConversationAtom(() => data.conversations);
+      setFolderAtom(() => data.folders);
     },
   });
 
@@ -142,7 +159,7 @@ export function SearchPrompt() {
       <div
         className="relative"
         style={{
-          height: "580px",
+          height: "620px",
         }}
       >
         <Command className="absolute rounded-lg top-0 left-0 right-0 bottom-0 shadow-lg border flex flex-col">

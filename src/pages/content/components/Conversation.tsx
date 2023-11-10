@@ -6,6 +6,7 @@ import {
   MoreDropdownButton,
 } from "./MoreDropdownButton";
 import { AddToFolderDropdown } from "./dropdown/AddToFolderDropdown";
+import { MessageIconWithSelection } from "@src/components/Icon";
 
 export function ConversationCard({
   data,
@@ -30,24 +31,12 @@ export function ConversationCard({
       <div className="flex flex-none fcenter">
         {noSelect ? (
           <MessageSquare size={20} className="trans" />
-        ) : !selectionEnabled ? (
-          <div className="relative group fcenter">
-            <Checkbox
-              id={"c-" + data.id}
-              checked={selected}
-              className="relative z-10 opacity-0 group-hover:opacity-100"
-              onClick={handleToggle}
-            />
-            <MessageSquare
-              size={20}
-              className="absolute group-hover:opacity-0 trans"
-            />
-          </div>
         ) : (
-          <Checkbox
+          <MessageIconWithSelection
+            selected={selected}
+            enabled={selectionEnabled}
             id={"c-" + data.id}
-            checked={selected}
-            onClick={handleToggle}
+            handleToggle={handleToggle}
           />
         )}
       </div>

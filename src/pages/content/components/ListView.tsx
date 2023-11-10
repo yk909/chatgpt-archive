@@ -106,9 +106,10 @@ export function ListView({
   }, [data]);
 
   return (
-    <div className="relative flex flex-col flex-1 min-h-0" id={id}>
+    <div className="flex flex-col flex-1 min-h-0" id={id}>
       <div className="flex-1 min-h-0 overflow-y-scroll">
         {renderData({ data: displayData, selection, setSelection, toggle })}
+        <div className="flex-none w-full h-12"></div>
         <div className="flex-none w-full h-8" ref={ref}></div>
       </div>
       {renderSelectionBar && renderSelectionBar({ selection, setSelection })}
