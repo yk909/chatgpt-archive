@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
-import { Spinner } from "@src/components/Spinner";
-import { SelectionActionBar } from "@src/pages/content/components/SelectionActionBar";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 50;
 
 function useLoadMoreLine(onChange, options) {
   const ref = useRef();

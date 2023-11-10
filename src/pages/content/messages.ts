@@ -45,14 +45,14 @@ export function createNewFolder(data: FolderCreationData) {
   });
 }
 
-export function addConversationToFolder(
-  conversationId: string,
+export function addConversationsToFolder(
+  conversationIdList: string[],
   folderId: string
 ) {
-  console.log("addConversationToFolder", conversationId, folderId);
+  console.log("addConversationToFolder", conversationIdList, folderId);
   chrome.runtime.sendMessage({
-    type: MESSAGE_ACTIONS.ADD_CONVERSATION_TO_FOLDER,
-    data: { conversationId, folderId },
+    type: MESSAGE_ACTIONS.ADD_CONVERSATIONS_TO_FOLDER,
+    data: { conversationIdList, folderId },
   });
 }
 
@@ -67,5 +67,15 @@ export function deleteFolder(folderIdList: string[]) {
   chrome.runtime.sendMessage({
     type: MESSAGE_ACTIONS.DELETE_FOLDER,
     data: { folderIdList },
+  });
+}
+
+export function deleteConversationsFromFolder(
+  conversationIdList: string,
+  folderId: string
+) {
+  chrome.runtime.sendMessage({
+    type: MESSAGE_ACTIONS.DELETE_CONVERSATIONS_FROM_FOLDER,
+    data: { conversationIdList, folderId },
   });
 }

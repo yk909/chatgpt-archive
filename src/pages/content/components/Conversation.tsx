@@ -1,121 +1,11 @@
 import { formatDates, loadConversation } from "@src/utils";
-import {
-  Check,
-  FolderInput,
-  MessageSquare,
-  MoreHorizontal,
-} from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { Checkbox } from "@src/components/ui/checkbox";
-import { bgResponseStatusAtom, folderListAtom } from "../context";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@src/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@src/components/ui/command";
-import { useAtom } from "jotai";
-import { addConversationToFolder, fetchMoreFolders } from "../messages";
-
-function MoreDropdown({
-  conversationId,
-  setOpen,
-}: {
-  conversationId: string;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const [folders] = useAtom(folderListAtom);
-  const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
-
-  useEffect(() => {
-    if (responseStatus.status) {
-      console.log("Receive response", responseStatus);
-      setOpen(false);
-      setResponseStatus({});
-    }
-  }, [responseStatus]);
-
-  const handleAddToFolder = (folderId: string) => {
-    addConversationToFolder(conversationId, folderId);
-  };
-
-  console.log("render more dorpdownn");
-
-  return (
-    <DropdownMenuContent className="w-[200px]" align="end">
-      <DropdownMenuSub>
-        <DropdownMenuSubTrigger>
-          <FolderInput className="icon-dropdown-menu-item" />
-          <span>Add to folder</span>
-        </DropdownMenuSubTrigger>
-        <DropdownMenuSubContent className="p-0">
-          <Command>
-            <CommandInput placeholder="Choose a folder" autoFocus />
-            <CommandList>
-              <CommandEmpty>No folders found</CommandEmpty>
-              <CommandGroup>
-                {folders.map((f, i) => {
-                  const alreadyAdded = f.children
-                    .map((c) => c.id)
-                    .includes(conversationId);
-                  return (
-                    <CommandItem
-                      key={i}
-                      disabled={alreadyAdded}
-                      className={
-                        "flex items-center justify-between" +
-                        (alreadyAdded ? " opacity-50" : "")
-                      }
-                      onSelect={() => {
-                        handleAddToFolder(f.id);
-                      }}
-                    >
-                      {f.name}
-                      {alreadyAdded && <Check className={"w-4 h-4"} />}
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </DropdownMenuSubContent>
-      </DropdownMenuSub>
-    </DropdownMenuContent>
-  );
-}
-
-function MoreDropdownButton({ conversationId }: { conversationId: string }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger>
-        <div className="opacity-0 icon-container icon-container-sm card-hover-show">
-          <MoreHorizontal
-            style={{
-              width: 20,
-              height: 20,
-            }}
-          />
-        </div>
-      </DropdownMenuTrigger>
-      {open && (
-        <MoreDropdown conversationId={conversationId} setOpen={setOpen} />
-      )}
-    </DropdownMenu>
-  );
-}
+  ConversationMoreDropdownButton,
+  MoreDropdownButton,
+} from "./MoreDropdownButton";
+import { AddToFolderDropdown } from "./dropdown/AddToFolderDropdown";
 
 export function ConversationCard({
   data,
@@ -181,7 +71,14 @@ export function ConversationCard({
       </div>
 
       <div className="flex items-center flex-none gap-1">
-        <MoreDropdownButton conversationId={data.id} />
+        <MoreDropdownButton
+          triggerClassName="opacity-0 card-hover-show"
+          items={
+            <>
+              <AddToFolderDropdown conversationIdList={[data.id]} />
+            </>
+          }
+        />
       </div>
     </div>
   );

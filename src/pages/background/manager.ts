@@ -38,6 +38,13 @@ export class BackgroundManager {
     string,
     (request: any, sender: any, sendResponse: any) => void
   >;
+  detailFetchingThreads: Record<
+    string,
+    {
+      current: number;
+      total: number;
+    }
+  > = {};
 
   constructor() {
     this.currentUser = new UserManager(this);
@@ -57,10 +64,12 @@ export class BackgroundManager {
     this.handleRefresh = this.handleRefresh.bind(this);
     this.handleFetchFolders = this.handleFetchFolders.bind(this);
     this.handleCreateNewFolder = this.handleCreateNewFolder.bind(this);
-    this.handleAddConversationToFolder =
-      this.handleAddConversationToFolder.bind(this);
+    this.handleAddConversationsToFolder =
+      this.handleAddConversationsToFolder.bind(this);
     this.handleRenameFolder = this.handleRenameFolder.bind(this);
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
+    this.handleAddConversationsToFolder =
+      this.handleAddConversationsToFolder.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleFetchConversations = this.handleFetchConversations.bind(this);
 
@@ -71,10 +80,12 @@ export class BackgroundManager {
       [MESSAGE_ACTIONS.REFRESH]: this.handleRefresh,
       [MESSAGE_ACTIONS.APPEND_FOLDERS]: this.handleFetchFolders,
       [MESSAGE_ACTIONS.CREATE_NEW_FOLDER]: this.handleCreateNewFolder,
-      [MESSAGE_ACTIONS.ADD_CONVERSATION_TO_FOLDER]:
-        this.handleAddConversationToFolder,
+      [MESSAGE_ACTIONS.ADD_CONVERSATIONS_TO_FOLDER]:
+        this.handleAddConversationsToFolder,
       [MESSAGE_ACTIONS.RENAME_FOLDER]: this.handleRenameFolder,
       [MESSAGE_ACTIONS.DELETE_FOLDER]: this.handleDeleteFolder,
+      [MESSAGE_ACTIONS.DELETE_CONVERSATIONS_FROM_FOLDER]:
+        this.handleDeleteConversationsFromFolder,
       [MESSAGE_ACTIONS.SEARCH]: this.handleSearch,
     };
 
@@ -126,6 +137,15 @@ export class BackgroundManager {
     }
 
     // update conversation details
+    // if (this.detailFetchingThreads[this.currentUser.info.id]) {
+    //   console.log("already fetching conversation details");
+    //   const { current, total } = this.detailFetchingThreads[this.currentUser.info.id];
+    //   sendMessageToTab(sender.tab.id, {
+    //     type: MESSAGE_ACTIONS.PROGRESS,
+    //     data: { current, total },
+    //   });
+    //   return;
+    // }
     const conWithoutDetails = await db.getConversationWithoutMessage();
 
     const onUpdate = async (current: number, total: number, curVal: any) => {
@@ -150,6 +170,7 @@ export class BackgroundManager {
         "start fetching conversation details for",
         conWithoutDetails.length
       );
+
       sendMessageToTab(sender.tab.id, {
         type: MESSAGE_ACTIONS.PROGRESS,
         data: {
@@ -217,9 +238,9 @@ export class BackgroundManager {
     await this.sendAllFolderData(sender.tab.id);
   }
 
-  async handleAddConversationToFolder(request, sender, _) {
-    const { conversationId, folderId } = request.data;
-    await db.addConversationToFolder(conversationId, folderId);
+  async handleAddConversationsToFolder(request, sender, _) {
+    const { conversationIdList, folderId } = request.data;
+    await db.addConversationsToFolder(conversationIdList, folderId);
     console.log("success addConversationToFolder");
     await this.sendResponseStatus(sender, {
       status: "SUCCESS",
@@ -227,11 +248,24 @@ export class BackgroundManager {
     });
 
     // refresh data
-    const data = await db.getManyFolders(undefined, undefined);
-    console.log("sending append folder data", data);
+    await this.sendAllFolderData(sender.tab.id);
+    // const data = await db.getManyFolders(undefined, undefined);
+    // console.log("sending append folder data", data);
+    // sendMessageToTab(sender.tab.id, {
+    //   type: MESSAGE_ACTIONS.FETCH_FOLDERS,
+    //   data,
+    // });
+  }
+
+  async handleDeleteConversationsFromFolder(request, sender, _) {
+    const { conversationIdList, folderId } = request.data;
+    await db.deleteConversationsFromFolder(conversationIdList, folderId);
     sendMessageToTab(sender.tab.id, {
-      type: MESSAGE_ACTIONS.FETCH_FOLDERS,
-      data,
+      type: MESSAGE_ACTIONS.RESPONSE_STATUS,
+      data: {
+        status: "SUCCESS",
+        message: `Successfully deleted ${conversationIdList.length} conversation(s) from folder`,
+      },
     });
   }
 

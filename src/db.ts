@@ -160,32 +160,6 @@ export class RootDB extends Dexie {
     return this.folders.add(folder);
   }
 
-  async addConversationToFolder(conId: string, folderId: string) {
-    const con = await db.conversations.get(conId);
-    if (!con) {
-      throw new Error("No conversation found with id");
-    }
-    const folder = await db.folders.get(folderId);
-    if (!folder) {
-      throw new Error("No folder found with id");
-    }
-    const cTof = await db.conversationToFolder
-      .where({
-        conversationId: conId,
-        folderId,
-      })
-      .toArray();
-    if (cTof.length !== 0) {
-      throw new Error("Conversation already exists in folder");
-    }
-    db.conversationToFolder.add({
-      conversationId: conId,
-      folderId,
-      update_time: Date.now().toString(),
-      create_time: Date.now().toString(),
-    });
-  }
-
   async renameFolder(folderId: string, name: string) {
     const folder = await db.folders.get(folderId);
     if (!folder) {
@@ -208,6 +182,63 @@ export class RootDB extends Dexie {
     for (let i = 0; i < folderIdList.length; i++) {
       const folderId = folderIdList[i];
       await db.conversationToFolder.where({ folderId }).delete();
+    }
+  }
+
+  async addConversationsToFolder(conIdList: string[], folderId: string) {
+    const conList = await db.conversations.bulkGet(conIdList);
+    if (!conList) {
+      throw new Error("No conversation found with id");
+    }
+    const folder = await db.folders.get(folderId);
+    if (!folder) {
+      throw new Error("No folder found with id");
+    }
+    const dateNow = Date.now().toString();
+
+    const existingConIdList = (
+      await db.conversationToFolder.where({ folderId }).toArray()
+    ).map((r) => r.conversationId);
+
+    const notAddedConIdList = conIdList.filter(
+      (cid) => !existingConIdList.includes(cid)
+    );
+
+    const notAddedConToFolder = notAddedConIdList.map((conId) => ({
+      conversationId: conId,
+      folderId,
+      update_time: dateNow,
+      create_time: dateNow,
+    }));
+    console.log(`Adding ${notAddedConIdList.length} conversations to folder`, {
+      notAddedConToFolder,
+    });
+
+    await db.conversationToFolder.bulkPut(notAddedConToFolder);
+  }
+
+  async deleteConversationsFromFolder(
+    conversationIdList: string[],
+    folderId: string
+  ) {
+    const folder = await db.folders.get(folderId);
+    if (!folder) {
+      throw new Error("No folder found with id");
+    }
+    try {
+      // Start a transaction
+      await db.transaction("rw", db.conversationToFolder, async () => {
+        // Iterate over the conversation IDs
+        for (const conversationId of conversationIdList) {
+          // Delete the conversation entry that matches the folder ID and conversation ID
+          await db.conversationToFolder
+            .where({ folderId: folderId, conversationId: conversationId })
+            .delete();
+        }
+      });
+      console.log("Conversations deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete conversations:", error);
     }
   }
 

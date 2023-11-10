@@ -19,14 +19,19 @@ import {
   SelectionActionBar,
 } from "@src/pages/content/components/SelectionActionBar";
 import { fetchConversations } from "../../messages";
+import {
+  ConversationMoreDropdownButton,
+  MoreDropdownButton,
+} from "../../components/MoreDropdownButton";
+import { AddToFolderDropdown } from "../../components/dropdown/AddToFolderDropdown";
 
 const SortByOptions: Record<
   string,
   {
     label: string;
-    key: keyof Conversation;
+    key: SortAttribute;
     params: {
-      sortBy: keyof Conversation;
+      sortBy: SortAttribute;
       desc: boolean;
     };
     sortFunction: (a: Conversation, b: Conversation) => number;
@@ -93,12 +98,12 @@ export function ConversationPage() {
   const [loading, seLoading] = useAtom(loadingAtom);
   const [conversationList, setConversationList] = useAtom(conversationListAtom);
 
-  useEffect(() => {
-    console.log("sort by", sortByKey);
-    const { sortBy, desc } = SortByOptions[sortByKey].params;
-    fetchConversations(sortBy, desc);
-    // setConversationList((p) => p.sort(SortByOptions[sortByKey].sortFunction));
-  }, [sortByKey]);
+  // useEffect(() => {
+  //   console.log("sort by", sortByKey);
+  //   const { sortBy, desc } = SortByOptions[sortByKey].params;
+  //   fetchConversations(sortBy, desc);
+  //   // setConversationList((p) => p.sort(SortByOptions[sortByKey].sortFunction));
+  // }, [sortByKey]);
 
   return (
     <>
@@ -183,7 +188,18 @@ export function ConversationPage() {
               right={() => (
                 <>
                   <div className="icon-container icon-container-sm">
-                    <MoreHorizontal />
+                    <MoreDropdownButton
+                      contentProps={{
+                        side: "top",
+                      }}
+                      items={
+                        <>
+                          <AddToFolderDropdown
+                            conversationIdList={new Array(...selection)}
+                          />
+                        </>
+                      }
+                    />
                   </div>
                 </>
               )}

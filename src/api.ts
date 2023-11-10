@@ -1,4 +1,3 @@
-import { Conversation } from "./types";
 import { batchPromises, sleep } from "./utils";
 
 const CHATGPT_HOST_URL = "https://chat.openai.com";
