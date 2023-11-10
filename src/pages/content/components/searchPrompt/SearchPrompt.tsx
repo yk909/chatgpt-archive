@@ -1,12 +1,5 @@
-import { FolderItem } from "./FolderItem";
-import { useEffect, useState } from "react";
-import {
-  Command,
-  CommandDialog,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@src/components/ui/command";
+import { useState } from "react";
+import { Command } from "@src/components/ui/command";
 import { useAtom } from "jotai";
 import {
   searchOpenAtom,
@@ -18,16 +11,8 @@ import { MESSAGE_ACTIONS } from "@src/constants";
 import { search } from "../../messages";
 import { CommandLoading } from "cmdk";
 import { loadConversation } from "@src/utils";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@src/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@src/components/ui/tabs";
 import { SearchForm, SearchFormValues } from "./SearchForm";
-import { ConversationItem } from "./ConversationItem";
-
-import { EmptyResult } from "./EmptyResult";
 import { SEARCH_TABS } from "./config";
 import ConversationTabContent from "./tabs/ConversationTabContent";
 import AllTabContent from "./tabs/AllTabContent";

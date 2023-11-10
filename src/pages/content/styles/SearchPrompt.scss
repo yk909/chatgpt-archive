@@ -1,23 +1,55 @@
 .search-prompt [cmdk-item] {
-    border-radius: var(--radius);
+  border-radius: var(--radius);
 }
 
 .search-prompt [cmdk-list] {
-    padding-left: 8px;
-    padding-right: 8px;
-    margin: 0px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 0px;
 }
 
 .search-prompt [cmdk-group-heading] {
-    margin-left: 16px;
+  margin-left: 16px;
 }
 
 .search-prompt [cmdk-group] {
-    padding-left: 0px;
-    padding-right: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .search-prompt {
-    top: 0px;
-    transform: translateY(20vh) translateX(-50%);
+  top: 0px;
+  --open-y-offset: 20vh;
+  --closed-y-offset: 24vh;
+  --duration: 150ms;
+}
+
+.search-prompt[data-state="open"] {
+  animation: enter var(--duration) linear forwards !important;
+}
+
+.search-prompt[data-state="closed"] {
+  animation: leave var(--duration) linear forwards !important;
+}
+
+@keyframes enter {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--closed-y-offset)) translateX(-50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(var(--open-y-offset)) translateX(-50%);
+  }
+}
+
+@keyframes leave {
+  0% {
+    opacity: 1;
+    transform: translateY(var(--open-y-offset)) translateX(-50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--closed-y-offset)) translateX(-50%);
+  }
 }
