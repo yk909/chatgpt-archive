@@ -33,7 +33,7 @@ export function ConversationItem({
     >
       <div className="flex items-center w-full cursor-pointer">
         <MessageIconWithSelection
-          size="md"
+          size="sm"
           selected={selected}
           enabled={!!toggle && !!selected && selectionEnabled}
           id={"c-" + conversation.id}

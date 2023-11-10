@@ -3,6 +3,7 @@ import { MessageIcon, ToggleIcon } from "@src/components/Icon";
 import { FolderInfo } from "../Folder";
 import { ConversationCard } from "../Conversation";
 import React from "react";
+import { Folder } from "lucide-react";
 
 export function FolderItem({
   folder,
@@ -19,8 +20,9 @@ export function FolderItem({
       onSelect={onSelect}
       className="flex flex-col items-stretch"
     >
-      <div className="flex items-center mx-2 w-full">
-        <MessageIcon size="sm" />
+      <div className="flex items-center w-full">
+        {/* <MessageIcon size="sm" /> */}
+        <Folder size={16} className="mr-2" />
         <FolderInfo folder={folder} />
         <div className="flex items-center flex-none gap-1">
           {/* <FolderMoreButton folderId={data.id} /> */}

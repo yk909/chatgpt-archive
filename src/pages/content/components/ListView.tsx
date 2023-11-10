@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
 
 const PAGE_SIZE = 50;
@@ -56,6 +56,10 @@ export function ListView({
   const [selection, setSelection] = useState<Set<string>>(new Set());
   const [data] = useAtom(dataAtom);
 
+  const items = useMemo(() => {
+    return renderData({ data: displayData, selection, setSelection, toggle });
+  }, [displayData]);
+
   console.log("[render] list view", { displayData, state, data });
 
   const handleLoadMore = (isIntersecting: boolean) => {
@@ -106,12 +110,11 @@ export function ListView({
   }, [data]);
 
   return (
-    <div className="flex flex-col flex-1 min-h-0" id={id}>
-      <div className="flex-1 min-h-0 overflow-y-scroll">
-        {renderData({ data: displayData, selection, setSelection, toggle })}
-        <div className="flex-none w-full h-12"></div>
-        <div className="flex-none w-full h-8" ref={ref}></div>
-      </div>
+    <div className="flex flex-col flex-1 min-h-0 overflow-y-scroll" id={id}>
+      {/* {renderData({ data: displayData, selection, setSelection, toggle })} */}
+      {items}
+      <div className="flex-none w-full h-12"></div>
+      <div className="flex-none w-full h-8" ref={ref}></div>
       {renderSelectionBar && renderSelectionBar({ selection, setSelection })}
     </div>
   );

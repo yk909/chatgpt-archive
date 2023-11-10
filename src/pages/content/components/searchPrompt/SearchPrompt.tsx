@@ -32,6 +32,7 @@ import { SEARCH_TABS } from "./config";
 import ConversationTabContent from "./tabs/ConversationTabContent";
 import AllTabContent from "./tabs/AllTabContent";
 import FolderTabContent from "./tabs/FolderTabContent";
+import { Dialog, DialogContent } from "@src/components/ui/dialog";
 
 type SearchResult = {
   conversations: (Conversation & { keywordCount: number })[];
@@ -125,7 +126,10 @@ export function SearchPrompt() {
         <Tabs
           defaultValue="all"
           value={tab}
-          className="flex flex-col flex-1 min-h-0"
+          className="flex flex-col relative"
+          style={{
+            height: "540px",
+          }}
           onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
         >
           <div className="flex items-center justify-between px-2 pt-2 flex-none">
@@ -155,18 +159,14 @@ export function SearchPrompt() {
   }
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen}>
-      <div
-        className="relative"
-        style={{
-          height: "620px",
-        }}
-      >
-        <Command className="absolute rounded-lg top-0 left-0 right-0 bottom-0 shadow-lg border flex flex-col">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="p-0 overflow-hidden bg-transparent search-prompt">
+        <Command className="flex flex-col">
+          {/* <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5"> */}
           <SearchForm onSubmit={handleSeachSubmit} />
           {content}
         </Command>
-      </div>
-    </CommandDialog>
+      </DialogContent>
+    </Dialog>
   );
 }
