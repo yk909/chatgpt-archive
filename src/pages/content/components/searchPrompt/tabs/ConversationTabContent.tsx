@@ -1,11 +1,7 @@
 import { TabsContent } from "@src/components/ui/tabs";
 import { ConversationItem } from "../ConversationItem";
-import { List as ConversationList } from "../../Conversation";
 import { EmptyResult } from "../EmptyResult";
 import { CommandItem, CommandList } from "@src/components/ui/command";
-import { ListView } from "../../ListView";
-import { searchPromptConversationAtom } from "@src/pages/content/context";
-import { useAtom } from "jotai";
 import {
   ClearSelectionButton,
   SelectAllButton,
