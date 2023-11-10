@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { Command } from "@src/components/ui/command";
 import { useAtom } from "jotai";
-import {
-  searchOpenAtom,
-  searchPromptConversationAtom,
-  searchPromptFolderAtom,
-} from "../../context";
+import { searchOpenAtom } from "../../context";
 import { useBgMessage } from "../../hook";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { search } from "../../messages";
@@ -48,48 +44,47 @@ const TabSubText = ({
 export function SearchPrompt() {
   const [open, setOpen] = useAtom(searchOpenAtom);
   const [tab, setTab] = useState<keyof typeof SEARCH_TABS>("all");
-  const [conversationAtom, setConversationAtom] = useAtom(
-    searchPromptConversationAtom
-  );
-  const [folderAtom, setFolderAtom] = useAtom(searchPromptFolderAtom);
 
   const [state, setState] = useState<{
     loading: boolean;
     result: SearchResult | null;
+    query: string;
   }>({
     loading: false,
     result: null,
+    query: "",
   });
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSeachSubmit = (data: SearchFormValues) => {
-    data.query = data.query.trim();
-    if (data.query === "") {
+    const trimedQuery = data.query.trim();
+    if (trimedQuery === "") {
       setState(() => ({
         loading: false,
         result: null,
+        query: "",
       }));
       setTab("all");
       return;
     }
     console.log("search form submitted", data);
     search(data.query);
-    // setState(() => ({
-    //   loading: true,
-    //   result: null,
-    // }));
+    setState((p) => ({
+      ...p,
+      loading: true,
+      query: data.query,
+    }));
   };
 
   useBgMessage({
     [MESSAGE_ACTIONS.SEARCH]: (request, sender, _) => {
       const data = request.data as SearchResult;
-      setState(() => ({
+      setState((p) => ({
+        ...p,
         loading: false,
         result: data,
       }));
-      setConversationAtom(() => data.conversations);
-      setFolderAtom(() => data.folders);
     },
   });
 
@@ -102,8 +97,20 @@ export function SearchPrompt() {
     loadConversation(conversationId);
   }
 
+  function handleOpenChange(n) {
+    setOpen(() => n);
+
+    // if (!n) {
+    //   setState(() => ({
+    //     loading: false,
+    //     result: null,
+    //   }));
+    //   setTab("all");
+    // }
+  }
+
   let content = null;
-  if (state.result !== null) {
+  if (state.result !== null && !!state.query) {
     content = loading ? (
       <CommandLoading />
     ) : (
@@ -144,11 +151,11 @@ export function SearchPrompt() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="p-0 overflow-hidden bg-transparent search-prompt">
         <Command className="flex flex-col">
           {/* <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5"> */}
-          <SearchForm onSubmit={handleSeachSubmit} />
+          <SearchForm onSubmit={handleSeachSubmit} query={state.query} />
           {content}
         </Command>
       </DialogContent>
