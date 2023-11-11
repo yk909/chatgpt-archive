@@ -1,7 +1,7 @@
 import { CommandItem } from "@src/components/ui/command";
 import { MessageIcon, MessageIconWithSelection } from "@src/components/Icon";
 import { MoreDropdownButton } from "../MoreDropdownButton";
-import { AddToFolderDropdown } from "../dropdown/AddToFolderDropdown";
+import { AddToFolderDropdown } from "../actions/AddToFolderDropdown";
 
 export function ConversationItem({
   conversation,

@@ -23,3 +23,23 @@ export function TogglePinConversationDropdown({
     </DropdownMenuItem>
   );
 }
+
+export function TogglePinConversationButton({
+  conversationId,
+  ...rest
+}: {
+  conversationId: string;
+} & Omit<React.ComponentPropsWithoutRef<typeof PinIcon>, "pinned">) {
+  const [pinSet, _] = useAtom(pinConversationIdSetAtom);
+  const pinned = pinSet.has(conversationId);
+  return (
+    <PinIcon
+      pinned={pinned}
+      size="sm"
+      onClick={() => {
+        togglePinConversation(conversationId);
+      }}
+      {...rest}
+    />
+  );
+}

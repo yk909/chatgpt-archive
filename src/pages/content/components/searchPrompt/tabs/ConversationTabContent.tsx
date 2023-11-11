@@ -8,7 +8,7 @@ import {
   SelectionActionBar,
 } from "../../SelectionActionBar";
 import { MoreDropdownButton } from "../../MoreDropdownButton";
-import { AddToFolderDropdown } from "../../dropdown/AddToFolderDropdown";
+import { AddToFolderDropdown } from "../../actions/AddToFolderDropdown";
 import { useState } from "react";
 
 export default function ConversationTabContent({

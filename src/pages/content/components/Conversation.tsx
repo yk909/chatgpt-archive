@@ -5,9 +5,15 @@ import {
   ConversationMoreDropdownButton,
   MoreDropdownButton,
 } from "./MoreDropdownButton";
-import { AddToFolderDropdown } from "./dropdown/AddToFolderDropdown";
-import { MessageIconWithSelection } from "@src/components/Icon";
-import { TogglePinConversationDropdown } from "./dropdown/TogglePinConversation";
+import { AddToFolderDropdown } from "./actions/AddToFolderDropdown";
+import { MessageIconWithSelection, PinIcon } from "@src/components/Icon";
+import {
+  TogglePinConversationButton,
+  TogglePinConversationDropdown,
+} from "./actions/TogglePinConversation";
+import { useAtom } from "jotai";
+import { pinConversationIdSetAtom } from "../context";
+import { cn } from "@src/lib/utils";
 
 export function ConversationCard({
   data,
@@ -22,13 +28,22 @@ export function ConversationCard({
   selectionEnabled?: boolean;
   noSelect?: boolean;
 }) {
+  const [pinSet, _] = useAtom(pinConversationIdSetAtom);
+  const pinned = pinSet.has(data.id);
   const active = false;
   const handleToggle = (e: any) => {
     e.stopPropagation();
     toggle(data.id);
   };
+  console.count("render ConversationCard");
   return (
-    <div className={"flex gap-3 card " + (active ? "bg-dark-1" : "")}>
+    <div
+      className={cn(
+        "flex gap-3 card ",
+        active ? "bg-dark-1" : "",
+        pinned && "border border-yellow-500"
+      )}
+    >
       <div className="flex flex-none fcenter">
         {noSelect ? (
           <MessageSquare size={20} className="trans" />
@@ -60,7 +75,11 @@ export function ConversationCard({
         </div> */}
       </div>
 
-      <div className="flex items-center flex-none gap-1">
+      <div className="flex items-center flex-none gap-2">
+        <TogglePinConversationButton
+          conversationId={data.id}
+          className="opacity-0 card-hover-show"
+        />
         <MoreDropdownButton
           triggerClassName="opacity-0 card-hover-show"
           items={
@@ -87,7 +106,7 @@ export function List({
   selectionEnabled: boolean;
 }) {
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full gap-2">
       {data.map((item) => (
         <ConversationCard
           key={item.id}

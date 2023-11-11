@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@src/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { AddToFolderDropdown } from "./dropdown/AddToFolderDropdown";
+import { AddToFolderDropdown } from "./actions/AddToFolderDropdown";
 import { cn } from "@src/lib/utils";
 
 function ConversationDropdownContent({

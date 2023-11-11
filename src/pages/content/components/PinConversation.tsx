@@ -3,8 +3,8 @@ import { pinConversationListAtom } from "../context";
 import { MessageSquare, Pin } from "lucide-react";
 import { formatDates, loadConversation } from "@src/utils";
 import { MoreDropdownButton } from "./MoreDropdownButton";
-import { AddToFolderDropdown } from "./dropdown/AddToFolderDropdown";
-import { TogglePinConversationDropdown } from "./dropdown/TogglePinConversation";
+import { AddToFolderDropdown } from "./actions/AddToFolderDropdown";
+import { TogglePinConversationDropdown } from "./actions/TogglePinConversation";
 import { togglePinConversation } from "../messages";
 import { PinIcon } from "@src/components/Icon";
 
@@ -13,7 +13,7 @@ function PinConversation({ data }) {
   return (
     <div
       className={
-        "flex card items-center border border-primary" +
+        "flex card items-center border border-yellow-500" +
         (active ? "bg-dark-1" : "")
       }
       style={{
@@ -42,15 +42,6 @@ function PinConversation({ data }) {
       </div>
 
       <div className="flex items-center flex-none gap-2">
-        <MoreDropdownButton
-          triggerClassName="opacity-0 card-hover-show"
-          items={
-            <>
-              <AddToFolderDropdown conversationIdList={[data.id]} />
-              <TogglePinConversationDropdown conversationId={data.id} />
-            </>
-          }
-        />
         <PinIcon
           pinned={true}
           size="sm"
@@ -60,6 +51,15 @@ function PinConversation({ data }) {
             e.preventDefault();
             togglePinConversation(data.id);
           }}
+        />
+        <MoreDropdownButton
+          triggerClassName="opacity-0 card-hover-show"
+          items={
+            <>
+              <AddToFolderDropdown conversationIdList={[data.id]} />
+              <TogglePinConversationDropdown conversationId={data.id} />
+            </>
+          }
         />
       </div>
     </div>

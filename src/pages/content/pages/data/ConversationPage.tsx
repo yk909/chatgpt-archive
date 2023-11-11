@@ -23,7 +23,7 @@ import {
   ConversationMoreDropdownButton,
   MoreDropdownButton,
 } from "../../components/MoreDropdownButton";
-import { AddToFolderDropdown } from "../../components/dropdown/AddToFolderDropdown";
+import { AddToFolderDropdown } from "../../components/actions/AddToFolderDropdown";
 import { PinConversationList } from "../../components/PinConversation";
 
 const SortByOptions: Record<
