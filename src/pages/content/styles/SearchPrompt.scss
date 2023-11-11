@@ -20,10 +20,10 @@
 .search-prompt {
   top: 0px;
   --open-y-offset: 20vh;
-  --closed-y-offset: 22vh;
+  --closed-y-offset: 21vh;
   --open-scale: 1;
-  --closed-scale: 0.9;
-  --duration: 150ms;
+  --closed-scale: 0.95;
+  --duration: 100ms;
 }
 
 .search-prompt[data-state="open"] {
