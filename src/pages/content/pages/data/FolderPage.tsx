@@ -78,7 +78,7 @@ export function FolderPage() {
   const [loading] = useAtom(loadingAtom);
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center h-12">
         <CreateNewFolderButton />
       </div>
       {loading ? (

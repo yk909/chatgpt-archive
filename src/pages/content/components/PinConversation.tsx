@@ -16,8 +16,12 @@ function PinConversation({ data }) {
         "flex card items-center border border-primary" +
         (active ? "bg-dark-1" : "")
       }
+      style={{
+        paddingTop: "10px",
+        paddingBottom: "10px",
+      }}
     >
-      <MessageSquare size={20} className="trans mr-3" />
+      <MessageSquare size={18} className="trans mr-2" />
       <div
         className="flex-col flex-1 min-w-0 gap-1 cursor-pointer"
         onClick={(e) => {
@@ -67,7 +71,7 @@ export function PinConversationList() {
   );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 mb-3">
       {/* <div className="mb-2 flex text-sm items-center mx-3">
         <Pin className="text-yellow-500 mr-2 " size={20} />
         <div>Pinned conversations</div>

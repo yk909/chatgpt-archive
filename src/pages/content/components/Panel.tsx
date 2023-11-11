@@ -19,7 +19,7 @@ export default function Panel() {
     >
       <Header />
       <ProgressBar />
-      <div className="relative flex flex-col flex-1 min-h-0 space-y-3">
+      <div className="relative flex flex-col flex-1 min-h-0">
         <Outlet />
       </div>
       <BottomNavBar />
