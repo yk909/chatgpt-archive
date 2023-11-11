@@ -16,6 +16,13 @@ type ConversationWithKeywordCount = Conversation & {
 type SortAttribute = "update_time" | "create_time";
 type SearchSortAttribute = "update_time" | "create_time" | "keywordCount";
 
+// background script
+type PinConversation = {
+  id: string;
+  create_time: string;
+  update_time: string;
+};
+
 type Message = {
   id: string;
   conversationId: string;
@@ -51,4 +58,11 @@ type KeyboardShortcutItem = {
   name: string;
   callback: () => void;
   keyCondition: (e: KeyboardEvent) => boolean;
+};
+
+// API
+type RefreshResponseData = {
+  conversations: Conversation[];
+  folders: Folder[];
+  pinConversations: Conversation[];
 };

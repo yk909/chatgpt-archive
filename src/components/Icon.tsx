@@ -1,5 +1,13 @@
-import { Check, ChevronRight, Folder, MessageSquare } from "lucide-react";
+import {
+  Check,
+  ChevronRight,
+  Folder,
+  MessageSquare,
+  Pin,
+  PinOff,
+} from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
+import { cn } from "@src/lib/utils";
 
 export function SuccessIcon() {
   return (
@@ -66,6 +74,36 @@ export function ToggleIcon({
         }}
       />
     </div>
+  );
+}
+
+export function PinIcon({
+  pinned,
+  size = "md",
+  className,
+  ...rest
+}: {
+  pinned: boolean;
+  size?: "sm" | "md" | "lg";
+} & React.ComponentPropsWithoutRef<typeof Pin>) {
+  return pinned ? (
+    <PinOff
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+      className={cn("text-red-500 cursor-pointer", className)}
+      {...rest}
+    />
+  ) : (
+    <Pin
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+      className={cn("text-yellow-500 cursor-pointer", className)}
+      {...rest}
+    />
   );
 }
 

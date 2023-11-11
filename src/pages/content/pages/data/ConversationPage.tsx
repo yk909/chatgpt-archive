@@ -24,6 +24,7 @@ import {
   MoreDropdownButton,
 } from "../../components/MoreDropdownButton";
 import { AddToFolderDropdown } from "../../components/dropdown/AddToFolderDropdown";
+import { PinConversationList } from "../../components/PinConversation";
 
 const SortByOptions: Record<
   string,
@@ -107,10 +108,10 @@ export function ConversationPage() {
 
   return (
     <>
-      <div className="flex items-center">
+      {/* <div className="flex items-center">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            {/* <Select
+            <Select
               onValueChange={(v) => {
                 setSortByKey(v as keyof typeof SortByOptions);
               }}
@@ -127,10 +128,10 @@ export function ConversationPage() {
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select> */}
+            </Select>
           </div>
         </div>
-      </div>
+      </div> */}
       {loading ? (
         <Spinner />
       ) : (

@@ -79,3 +79,11 @@ export function deleteConversationsFromFolder(
     data: { conversationIdList, folderId },
   });
 }
+
+// pin conversations
+export function togglePinConversation(conversationId: string) {
+  chrome.runtime.sendMessage({
+    type: MESSAGE_ACTIONS.PIN_CONVERSATION,
+    data: { conversationId },
+  });
+}

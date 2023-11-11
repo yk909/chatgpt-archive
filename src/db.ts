@@ -20,6 +20,7 @@ export class RootDB extends Dexie {
   folders: Dexie.Table<FolderWithoutChildren, string>;
   conversationToFolder: Dexie.Table<ConversationToFolderData, number>;
   messageToFolder: Dexie.Table<messageToFolderData, number>;
+  pinConversations: Dexie.Table<PinConversation, string>;
 
   constructor(username: string) {
     super("ca-db-" + username);
@@ -30,6 +31,7 @@ export class RootDB extends Dexie {
         "++id, conversationId, folderId, create_time, update_time",
       messageToFolder:
         "++id, conversationId, messageId, folderId, create_time, update_time",
+      pinConversations: "&id, create_time, update_time",
     });
   }
 
@@ -287,6 +289,35 @@ export class RootDB extends Dexie {
     });
 
     return data;
+  }
+
+  // Pin conversations
+
+  async getPinConversations() {
+    const pinConversations = await this.pinConversations
+      .orderBy("update_time")
+      .reverse()
+      .toArray();
+    const pinConversationsIdList = pinConversations.map((c) => c.id);
+    return await db.conversations.bulkGet(pinConversationsIdList);
+  }
+
+  async togglePinConversation(conversationId: string) {
+    const conversation = await db.conversations.get(conversationId);
+    if (!conversation) {
+      throw new Error("No conversation found with id");
+    }
+    const dateNow = Date.now().toString();
+    const existing = await db.pinConversations.get(conversationId);
+    if (existing) {
+      await db.pinConversations.delete(conversationId);
+    } else {
+      await db.pinConversations.put({
+        id: conversationId,
+        create_time: dateNow,
+        update_time: dateNow,
+      });
+    }
   }
 }
 

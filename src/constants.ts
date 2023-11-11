@@ -40,7 +40,11 @@ export const MESSAGE_ACTIONS = {
   // conversation detail update progress
   PROGRESS: "PROGRESS",
 
-  // get conversation (for sorting and ordering)
+  // pinned conversations
+
+  // content to bg: toggle pin conversation
+  // bg to content: update pinned conversations
+  PIN_CONVERSATION: "PIN_CONVERSATION",
 
   FETCHING_APP_STATE: "FETCHING_APP_STATE",
   SAVE_APP_STATE: "SAVE_APP_STATE",
@@ -62,3 +66,8 @@ export const ALT_KEY = "Alt";
 
 export const CONTENT_VIEW_CONTAINER_ID =
   "chatgpt-archive-content-view-container";
+
+export const SORT_BY = {
+  UPDATE_TIME: "update_time",
+  CREATE_TIME: "create_time",
+};

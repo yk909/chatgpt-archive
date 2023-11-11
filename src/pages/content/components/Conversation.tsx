@@ -7,6 +7,7 @@ import {
 } from "./MoreDropdownButton";
 import { AddToFolderDropdown } from "./dropdown/AddToFolderDropdown";
 import { MessageIconWithSelection } from "@src/components/Icon";
+import { TogglePinConversationDropdown } from "./dropdown/TogglePinConversation";
 
 export function ConversationCard({
   data,
@@ -65,6 +66,7 @@ export function ConversationCard({
           items={
             <>
               <AddToFolderDropdown conversationIdList={[data.id]} />
+              <TogglePinConversationDropdown conversationId={data.id} />
             </>
           }
         />

@@ -78,6 +78,7 @@ export class BackgroundManager {
 
       [MESSAGE_ACTIONS.SEARCH]: this.handleSearch,
 
+      [MESSAGE_ACTIONS.PIN_CONVERSATION]: this.handleTogglePinConversation,
     };
 
     // set up listeners for messages from from content script
@@ -115,8 +116,7 @@ export class BackgroundManager {
     await this.getOrRefreshSession();
     const ac = this.getCurrentUserAccessToken();
 
-    await this.sendAllConversations(sender.tab.id);
-    await this.sendAllFolderData(sender.tab.id);
+    await this.sendAllData(sender.tab.id);
 
     const latestConItem = await db.getLatestConversation();
     if (!latestConItem) {
@@ -316,6 +316,16 @@ export class BackgroundManager {
     });
   };
 
+  handleTogglePinConversation = async (request, sender, _) => {
+    const { conversationId } = request.data;
+    await db.togglePinConversation(conversationId);
+    await this.sendPinConversations(sender.tab.id);
+    await this.sendResponseStatus(sender, {
+      status: "SUCCESS",
+      message: "Successfully toggled pinned conversation",
+    });
+  };
+
   updateLatestConversationDetails = async () => {
     const cList = (
       await db.conversations.orderBy("update_time").reverse().toArray()
@@ -408,6 +418,38 @@ export class BackgroundManager {
     sendMessageToTab(tabId, {
       type: MESSAGE_ACTIONS.FETCH_FOLDERS,
       data,
+    });
+  };
+
+  sendPinConversations = async (tabId: string) => {
+    const data = await db.getPinConversations();
+    sendMessageToTab(tabId, {
+      type: MESSAGE_ACTIONS.PIN_CONVERSATION,
+      data,
+    });
+  };
+
+  sendAllData = async (tabId: string) => {
+    const folders = await db.getManyFolders(
+      undefined,
+      undefined,
+      "update_time",
+      true
+    );
+    const conversations = await db.getManyConversations(
+      undefined,
+      undefined,
+      "update_time",
+      true
+    );
+    const pinConversations = await db.getPinConversations();
+    sendMessageToTab(tabId, {
+      type: MESSAGE_ACTIONS.REFRESH,
+      data: {
+        folders,
+        conversations,
+        pinConversations,
+      },
     });
   };
 }

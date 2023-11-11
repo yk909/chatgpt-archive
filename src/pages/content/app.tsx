@@ -12,6 +12,7 @@ import {
   conversationListAtom,
   folderListAtom,
   panelOpenAtom,
+  pinConversationListAtom,
   searchOpenAtom,
 } from "./context";
 import { useBgMessage, useKeyboardShortcut } from "./hook";
@@ -63,9 +64,21 @@ export default function App() {
   const [conversations, setConversations] = useAtom(conversationListAtom);
   const [open, setOpen] = useAtom(panelOpenAtom);
   const [searchOpen, setSearchOpen] = useAtom(searchOpenAtom);
+  const [pinConversationIdList, setPinConversationIdList] = useAtom(
+    pinConversationListAtom
+  );
   const { toast } = useToast();
 
   useBgMessage({
+    [MESSAGE_ACTIONS.REFRESH]: (request, sender, _) => {
+      // cast request.data as RefreshResponseData
+      const { folders, conversations, pinConversations } =
+        request.data as RefreshResponseData;
+      console.log("refresh from bg", request.data);
+      setFolders(folders);
+      setConversations(conversations);
+      setPinConversationIdList(pinConversations);
+    },
     [MESSAGE_ACTIONS.RESPONSE_STATUS]: (request, sender, _) => {
       setResponseStatus(request.data);
       console.log("response status", request.data);
@@ -83,6 +96,9 @@ export default function App() {
     },
     [MESSAGE_ACTIONS.FETCH_CONVERSATIONS]: (request, sender, _) => {
       setConversations(request.data);
+    },
+    [MESSAGE_ACTIONS.PIN_CONVERSATION]: (request, sender, _) => {
+      setPinConversationIdList(request.data);
     },
   });
 
