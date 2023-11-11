@@ -38,11 +38,14 @@ export class BackgroundManager {
     string,
     (request: any, sender: any, sendResponse: any) => void
   >;
-  detailFetchingThreads: Record<
+
+  detailFetchingState: Record<
     string,
     {
+      tabIds: number[];
       current: number;
       total: number;
+      inProgress: boolean;
     }
   > = {};
 
@@ -59,20 +62,6 @@ export class BackgroundManager {
       }
     });
 
-    this.handleInit = this.handleInit.bind(this);
-    this.handleFetchConversations = this.handleFetchConversations.bind(this);
-    this.handleRefresh = this.handleRefresh.bind(this);
-    this.handleFetchFolders = this.handleFetchFolders.bind(this);
-    this.handleCreateNewFolder = this.handleCreateNewFolder.bind(this);
-    this.handleAddConversationsToFolder =
-      this.handleAddConversationsToFolder.bind(this);
-    this.handleRenameFolder = this.handleRenameFolder.bind(this);
-    this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
-    this.handleAddConversationsToFolder =
-      this.handleAddConversationsToFolder.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleFetchConversations = this.handleFetchConversations.bind(this);
-
     this.messageHandlerMap = {
       [MESSAGE_ACTIONS.INIT]: this.handleInit,
       // [MESSAGE_ACTIONS.APPEND_CONVERSATIONS]: this.handleFetchConversations,
@@ -86,9 +75,12 @@ export class BackgroundManager {
       [MESSAGE_ACTIONS.DELETE_FOLDER]: this.handleDeleteFolder,
       [MESSAGE_ACTIONS.DELETE_CONVERSATIONS_FROM_FOLDER]:
         this.handleDeleteConversationsFromFolder,
+
       [MESSAGE_ACTIONS.SEARCH]: this.handleSearch,
+
     };
 
+    // set up listeners for messages from from content script
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("background received message ", request);
       if (!db && !!this.currentUser.info) initDB(this.currentUser.info.id);
@@ -106,9 +98,19 @@ export class BackgroundManager {
         console.log("unknown request type", request.type);
       }
     });
+
+    // set up listeners for tab closing events
+    chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
+      for (const state of Object.values(this.detailFetchingState)) {
+        const index = state.tabIds.indexOf(tabId);
+        if (index !== -1) {
+          state.tabIds.splice(index, 1);
+        }
+      }
+    });
   }
 
-  async handleInit(request, sender, sendResponse) {
+  handleInit = async (request, sender, sendResponse) => {
     console.log("start handle init", db);
     await this.getOrRefreshSession();
     const ac = this.getCurrentUserAccessToken();
@@ -126,7 +128,6 @@ export class BackgroundManager {
       // only fetch the new ones based on the latest conversation
 
       const latestDate = new Date(latestConItem.update_time);
-      // console.log("latest conversation", latestDate);
 
       const newItems = await fetchNewConversations(ac, latestDate);
       await db.putManyConversations(newItems);
@@ -136,48 +137,49 @@ export class BackgroundManager {
       }
     }
 
-    // update conversation details
-    // if (this.detailFetchingThreads[this.currentUser.info.id]) {
-    //   console.log("already fetching conversation details");
-    //   const { current, total } = this.detailFetchingThreads[this.currentUser.info.id];
-    //   sendMessageToTab(sender.tab.id, {
-    //     type: MESSAGE_ACTIONS.PROGRESS,
-    //     data: { current, total },
-    //   });
-    //   return;
-    // }
-    const conWithoutDetails = await db.getConversationWithoutMessage();
+    let state = this.detailFetchingState[this.currentUser.info.id];
+    if (!state) {
+      state = {
+        tabIds: [sender.tab.id],
+        current: 0,
+        total: 0,
+        inProgress: false,
+      };
+      this.detailFetchingState[this.currentUser.info.id] = state;
+    } else if (!state.tabIds.includes(sender.tab.id)) {
+      state.tabIds.push(sender.tab.id);
+    }
 
-    const onUpdate = async (current: number, total: number, curVal: any) => {
-      const msgStr = extractMessageString(curVal);
-      await db.conversations.update(curVal.conversation_id, {
-        messageStr: msgStr,
-      });
-      console.log("conversation detail update", {
-        current,
-        total,
-        val: curVal.conversation_id,
-        // msgStr,
-      });
-      sendMessageToTab(sender.tab.id, {
-        type: MESSAGE_ACTIONS.PROGRESS,
-        data: { current, total },
-      });
-    };
-
-    if (conWithoutDetails.length > 0) {
+    if (!state.inProgress) {
+      state.inProgress = true;
+      const conWithoutDetails = await db.getConversationWithoutMessage();
+      state.total = conWithoutDetails.length;
+      state.current = 0;
       console.log(
         "start fetching conversation details for",
         conWithoutDetails.length
       );
+      const onUpdate = async (current: number, total: number, curVal: any) => {
+        const msgStr = extractMessageString(curVal);
+        await db.conversations.update(curVal.conversation_id, {
+          messageStr: msgStr,
+        });
+        console.log("conversation detail update", {
+          current,
+          total,
+          val: curVal.conversation_id,
+          // msgStr,
+        });
+        state.current = current;
+        state.total = total;
+        for (const tabId of state.tabIds) {
+          sendMessageToTab(tabId, {
+            type: MESSAGE_ACTIONS.PROGRESS,
+            data: { current, total },
+          });
+        }
+      };
 
-      sendMessageToTab(sender.tab.id, {
-        type: MESSAGE_ACTIONS.PROGRESS,
-        data: {
-          current: 0,
-          total: conWithoutDetails.length,
-        },
-      });
       const cDetailList = await fetchConversationDetails(
         conWithoutDetails,
         ac,
@@ -185,8 +187,9 @@ export class BackgroundManager {
       );
       // console.log("fetched conversation details", cDetailList);
       console.log(`saving ${cDetailList.length} updated conversation details`);
+      state.inProgress = false;
     }
-  }
+  };
 
   async sendResponseStatus(sender, data) {
     sendMessageToTab(sender.tab.id, {
@@ -195,7 +198,7 @@ export class BackgroundManager {
     });
   }
 
-  async handleFetchConversations(request, sender, _) {
+  handleFetchConversations = async (request, sender, _) => {
     const { pageSize, page, sortBy, desc } = request.data;
     const data = await db.getManyConversations(
       pageSize,
@@ -208,13 +211,13 @@ export class BackgroundManager {
       type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,
       data,
     });
-  }
+  };
 
-  async handleFetchFolders(request, sender, _) {
+  handleFetchFolders = async (request, sender, _) => {
     await this.sendAllFolderData(sender.tab.id);
-  }
+  };
 
-  async handleRefresh(request, sender, _) {
+  handleRefresh = async (request, sender, _) => {
     this.handleInit(request, sender, _);
     sendMessageToTab(sender.tab.id, {
       type: MESSAGE_ACTIONS.REFRESH,
@@ -222,9 +225,9 @@ export class BackgroundManager {
         isRefreshing: false,
       },
     });
-  }
+  };
 
-  async handleCreateNewFolder(request, sender, _) {
+  handleCreateNewFolder = async (request, sender, _) => {
     const { name, color, children } = request.data;
     await db.createNewFolder({
       name,
@@ -236,9 +239,9 @@ export class BackgroundManager {
       message: "Successfully created new folder",
     });
     await this.sendAllFolderData(sender.tab.id);
-  }
+  };
 
-  async handleAddConversationsToFolder(request, sender, _) {
+  handleAddConversationsToFolder = async (request, sender, _) => {
     const { conversationIdList, folderId } = request.data;
     await db.addConversationsToFolder(conversationIdList, folderId);
     console.log("success addConversationToFolder");
@@ -255,9 +258,9 @@ export class BackgroundManager {
     //   type: MESSAGE_ACTIONS.FETCH_FOLDERS,
     //   data,
     // });
-  }
+  };
 
-  async handleDeleteConversationsFromFolder(request, sender, _) {
+  handleDeleteConversationsFromFolder = async (request, sender, _) => {
     const { conversationIdList, folderId } = request.data;
     await db.deleteConversationsFromFolder(conversationIdList, folderId);
     sendMessageToTab(sender.tab.id, {
@@ -267,9 +270,9 @@ export class BackgroundManager {
         message: `Successfully deleted ${conversationIdList.length} conversation(s) from folder`,
       },
     });
-  }
+  };
 
-  async handleRenameFolder(request, sender, _) {
+  handleRenameFolder = async (request, sender, _) => {
     const { folderId, name } = request.data;
     await db.renameFolder(folderId, name);
     console.log("success renameFolder");
@@ -288,9 +291,9 @@ export class BackgroundManager {
       type: MESSAGE_ACTIONS.FETCH_FOLDERS,
       data,
     });
-  }
+  };
 
-  async handleDeleteFolder(request, sender, _) {
+  handleDeleteFolder = async (request, sender, _) => {
     const { folderIdList } = request.data;
     await db.deleteFolder(folderIdList);
     console.log("delete folder successful", { folderIdList });
@@ -299,9 +302,9 @@ export class BackgroundManager {
       message: `Successfully deleted ${folderIdList.length} folder(s)`,
     });
     this.sendAllFolderData(sender.tab.id);
-  }
+  };
 
-  async handleSearch(request, sender, _) {
+  handleSearch = async (request, sender, _) => {
     const { query } = request.data;
     if (!db) initDB(this.currentUser.info.id);
     const conversations = await db.searchConversations(query);
@@ -311,9 +314,9 @@ export class BackgroundManager {
       type: MESSAGE_ACTIONS.SEARCH,
       data: { conversations, folders },
     });
-  }
+  };
 
-  async updateLatestConversationDetails() {
+  updateLatestConversationDetails = async () => {
     const cList = (
       await db.conversations.orderBy("update_time").reverse().toArray()
     ).map((c) => ({ id: c.id, messageStr: c.messageStr }));
@@ -334,9 +337,9 @@ export class BackgroundManager {
       onUpdate
     );
     console.log(`saving ${cDetailList.length} updated conversation details`);
-  }
+  };
 
-  async getOrRefreshSession() {
+  getOrRefreshSession = async () => {
     const user = await getAccessToken();
     if (!user) return null;
 
@@ -354,36 +357,36 @@ export class BackgroundManager {
     console.log("saved access token");
 
     initDB(user.id);
-  }
+  };
 
-  async saveUsers() {
+  saveUsers = async () => {
     await chrome.storage.local.set({
       [this.USERS_KEY]: JSON.stringify(this.users),
     });
-  }
+  };
 
-  getCurrentUserAccessToken() {
+  getCurrentUserAccessToken = () => {
     return this.currentUser.info.accessToken;
-  }
+  };
 
-  getCurrentUser() {
+  getCurrentUser = () => {
     return this.currentUser.info;
-  }
+  };
 
-  async sendFirstPageConversations(tabId: string) {
+  sendFirstPageConversations = async (tabId: string) => {
     const data = await db.getManyConversations(PAGE_SIZE, 0);
 
     sendMessageToTab(tabId, {
       type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,
       data,
     });
-  }
+  };
 
-  async sendAllConversations(
+  sendAllConversations = async (
     tabId: string,
     sortBy = "update_time",
     desc = true
-  ) {
+  ) => {
     const data = await db.getManyConversations(
       undefined,
       undefined,
@@ -394,13 +397,17 @@ export class BackgroundManager {
       type: MESSAGE_ACTIONS.FETCH_CONVERSATIONS,
       data,
     });
-  }
+  };
 
-  async sendAllFolderData(tabId: string, sortBy = "update_time", desc = true) {
+  sendAllFolderData = async (
+    tabId: string,
+    sortBy = "update_time",
+    desc = true
+  ) => {
     const data = await db.getManyFolders(undefined, undefined, sortBy, desc);
     sendMessageToTab(tabId, {
       type: MESSAGE_ACTIONS.FETCH_FOLDERS,
       data,
     });
-  }
+  };
 }
