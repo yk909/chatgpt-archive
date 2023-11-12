@@ -1,7 +1,7 @@
 {
   "name": "chatgpt-archive",
   "version": "0.0.1",
-  "description": "ChatGPT Archive is a Chrome extension designed to enhance the experience of users interacting with OpenAI's ChatGPT. This extension provides additional functionality that complements the standard capabilities of the AI model, focusing particularly on preserving, managing, and retrieving chat data.",
+  "description": "ChatGPT Archive enhances the ChatGPT experience by providing folder organization and quick search capabilities.",
   "license": "MIT",
   "type": "module",
   "scripts": {
