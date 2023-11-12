@@ -7,6 +7,7 @@ import { Outlet } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 import { Spinner } from "@src/components/Spinner";
 import { useRefresh } from "../hook";
+import Footer from "./Footer";
 
 export default function Panel() {
   const [open] = useAtom(panelOpenAtom);
@@ -28,6 +29,7 @@ export default function Panel() {
         {!refreshing ? <Outlet /> : <Spinner />}
       </div>
       {/* <BottomNavBar /> */}
+      <Footer />
     </div>
   );
 }
