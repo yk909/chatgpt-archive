@@ -139,7 +139,7 @@ export default function App() {
         `[data-cid='${currentConversationId}']`
       );
       if (el) {
-        console.log("scrolling to", currentConversationId, el);
+        // console.log("scrolling to", currentConversationId, el);
         el.scrollIntoView({
           behavior: "smooth",
           block: "center",

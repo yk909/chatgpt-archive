@@ -16,6 +16,10 @@ import { pinConversationIdSetAtom } from "../context";
 import { cn } from "@src/lib/utils";
 import { useConversation } from "../hook";
 import React from "react";
+import {
+  ConversationDetailPopover,
+  ConversationDetailPopoverDropdown,
+} from "@src/components/ConversationDetailPopover";
 
 const ConversationCardPresentor = React.memo(
   function ConversationCardPresentor({
@@ -77,11 +81,14 @@ const ConversationCardPresentor = React.memo(
         </div> */}
         </div>
 
-        <div className="flex items-center flex-none gap-2">
-          <TogglePinConversationButton
-            conversationId={data.id}
-            className="opacity-0 card-hover-show"
+        <div className="flex items-center flex-none gap-1">
+          <ConversationDetailPopover
+            conversation={data}
+            className="opacity-0 card-hover-show icon-container icon-container-sm"
           />
+          <div className="opacity-0 card-hover-show icon-container icon-container-sm">
+            <TogglePinConversationButton conversationId={data.id} />
+          </div>
           <MoreDropdownButton
             triggerClassName="opacity-0 card-hover-show"
             items={

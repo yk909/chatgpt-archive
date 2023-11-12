@@ -7,6 +7,10 @@ import { AddToFolderDropdown } from "./actions/AddToFolderDropdown";
 import { TogglePinConversationDropdown } from "./actions/TogglePinConversation";
 import { togglePinConversation } from "../messages";
 import { PinIcon } from "@src/components/Icon";
+import {
+  ConversationDetailPopover,
+  ConversationDetailPopoverDropdown,
+} from "@src/components/ConversationDetailPopover";
 
 function PinConversation({ data }: { data: Conversation }) {
   const active = false;
@@ -41,17 +45,22 @@ function PinConversation({ data }: { data: Conversation }) {
         </div> */}
       </div>
 
-      <div className="flex items-center flex-none gap-2">
-        <PinIcon
-          pinned={true}
-          size="sm"
-          className="opacity-0 card-hover-show"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            togglePinConversation(data.id);
-          }}
+      <div className="flex items-center flex-none gap-1">
+        <ConversationDetailPopover
+          conversation={data}
+          className="opacity-0 card-hover-show icon-container icon-container-sm"
         />
+        <div className="opacity-0 card-hover-show icon-container icon-container-sm">
+          <PinIcon
+            pinned={true}
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              togglePinConversation(data.id);
+            }}
+          />
+        </div>
         <MoreDropdownButton
           triggerClassName="opacity-0 card-hover-show"
           items={

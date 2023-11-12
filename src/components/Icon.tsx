@@ -2,6 +2,7 @@ import {
   Check,
   ChevronRight,
   Folder,
+  Info,
   MessageSquare,
   Pin,
   PinOff,
@@ -151,6 +152,19 @@ export function MessageIconWithSelection({
           height: sizeMap[size],
         }}
         className="absolute group-hover:opacity-0 trans"
+      />
+    </div>
+  );
+}
+
+export function InfoIcon({ size }: { size: "sm" | "md" | "lg" }) {
+  return (
+    <div className="flex items-center justify-center rounded-full select-none trans hover:bg-muted">
+      <Info
+        style={{
+          width: sizeMap[size],
+          height: sizeMap[size],
+        }}
       />
     </div>
   );
