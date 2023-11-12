@@ -87,7 +87,7 @@ export default function App() {
         toast({
           description: request.data.message,
           icon: <SuccessIcon />,
-          duration: 2000,
+          duration: 1500,
         });
       }
     },

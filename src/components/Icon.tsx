@@ -11,7 +11,7 @@ import { cn } from "@src/lib/utils";
 
 export function SuccessIcon() {
   return (
-    <div className="flex items-center justify-center bg-green-600 rounded-full select-none w-7 h-7">
+    <div className="flex items-center justify-center rounded-full select-none bg-primary w-7 h-7">
       <Check size={20} />
     </div>
   );

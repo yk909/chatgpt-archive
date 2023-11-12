@@ -101,7 +101,8 @@
 
 #chatgpt-archive-content-view-container.dark {
   --text: var(--bg-50);
-  --background: var(--bg-950);
+  // --background: var(--bg-950);
+  --background: 216 16% 6%;
   --secondary: 216 48% 6%;
   --accent: var(--bg-800);
 
@@ -120,7 +121,7 @@
 
   --secondary-foreground: var(--background);
 
-  --muted: var(--bg-800);
+  --muted: var(--bg-950);
   --muted-foreground: var(--bg-400);
 
   --destructive: 0 62.8% 30.6%;
@@ -187,5 +188,5 @@
 }
 
 .animate-dynamic-h-content {
-  overflow: hidden; 
+  overflow: hidden;
 }
