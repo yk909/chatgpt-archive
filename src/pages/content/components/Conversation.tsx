@@ -41,7 +41,7 @@ export function ConversationCard({
       className={cn(
         "flex gap-3 card ",
         active ? "bg-dark-1" : "",
-        pinned && "border border-yellow-500"
+        pinned && "border border-green-500"
       )}
     >
       <div className="flex flex-none fcenter">

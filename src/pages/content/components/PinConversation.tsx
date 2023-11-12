@@ -13,7 +13,7 @@ function PinConversation({ data }) {
   return (
     <div
       className={
-        "flex card items-center border border-yellow-500" +
+        "flex card items-center border border-green-500" +
         (active ? "bg-dark-1" : "")
       }
       style={{
@@ -21,7 +21,7 @@ function PinConversation({ data }) {
         paddingBottom: "10px",
       }}
     >
-      <MessageSquare size={18} className="trans mr-2" />
+      <MessageSquare size={18} className="mr-2 trans" />
       <div
         className="flex-col flex-1 min-w-0 gap-1 cursor-pointer"
         onClick={(e) => {
@@ -72,8 +72,8 @@ export function PinConversationList() {
 
   return (
     <div className="flex flex-col gap-2 mb-3">
-      {/* <div className="mb-2 flex text-sm items-center mx-3">
-        <Pin className="text-yellow-500 mr-2 " size={20} />
+      {/* <div className="flex items-center mx-3 mb-2 text-sm">
+        <Pin className="mr-2 text-yellow-500 " size={20} />
         <div>Pinned conversations</div>
       </div> */}
       {pinConversations.map((c) => (
