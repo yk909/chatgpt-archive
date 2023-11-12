@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { pinConversationListAtom } from "../context";
-import { MessageSquare, Pin } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { formatDates, loadConversation } from "@src/utils";
 import { MoreDropdownButton } from "./MoreDropdownButton";
 import { AddToFolderDropdown } from "./actions/AddToFolderDropdown";
@@ -8,7 +8,7 @@ import { TogglePinConversationDropdown } from "./actions/TogglePinConversation";
 import { togglePinConversation } from "../messages";
 import { PinIcon } from "@src/components/Icon";
 
-function PinConversation({ data }) {
+function PinConversation({ data }: { data: Conversation }) {
   const active = false;
   return (
     <div
@@ -17,8 +17,8 @@ function PinConversation({ data }) {
         (active ? "bg-dark-1" : "")
       }
       style={{
-        paddingTop: "10px",
-        paddingBottom: "10px",
+        paddingTop: "8px",
+        paddingBottom: "8px",
       }}
     >
       <MessageSquare size={18} className="mr-2 trans" />
@@ -33,9 +33,9 @@ function PinConversation({ data }) {
           className="text-sm truncate"
           dangerouslySetInnerHTML={{ __html: data.title }}
         ></div>
-        <div className="text-xs text-muted-foreground">
+        {/* <div className="text-xs text-muted-foreground">
           Last update: {formatDates(data.update_time)}
-        </div>
+        </div> */}
         {/* <div className="text-xs text-muted-foreground">
           Create time: {formatDates(data.create_time)}
         </div> */}
@@ -66,9 +66,7 @@ function PinConversation({ data }) {
   );
 }
 export function PinConversationList() {
-  const [pinConversations, setPinConversations] = useAtom(
-    pinConversationListAtom
-  );
+  const [pinConversations, _] = useAtom(pinConversationListAtom);
 
   return (
     <div className="flex flex-col gap-2 mb-3">
