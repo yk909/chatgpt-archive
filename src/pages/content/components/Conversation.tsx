@@ -44,6 +44,7 @@ const ConversationCardPresentor = React.memo(
       <div
         className={cn("flex gap-3 card ", pinned && "border border-green-500")}
         data-active={active}
+        data-cid={data.id}
       >
         <div className="flex flex-none fcenter">
           {noSelect ? (

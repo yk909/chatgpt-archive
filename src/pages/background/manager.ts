@@ -6,7 +6,11 @@ import {
   fetchNewConversations,
   getAccessToken,
 } from "@src/api";
-import { extractMessageString, sendMessageToTab } from "./utils";
+import {
+  extractConversationId,
+  extractMessageString,
+  sendMessageToTab,
+} from "./utils";
 import { PAGE_SIZE } from "./config";
 
 type UserInfo = {
@@ -118,6 +122,11 @@ export class BackgroundManager {
 
     await this.sendAllData(sender.tab.id);
 
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.CURRENT_CONVERSATION_CHANGE,
+      data: extractConversationId(sender.tab.url),
+    });
+
     const latestConItem = await db.getLatestConversation();
     if (!latestConItem) {
       // no conversation, fetch all conversations
@@ -189,6 +198,11 @@ export class BackgroundManager {
       console.log(`saving ${cDetailList.length} updated conversation details`);
       state.inProgress = false;
     }
+
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.CURRENT_CONVERSATION_CHANGE,
+      data: extractConversationId(sender.tab.url),
+    });
   };
 
   async sendResponseStatus(sender, data) {

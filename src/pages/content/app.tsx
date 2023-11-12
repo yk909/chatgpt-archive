@@ -133,6 +133,22 @@ export default function App() {
     init();
   }, []);
 
+  useEffect(() => {
+    if (currentConversationId) {
+      const el = document.querySelector(
+        `[data-cid='${currentConversationId}']`
+      );
+      if (el) {
+        console.log("scrolling to", currentConversationId, el);
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+      }
+    }
+  }, [currentConversationId]);
+
   return (
     <>
       <Thumb />
