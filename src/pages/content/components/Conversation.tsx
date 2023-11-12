@@ -14,6 +14,87 @@ import {
 import { useAtom } from "jotai";
 import { pinConversationIdSetAtom } from "../context";
 import { cn } from "@src/lib/utils";
+import { useConversation } from "../hook";
+import React from "react";
+
+const ConversationCardPresentor = React.memo(
+  function ConversationCardPresentor({
+    data,
+    selected,
+    toggle,
+    pinned,
+    active,
+    selectionEnabled,
+    noSelect = false,
+  }: {
+    data: Conversation;
+    pinned: boolean;
+    active: boolean;
+    selected: boolean;
+    toggle: (id: string) => void;
+    selectionEnabled: boolean;
+    noSelect: boolean;
+  }) {
+    const handleToggle = (e: any) => {
+      e.stopPropagation();
+      toggle(data.id);
+    };
+    console.count("render ConversationCard");
+    return (
+      <div
+        className={cn("flex gap-3 card ", pinned && "border border-green-500")}
+        data-active={active}
+      >
+        <div className="flex flex-none fcenter">
+          {noSelect ? (
+            <MessageSquare size={20} className="trans" />
+          ) : (
+            <MessageIconWithSelection
+              selected={selected}
+              enabled={selectionEnabled}
+              id={"c-" + data.id}
+              handleToggle={handleToggle}
+            />
+          )}
+        </div>
+        <div
+          className="flex-col flex-1 min-w-0 gap-1 cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            loadConversation(data.id);
+          }}
+        >
+          <div
+            className="text-sm truncate"
+            dangerouslySetInnerHTML={{ __html: data.title }}
+          ></div>
+          <div className="text-xs text-muted-foreground">
+            Last update: {formatDates(data.update_time)}
+          </div>
+          {/* <div className="text-xs text-muted-foreground">
+          Create time: {formatDates(data.create_time)}
+        </div> */}
+        </div>
+
+        <div className="flex items-center flex-none gap-2">
+          <TogglePinConversationButton
+            conversationId={data.id}
+            className="opacity-0 card-hover-show"
+          />
+          <MoreDropdownButton
+            triggerClassName="opacity-0 card-hover-show"
+            items={
+              <>
+                <AddToFolderDropdown conversationIdList={[data.id]} />
+                <TogglePinConversationDropdown conversationId={data.id} />
+              </>
+            }
+          />
+        </div>
+      </div>
+    );
+  }
+);
 
 export function ConversationCard({
   data,
@@ -28,69 +109,17 @@ export function ConversationCard({
   selectionEnabled?: boolean;
   noSelect?: boolean;
 }) {
-  const [pinSet, _] = useAtom(pinConversationIdSetAtom);
-  const pinned = pinSet.has(data.id);
-  const active = false;
-  const handleToggle = (e: any) => {
-    e.stopPropagation();
-    toggle(data.id);
-  };
-  console.count("render ConversationCard");
+  const { pinned, active } = useConversation(data.id);
   return (
-    <div
-      className={cn(
-        "flex gap-3 card ",
-        active ? "bg-dark-1" : "",
-        pinned && "border border-green-500"
-      )}
-    >
-      <div className="flex flex-none fcenter">
-        {noSelect ? (
-          <MessageSquare size={20} className="trans" />
-        ) : (
-          <MessageIconWithSelection
-            selected={selected}
-            enabled={selectionEnabled}
-            id={"c-" + data.id}
-            handleToggle={handleToggle}
-          />
-        )}
-      </div>
-      <div
-        className="flex-col flex-1 min-w-0 gap-1 cursor-pointer"
-        onClick={(e) => {
-          e.preventDefault();
-          loadConversation(data.id);
-        }}
-      >
-        <div
-          className="text-sm truncate"
-          dangerouslySetInnerHTML={{ __html: data.title }}
-        ></div>
-        <div className="text-xs text-muted-foreground">
-          Last update: {formatDates(data.update_time)}
-        </div>
-        {/* <div className="text-xs text-muted-foreground">
-          Create time: {formatDates(data.create_time)}
-        </div> */}
-      </div>
-
-      <div className="flex items-center flex-none gap-2">
-        <TogglePinConversationButton
-          conversationId={data.id}
-          className="opacity-0 card-hover-show"
-        />
-        <MoreDropdownButton
-          triggerClassName="opacity-0 card-hover-show"
-          items={
-            <>
-              <AddToFolderDropdown conversationIdList={[data.id]} />
-              <TogglePinConversationDropdown conversationId={data.id} />
-            </>
-          }
-        />
-      </div>
-    </div>
+    <ConversationCardPresentor
+      data={data}
+      selected={selected}
+      toggle={toggle}
+      pinned={pinned}
+      active={active}
+      selectionEnabled={selectionEnabled}
+      noSelect={noSelect}
+    />
   );
 }
 

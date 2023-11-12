@@ -1,4 +1,6 @@
+import { useAtom } from "jotai";
 import { useEffect } from "react";
+import { currentConversationIdAtom, pinConversationIdSetAtom } from "./context";
 
 export function useBgMessage(eventMap: Record<string, MessageHandler>) {
   useEffect(() => {
@@ -37,4 +39,15 @@ export function useKeyboardShortcut(callbackMap: KeyboardShortcutItem[]) {
       document.removeEventListener("keydown", keydownListener);
     };
   }, []);
+}
+
+export function useConversation(conversationId: string) {
+  const [pinSet, _] = useAtom(pinConversationIdSetAtom);
+  const pinned = pinSet.has(conversationId);
+  const [currentConversationId, setCurrentConversationId] = useAtom(
+    currentConversationIdAtom
+  );
+  const active = currentConversationId === conversationId;
+
+  return { pinned, active };
 }

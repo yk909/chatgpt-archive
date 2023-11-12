@@ -8,3 +8,8 @@ export const extractMessageString = (conversation) => {
     })
     .join(" ");
 };
+
+export function extractConversationId(url: string) {
+  const match = /\/c\/([a-z0-9].*)/.exec(url);
+  return match ? match[1] : null;
+}

@@ -15,6 +15,8 @@ export const pinConversationIdSetAtom = selectAtom(
   (l) => new Set(l.map((c) => c.id))
 );
 
+export const currentConversationIdAtom = atom<string | null>("");
+
 export const bgResponseStatusAtom = atom<{ status?: string; message?: string }>(
   {}
 );

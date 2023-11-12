@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
 
 const PAGE_SIZE = 50;
@@ -56,10 +62,6 @@ export function ListView({
   const [selection, setSelection] = useState<Set<string>>(new Set());
   const [data] = useAtom(dataAtom);
 
-  const items = useMemo(() => {
-    return renderData({ data: displayData, selection, setSelection, toggle });
-  }, [displayData]);
-
   console.log("[render] list view", { displayData, state, data });
 
   const handleLoadMore = (isIntersecting: boolean) => {
@@ -75,7 +77,7 @@ export function ListView({
     }
   };
 
-  function toggle(id: string) {
+  const toggle = useCallback((id: string) => {
     setSelection((prev) => {
       const next = new Set(prev);
       if (selection.has(id)) {
@@ -85,7 +87,7 @@ export function ListView({
       }
       return next;
     });
-  }
+  }, []);
 
   const ref = useLoadMoreLine(handleLoadMore, {
     root: document.querySelector("#" + id),
@@ -95,6 +97,10 @@ export function ListView({
   function setDisplayDataToPage(page: number) {
     setDiaplayData(() => [...data.slice(0, page * PAGE_SIZE)]);
   }
+
+  const items = useMemo(() => {
+    return renderData({ data: displayData, selection, setSelection, toggle });
+  }, [displayData]);
 
   useEffect(() => {
     console.log("list view state changed", state);

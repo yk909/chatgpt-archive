@@ -10,6 +10,7 @@ import { useAtom } from "jotai";
 import {
   bgResponseStatusAtom,
   conversationListAtom,
+  currentConversationIdAtom,
   folderListAtom,
   panelOpenAtom,
   pinConversationListAtom,
@@ -67,6 +68,9 @@ export default function App() {
   const [pinConversationIdList, setPinConversationIdList] = useAtom(
     pinConversationListAtom
   );
+  const [currentConversationId, setCurrentConversationId] = useAtom(
+    currentConversationIdAtom
+  );
   const { toast } = useToast();
 
   useBgMessage({
@@ -99,6 +103,9 @@ export default function App() {
     },
     [MESSAGE_ACTIONS.PIN_CONVERSATION]: (request, sender, _) => {
       setPinConversationIdList(request.data);
+    },
+    [MESSAGE_ACTIONS.CURRENT_CONVERSATION_CHANGE]: (request, sender, _) => {
+      setCurrentConversationId(request.data);
     },
   });
 

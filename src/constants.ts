@@ -40,7 +40,7 @@ export const MESSAGE_ACTIONS = {
   // conversation detail update progress
   PROGRESS: "PROGRESS",
 
-  // pinned conversations
+  // =============== Pinned Conversations ================
 
   // content to bg: toggle pin conversation
   // bg to content: update pinned conversations
@@ -48,6 +48,9 @@ export const MESSAGE_ACTIONS = {
 
   FETCHING_APP_STATE: "FETCHING_APP_STATE",
   SAVE_APP_STATE: "SAVE_APP_STATE",
+
+  // =============== URL Changes ================
+  CURRENT_CONVERSATION_CHANGE: "CURRENT_CONVERSATION_URL_CHANGE",
 
   UPDATE_FETCHING_CONVERSATIONS: "UPDATE_FETCHING_CONVERSATIONS",
   FINISH_FETCHING_CONVERSATIONS: "FINISH_FETCHING_CONVERSATIONS",

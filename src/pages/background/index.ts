@@ -1,5 +1,7 @@
 import { BackgroundManager } from "./manager";
 import reloadOnUpdate from "virtual:reload-on-update-in-background-script";
+import { extractConversationId, sendMessageToTab } from "./utils";
+import { MESSAGE_ACTIONS } from "@src/constants";
 
 reloadOnUpdate("pages/background");
 
@@ -12,3 +14,16 @@ reloadOnUpdate("pages/content/style.scss");
 console.log("background loaded 6");
 
 const backgroundManager = new BackgroundManager();
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url) {
+    const newCId = extractConversationId(changeInfo.url);
+    console.log("URL_CHANGE", changeInfo.url);
+    if (changeInfo.url.startsWith("https://chat.openai.com/c/") && !!newCId) {
+      sendMessageToTab(tabId, {
+        type: MESSAGE_ACTIONS.CURRENT_CONVERSATION_CHANGE,
+        data: newCId,
+      });
+    }
+  }
+});
