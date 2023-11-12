@@ -1,11 +1,12 @@
 import { BsClockHistory } from "react-icons/bs";
 import { useAtom } from "jotai";
-import { loadingAtom, panelOpenAtom } from "../context";
+import { panelOpenAtom } from "../context";
 import { SpinnerIcon } from "@src/components/Spinner";
+import { useRefresh } from "../hook";
 
 export function Thumb() {
   const [open, setOpen] = useAtom(panelOpenAtom);
-  const [loading] = useAtom(loadingAtom);
+  const { refreshing } = useRefresh();
 
   return (
     <div>
@@ -26,7 +27,7 @@ export function Thumb() {
         }}
         onClick={() => setOpen(!open)}
       >
-        {loading ? (
+        {refreshing ? (
           <SpinnerIcon size={20} />
         ) : (
           <BsClockHistory

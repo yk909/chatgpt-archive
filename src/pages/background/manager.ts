@@ -12,6 +12,7 @@ import {
   sendMessageToTab,
 } from "./utils";
 import { PAGE_SIZE } from "./config";
+import { sleep } from "@src/utils";
 
 type UserInfo = {
   id: string;
@@ -117,6 +118,7 @@ export class BackgroundManager {
 
   handleInit = async (request, sender, sendResponse) => {
     console.log("start handle init", db);
+    // await sleep(3000);
     await this.getOrRefreshSession();
     const ac = this.getCurrentUserAccessToken();
 

@@ -2,7 +2,6 @@ import { atom, useAtom } from "jotai";
 import { selectAtom } from "jotai/utils";
 
 export const panelOpenAtom = atom<boolean>(false);
-export const loadingAtom = atom<boolean>(false);
 export const searchOpenAtom = atom<boolean>(false);
 
 export const oUserAtom = atom<any>(null);

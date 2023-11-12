@@ -1,8 +1,6 @@
 import { Input } from "@src/components/ui/input";
-import { useAtom } from "jotai";
-import React from "react";
 import { useForm } from "react-hook-form";
-import { loadingAtom } from "@src/pages/content/context";
+import { useRefresh } from "../hook";
 
 type SearchFormValues = {
   term: string;
@@ -14,11 +12,11 @@ function SearchForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<SearchFormValues>();
-  const [loading, setLoading] = useAtom(loadingAtom);
+  const { triggerRefresh } = useRefresh();
 
   const onSubmit = (data: SearchFormValues) => {
     data.term = data.term.trim();
-    setLoading(true);
+    triggerRefresh();
     if (data.term === "") {
       return;
     }

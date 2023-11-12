@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ListView } from "@src/pages/content/components/ListView";
-import {
-  bgResponseStatusAtom,
-  folderListAtom,
-  loadingAtom,
-} from "../../context";
+import { bgResponseStatusAtom, folderListAtom } from "../../context";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { FolderList } from "@src/pages/content/components/Folder";
 import {
@@ -30,12 +26,10 @@ type CreateNewFolderForm = {
 };
 
 function CreateNewFolderButton() {
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
 
   const onSubmit = (data: CreateNewFolderForm) => {
-    setLoading(() => true);
     createNewFolder({ name: data.newFolderName, children: [] });
   };
 
@@ -75,62 +69,57 @@ function CreateNewFolderButton() {
 
 export function FolderPage() {
   const [folders] = useAtom(folderListAtom);
-  const [loading] = useAtom(loadingAtom);
   return (
     <>
       <div className="flex items-center h-12">
         <CreateNewFolderButton />
       </div>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <ListView
-          dataAtom={folderListAtom}
-          renderData={({ data, selection, toggle }) => (
-            <FolderList
-              data={data}
-              selectionEnabled={selection.size !== 0}
-              toggle={toggle}
-              selection={selection}
-            />
-          )}
-          id="folder-list"
-          renderSelectionBar={({ selection, setSelection }) => (
-            <SelectionActionBar
-              enabled={selection.size !== 0}
-              left={() => {
-                return (
-                  <>
-                    <SelectAllButton
-                      onClick={() => {
-                        setSelection(new Set(folders.map((c: any) => c.id)));
-                      }}
-                    />
-                    <ClearSelectionButton setSelection={setSelection} />
-                  </>
-                );
-              }}
-              right={() => (
+      <ListView
+        dataAtom={folderListAtom}
+        renderData={({ data, selection, toggle }) => (
+          <FolderList
+            data={data}
+            selectionEnabled={selection.size !== 0}
+            toggle={toggle}
+            selection={selection}
+          />
+        )}
+        id="folder-list"
+        renderSelectionBar={({ selection, setSelection }) => (
+          <SelectionActionBar
+            enabled={selection.size !== 0}
+            left={() => {
+              return (
                 <>
-                  <div
-                    className="text-red-500 icon-container icon-container-sm"
+                  <SelectAllButton
                     onClick={() => {
-                      console.log("delete folders", selection);
-                      deleteFolder(Array.from(selection));
-                      setSelection(new Set());
+                      setSelection(new Set(folders.map((c: any) => c.id)));
                     }}
-                  >
-                    <Trash2 />
-                  </div>
-                  <div className="icon-container icon-container-sm">
-                    <MoreHorizontal />
-                  </div>
+                  />
+                  <ClearSelectionButton setSelection={setSelection} />
                 </>
-              )}
-            />
-          )}
-        />
-      )}
+              );
+            }}
+            right={() => (
+              <>
+                <div
+                  className="text-red-500 icon-container icon-container-sm"
+                  onClick={() => {
+                    console.log("delete folders", selection);
+                    deleteFolder(Array.from(selection));
+                    setSelection(new Set());
+                  }}
+                >
+                  <Trash2 />
+                </div>
+                <div className="icon-container icon-container-sm">
+                  <MoreHorizontal />
+                </div>
+              </>
+            )}
+          />
+        )}
+      />
     </>
   );
 }

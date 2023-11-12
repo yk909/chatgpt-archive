@@ -5,9 +5,14 @@ import Header from "./Header";
 import BottomNavBar from "./BottomNavBar";
 import { Outlet } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
+import { Spinner } from "@src/components/Spinner";
+import { useRefresh } from "../hook";
 
 export default function Panel() {
   const [open] = useAtom(panelOpenAtom);
+  const { refreshing } = useRefresh();
+
+  console.log("render Panel", { refreshing });
 
   return (
     <div
@@ -20,7 +25,7 @@ export default function Panel() {
       <Header />
       <ProgressBar />
       <div className="relative flex flex-col flex-1 min-h-0">
-        <Outlet />
+        {!refreshing ? <Outlet /> : <Spinner />}
       </div>
       <BottomNavBar />
     </div>

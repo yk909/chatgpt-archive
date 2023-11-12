@@ -1,18 +1,16 @@
-import { conversationListAtom, loadingAtom } from "@src/pages/content/context";
+import { conversationListAtom } from "@src/pages/content/context";
 import { List as ConversationList } from "@src/pages/content/components/Conversation";
 import { ListView } from "@src/pages/content/components/ListView";
 import { categorizeConversations } from "@src/utils";
 import { useState } from "react";
-import { Spinner } from "@src/components/Spinner";
 import { useAtom } from "jotai";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectItem,
-} from "@src/components/ui/select";
-import { useEffect } from "react";
+// import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectTrigger,
+//   SelectItem,
+// } from "@src/components/ui/select";
 import {
   ClearSelectionButton,
   SelectAllButton,
@@ -96,7 +94,6 @@ export function ConversationPage() {
   const [sortByKey, setSortByKey] = useState<keyof typeof SortByOptions>(
     "update_time_asc" as keyof typeof SortByOptions
   );
-  const [loading, seLoading] = useAtom(loadingAtom);
   const [conversationList, setConversationList] = useAtom(conversationListAtom);
 
   // useEffect(() => {
@@ -132,82 +129,78 @@ export function ConversationPage() {
           </div>
         </div>
       </div> */}
-      {loading ? (
-        <Spinner />
-      ) : (
-        <ListView
-          dataAtom={conversationListAtom}
-          renderData={({ data, selection, toggle }) =>
-            data.length === 0 ? (
-              <div className="flex justify-center mt-8">No data</div>
-            ) : (
-              categorizeConversations(data, SortByOptions[sortByKey].key).map(
-                ([key, value], i) => {
-                  if (value.length === 0) return <></>;
-                  return (
-                    <div className="relative" key={i}>
-                      <div
-                        className="sticky top-0 py-3 text-sm text-muted-foreground bg-background"
-                        style={{
-                          paddingLeft: "12px",
-                          fontSize: "13px",
-                          zIndex: `${10 + i * 2}`,
-                        }}
-                      >
-                        {key}
-                      </div>
-                      <ConversationList
-                        data={value}
-                        selectionEnabled={selection.size !== 0}
-                        toggle={toggle}
-                        selection={selection}
-                      />
-                    </div>
-                  );
-                }
-              )
-            )
-          }
-          id="con-list"
-          renderSelectionBar={({ selection, setSelection }) => (
-            <SelectionActionBar
-              enabled={selection.size !== 0}
-              left={() => {
+      <ListView
+        dataAtom={conversationListAtom}
+        renderData={({ data, selection, toggle }) =>
+          data.length === 0 ? (
+            <div className="flex justify-center mt-8">No data</div>
+          ) : (
+            categorizeConversations(data, SortByOptions[sortByKey].key).map(
+              ([key, value], i) => {
+                if (value.length === 0) return <></>;
                 return (
-                  <>
-                    <SelectAllButton
-                      onClick={() => {
-                        setSelection(
-                          new Set(conversationList.map((c: any) => c.id))
-                        );
+                  <div className="relative" key={i}>
+                    <div
+                      className="sticky top-0 py-3 text-sm text-muted-foreground bg-background"
+                      style={{
+                        paddingLeft: "12px",
+                        fontSize: "13px",
+                        zIndex: `${10 + i * 2}`,
                       }}
-                    />
-                    <ClearSelectionButton setSelection={setSelection} />
-                  </>
-                );
-              }}
-              right={() => (
-                <>
-                  <div className="icon-container icon-container-sm">
-                    <MoreDropdownButton
-                      contentProps={{
-                        side: "top",
-                      }}
-                      items={
-                        <>
-                          <AddToFolderDropdown
-                            conversationIdList={new Array(...selection)}
-                          />
-                        </>
-                      }
+                    >
+                      {key}
+                    </div>
+                    <ConversationList
+                      data={value}
+                      selectionEnabled={selection.size !== 0}
+                      toggle={toggle}
+                      selection={selection}
                     />
                   </div>
+                );
+              }
+            )
+          )
+        }
+        id="con-list"
+        renderSelectionBar={({ selection, setSelection }) => (
+          <SelectionActionBar
+            enabled={selection.size !== 0}
+            left={() => {
+              return (
+                <>
+                  <SelectAllButton
+                    onClick={() => {
+                      setSelection(
+                        new Set(conversationList.map((c: any) => c.id))
+                      );
+                    }}
+                  />
+                  <ClearSelectionButton setSelection={setSelection} />
                 </>
-              )}
-            />
-          )}
-        />
-      )}
+              );
+            }}
+            right={() => (
+              <>
+                <div className="icon-container icon-container-sm">
+                  <MoreDropdownButton
+                    contentProps={{
+                      side: "top",
+                    }}
+                    items={
+                      <>
+                        <AddToFolderDropdown
+                          conversationIdList={new Array(...selection)}
+                        />
+                      </>
+                    }
+                  />
+                </div>
+              </>
+            )}
+          />
+        )}
+      />
     </>
   );
 }

@@ -5,7 +5,7 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { PANEL_NAV_ITEMS } from "./config";
 import { useEffect } from "react";
 import { init } from "./messages";
-import { CONTENT_VIEW_CONTAINER_ID, MESSAGE_ACTIONS } from "@src/constants";
+import { MESSAGE_ACTIONS } from "@src/constants";
 import { useAtom } from "jotai";
 import {
   bgResponseStatusAtom,
@@ -16,7 +16,7 @@ import {
   pinConversationListAtom,
   searchOpenAtom,
 } from "./context";
-import { useBgMessage, useKeyboardShortcut } from "./hook";
+import { useBgMessage, useRefresh, useKeyboardShortcut } from "./hook";
 
 import { Toaster } from "@src/components/ui/toaster";
 import { useToast } from "@src/components/ui/use-toast";
@@ -71,6 +71,7 @@ export default function App() {
   const [currentConversationId, setCurrentConversationId] = useAtom(
     currentConversationIdAtom
   );
+  const { triggerRefresh } = useRefresh();
   const { toast } = useToast();
 
   useBgMessage({
@@ -130,6 +131,7 @@ export default function App() {
   );
 
   useEffect(() => {
+    triggerRefresh();
     init();
   }, []);
 

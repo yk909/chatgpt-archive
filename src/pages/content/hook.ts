@@ -1,6 +1,12 @@
 import { useAtom } from "jotai";
 import { useEffect } from "react";
-import { currentConversationIdAtom, pinConversationIdSetAtom } from "./context";
+import {
+  conversationListAtom,
+  currentConversationIdAtom,
+  folderListAtom,
+  pinConversationIdSetAtom,
+  pinConversationListAtom,
+} from "./context";
 
 export function useBgMessage(eventMap: Record<string, MessageHandler>) {
   useEffect(() => {
@@ -50,4 +56,24 @@ export function useConversation(conversationId: string) {
   const active = currentConversationId === conversationId;
 
   return { pinned, active };
+}
+
+export function useRefresh() {
+  const [folders, setFolders] = useAtom(folderListAtom);
+  const [conversations, setConversations] = useAtom(conversationListAtom);
+  const [pinConversations, setPinConversations] = useAtom(
+    pinConversationListAtom
+  );
+
+  const refreshing =
+    conversations == null || folders == null || pinConversations == null;
+
+  console.log("useData, refreshing:", refreshing);
+
+  return {
+    refreshing,
+    triggerRefresh: () => {
+      setConversations(null);
+    },
+  };
 }
