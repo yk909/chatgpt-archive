@@ -18,7 +18,7 @@ export function DataPage() {
                     ? "hsl(var(--background))"
                     : "transparent",
                 })}
-                className="rounded-full pill"
+                className="pill"
               >
                 {item.name}
               </NavLink>

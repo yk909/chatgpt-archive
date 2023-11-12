@@ -1,13 +1,16 @@
 .pill-group {
     display: flex;
     padding: 4px;
-    border-radius: 9999px;
     width: fit-content;
     background: hsl(var(--background-2));
+
+    @apply rounded-lg;
 }
 
 .pill {
     padding: 4px 12px;
     font-size: 14px;
     transition: all 0.2s ease-out;
+
+    @apply rounded-lg;
 }
