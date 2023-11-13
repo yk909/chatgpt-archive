@@ -9,7 +9,7 @@ import { Send } from "lucide-react";
 
 export default function Footer() {
   return (
-    <div className="relative flex items-center flex-none h-12 px-4">
+    <div className="relative flex items-center flex-none h-14 px-4">
       <div className="absolute left-0"></div>
       <div className="absolute right-0">
         <TooltipProvider>
