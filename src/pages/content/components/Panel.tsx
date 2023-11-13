@@ -18,9 +18,16 @@ export default function Panel() {
   return (
     <div
       className={cn(
-        "fixed top-0 right-0 flex page-px flex-col h-screen overflow-hidden resize-x side-toggle-hover bg-background",
+        "flex page-px flex-col overflow-hidden side-toggle-hover bg-background",
         open ? "open" : ""
       )}
+      style={{
+        position: "fixed",
+        top: 0,
+        right: 0,
+        height: "100vh",
+        transform: open ? "translateX(0%)" : "translateX(100%)",
+      }}
       id="panel"
     >
       <Header />

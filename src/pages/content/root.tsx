@@ -11,4 +11,5 @@ export function initializeShadowRoot() {
   reactRoot.id = CONTENT_VIEW_CONTAINER_ID;
   root.shadowRoot.appendChild(reactRoot);
   shadowRoot = reactRoot;
+  return shadowRoot;
 }

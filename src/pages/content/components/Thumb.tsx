@@ -11,11 +11,14 @@ export function Thumb() {
   return (
     <div>
       <button
-        className="flex items-center justify-center hover:opacity-80 trans bg-background text-foreground"
+        className="hover:opacity-80 trans"
         style={{
           width: "50px",
           height: "40px",
           position: "fixed",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           top: "80px",
           right: "0",
           cursor: "pointer",
@@ -24,6 +27,7 @@ export function Thumb() {
           outline: "none",
           border: "none",
           boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+          background: "hsl(var(--background))",
         }}
         onClick={() => setOpen(!open)}
       >
