@@ -3,7 +3,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
 import { cn } from "@src/lib/utils";
-import { CONTENT_VIEW_CONTAINER_ID } from "@src/constants";
+import { shadowRoot } from "@src/pages/content/root";
 
 const Dialog = DialogPrimitive.Root;
 
@@ -14,7 +14,7 @@ const DialogPortal = ({
   ...props
 }: DialogPrimitive.DialogPortalProps) => (
   <DialogPrimitive.Portal
-    container={document.getElementById(CONTENT_VIEW_CONTAINER_ID)}
+    container={shadowRoot}
     className={cn(className)}
     {...props}
   />

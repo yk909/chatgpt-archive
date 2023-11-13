@@ -2,7 +2,7 @@ import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 import { cn } from "@src/lib/utils";
-import { CONTENT_VIEW_CONTAINER_ID } from "@src/constants";
+import { shadowRoot } from "@src/pages/content/root";
 
 const Popover = PopoverPrimitive.Root;
 
@@ -12,9 +12,7 @@ const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
 >(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
-  <PopoverPrimitive.Portal
-    container={document.getElementById(CONTENT_VIEW_CONTAINER_ID)}
-  >
+  <PopoverPrimitive.Portal container={shadowRoot}>
     <PopoverPrimitive.Content
       ref={ref}
       align={align}

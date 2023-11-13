@@ -3,7 +3,7 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 
 import { cn } from "@src/lib/utils";
-import { CONTENT_VIEW_CONTAINER_ID } from "@src/constants";
+import { shadowRoot } from "@src/pages/content/root";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
@@ -60,7 +60,7 @@ const DropdownMenuContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => (
   <DropdownMenuPrimitive.Portal
-    container={document.getElementById(CONTENT_VIEW_CONTAINER_ID)}
+    container={shadowRoot}
   >
     <DropdownMenuPrimitive.Content
       ref={ref}

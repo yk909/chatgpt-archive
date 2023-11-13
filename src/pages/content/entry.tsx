@@ -2,25 +2,23 @@ import { createRoot } from "react-dom/client";
 import App from "@src/pages/content/app";
 import refreshOnUpdate from "virtual:reload-on-update-in-view";
 import { Provider } from "jotai";
-import { CONTENT_VIEW_CONTAINER_ID } from "@src/constants";
+import { initializeShadowRoot, shadowRoot } from "./root";
 
 refreshOnUpdate("pages/content");
 
-const root = document.createElement("div");
-root.id = CONTENT_VIEW_CONTAINER_ID;
-document.body.appendChild(root);
+initializeShadowRoot();
 
-const rootIntoShadow = document.createElement("div");
+const cssPath = "assets/css/Style.chunk.css";
 
-// const shadowRoot = root.attachShadow({ mode: "open" });
-// shadowRoot.appendChild(rootIntoShadow);
+const cssFullPath = chrome.runtime.getURL(cssPath);
 
 if (window.location.pathname.includes("auth/login")) {
   console.log("Please login first");
 } else {
-  createRoot(root).render(
+  createRoot(shadowRoot).render(
     <Provider>
+      <link rel="stylesheet" href={cssFullPath} />
       <App />
-    </Provider>,
+    </Provider>
   );
 }

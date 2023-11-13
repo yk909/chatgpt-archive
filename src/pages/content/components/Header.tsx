@@ -1,21 +1,16 @@
-import {
-  CONTENT_VIEW_CONTAINER_ID,
-  MESSAGE_ACTIONS,
-  styles,
-} from "@src/constants";
 import { useAtom } from "jotai";
 import { panelOpenAtom, searchOpenAtom } from "../context";
 import { refresh } from "../messages";
 import { Moon, RotateCw, Search, Sun, X } from "lucide-react";
 import { Switch } from "@src/components/ui/switch";
 import { useState } from "react";
-import { useBgMessage, useRefresh } from "../hook";
+import { useRefresh } from "../hook";
+import { shadowRoot } from "../root";
 
 function DarkModeSwitch() {
+  console.log("render DarkModeSwitch", { shadowRoot });
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return document
-      .getElementById(CONTENT_VIEW_CONTAINER_ID)
-      .classList.contains("dark");
+    return shadowRoot && shadowRoot.classList.contains("dark");
   });
   return (
     <div className="flex items-center gap-2">
@@ -25,13 +20,9 @@ function DarkModeSwitch() {
         onCheckedChange={(value) => {
           setDarkMode(value);
           if (value) {
-            document
-              .getElementById(CONTENT_VIEW_CONTAINER_ID)
-              .classList.add("dark");
+            shadowRoot.classList.add("dark");
           } else {
-            document
-              .getElementById(CONTENT_VIEW_CONTAINER_ID)
-              .classList.remove("dark");
+            shadowRoot.classList.remove("dark");
           }
         }}
       />
