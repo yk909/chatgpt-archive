@@ -45,7 +45,7 @@ export function MoreDropdownButton({
 }) {
   const [open, setOpen] = useState(false);
 
-  console.log("render MoreDropdownButton");
+  // console.log("render MoreDropdownButton");
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
