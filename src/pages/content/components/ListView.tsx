@@ -77,10 +77,13 @@ export function ListView({
     }
   };
 
+  // console.log("render list view", { selection });
+
   const toggle = useCallback((id: string) => {
+    console.log("toggle", { id, selection });
     setSelection((prev) => {
       const next = new Set(prev);
-      if (selection.has(id)) {
+      if (prev.has(id)) {
         next.delete(id);
       } else {
         next.add(id);
@@ -100,7 +103,7 @@ export function ListView({
 
   const items = useMemo(() => {
     return renderData({ data: displayData, selection, setSelection, toggle });
-  }, [displayData]);
+  }, [displayData, selection]);
 
   useEffect(() => {
     console.log("list view state changed", state);

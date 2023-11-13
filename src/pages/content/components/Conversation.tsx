@@ -29,7 +29,7 @@ const ConversationCardPresentor = React.memo(
     pinned,
     active,
     selectionEnabled,
-    noSelect = false,
+    noSelect,
   }: {
     data: Conversation;
     pinned: boolean;
