@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import React from "react";
 import { searchOpenAtom } from "../../context";
 import { useEffect } from "react";
+import { DIALOG_ANIMATION_DURATION } from "./config";
 
 export type SearchFormValues = {
   query: string;
@@ -22,8 +23,10 @@ export const SearchForm = React.memo(function SearchForm({
 
   useEffect(() => {
     if (ref.current && open) {
-      console.log("focus search input");
-      ref.current.focus();
+      console.log("focus search input", ref.current);
+      setTimeout(() => {
+        ref.current.focus();
+      }, DIALOG_ANIMATION_DURATION);
     }
   }, [ref.current, open]);
   return (
