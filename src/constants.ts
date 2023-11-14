@@ -75,3 +75,12 @@ export const SORT_BY = {
   UPDATE_TIME: "update_time",
   CREATE_TIME: "create_time",
 };
+
+export const LOCAL_STORAGE_KEYS = {
+  DARK_MODE: "darkModeEnabled",
+};
+
+export const DARK_MODE_VALUES = {
+  DARK: "true",
+  LIGHT: "false",
+};

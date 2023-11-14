@@ -6,11 +6,12 @@ import { Switch } from "@src/components/ui/switch";
 import { useState } from "react";
 import { useRefresh } from "../hook";
 import { shadowRoot } from "../root";
+import { getDarkModeEnabledFromLocalStorage, setDarkModeEnabledToLocalStorage } from "../utils";
 
 function DarkModeSwitch() {
   console.log("render DarkModeSwitch", { shadowRoot });
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return shadowRoot && shadowRoot.classList.contains("dark");
+    return getDarkModeEnabledFromLocalStorage();
   });
   return (
     <div className="flex items-center gap-2">
@@ -18,6 +19,7 @@ function DarkModeSwitch() {
       <Switch
         checked={darkMode}
         onCheckedChange={(value) => {
+          setDarkModeEnabledToLocalStorage(value);
           setDarkMode(value);
           if (value) {
             shadowRoot.classList.add("dark");

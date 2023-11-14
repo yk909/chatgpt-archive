@@ -3,6 +3,7 @@ import App from "@src/pages/content/app";
 import refreshOnUpdate from "virtual:reload-on-update-in-view";
 import { Provider } from "jotai";
 import { initializeShadowRoot } from "./root";
+import { getDarkModeEnabledFromLocalStorage } from "./utils";
 
 refreshOnUpdate("pages/content");
 
@@ -10,9 +11,14 @@ const shadowRoot = initializeShadowRoot();
 
 const cssPath = "assets/css/Style.chunk.css";
 const cssFullPath = chrome.runtime.getURL(cssPath);
-const cssLink = document.createElement("link");
-cssLink.setAttribute("rel", "stylesheet");
-cssLink.setAttribute("href", cssFullPath);
+// const cssLink = document.createElement("link");
+// cssLink.setAttribute("rel", "stylesheet");
+// cssLink.setAttribute("href", cssFullPath);
+
+const darkModeEnabled = getDarkModeEnabledFromLocalStorage();
+if (darkModeEnabled) {
+  shadowRoot.classList.add("dark");
+}
 
 if (window.location.pathname.includes("auth/login")) {
   console.log("Please login first");
@@ -136,9 +142,9 @@ if (window.location.pathname.includes("auth/login")) {
 
 }
 
-// *::-webkit-scrollbar-thumb {
-//   background-color: hsl(var(--muted));
-// }
+.hidden {
+  display: none;
+}
 `}
       </style>
       <App />
