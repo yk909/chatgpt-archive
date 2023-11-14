@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { useAtom } from "jotai";
 import { searchOpenAtom } from "../../context";
 import { useBgMessage } from "../../hook";
@@ -164,16 +164,24 @@ export function SearchPromptContent() {
 export function SearchPrompt() {
   const [open, setOpen] = useAtom(searchOpenAtom);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const initRef = useRef<boolean>(true);
 
   useEffect(() => {
+    if (initRef.current) {
+      initRef.current = false;
+      return;
+    }
     if (dialogRef.current) {
       if (!open) {
+        dialogRef.current.setAttribute("data-state", "closed");
         setTimeout(() => {
           dialogRef.current.setAttribute("data-state", "");
         }, DIALOG_ANIMATION_DURATION);
+      } else {
+        dialogRef.current.setAttribute("data-state", "open");
       }
     }
-  }, [dialogRef.current, open]);
+  }, [open]);
   console.log("render search prompt container", open);
 
   return (
@@ -184,8 +192,7 @@ export function SearchPrompt() {
           "--duration": DIALOG_ANIMATION_DURATION + "ms",
         } as React.CSSProperties
       }
-      className="fixed z-50 grid w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden bg-transparent search-prompt border rounded-lg border-background-2"
-      data-state={open ? "open" : "closed"}
+      className="fixed z-50 w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden bg-transparent search-prompt border rounded-lg border-background-2 hidden"
     >
       <SearchPromptContent />
     </div>
