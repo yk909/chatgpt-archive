@@ -184,7 +184,7 @@ export function SearchPrompt() {
           "--duration": DIALOG_ANIMATION_DURATION + "ms",
         } as React.CSSProperties
       }
-      className="fixed z-50 grid w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden bg-transparent search-prompt border rounded-lg border-background/50"
+      className="fixed z-50 grid w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden bg-transparent search-prompt border rounded-lg border-background-2"
       data-state={open ? "open" : "closed"}
     >
       <SearchPromptContent />
