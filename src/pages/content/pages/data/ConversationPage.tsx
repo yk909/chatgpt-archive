@@ -141,7 +141,7 @@ export function ConversationPage() {
                 return (
                   <div className="relative" key={i}>
                     <div
-                      className="sticky top-0 py-3 text-sm text-muted-foreground bg-background"
+                      className="sticky top-0 py-3 text-sm text-muted-foreground bg-background trans"
                       style={{
                         paddingLeft: "12px",
                         fontSize: "13px",
