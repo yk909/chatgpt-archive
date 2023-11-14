@@ -11,3 +11,5 @@ export const SEARCH_TABS = {
     label: "Folders",
   },
 };
+
+export const DIALOG_ANIMATION_DURATION = 150;

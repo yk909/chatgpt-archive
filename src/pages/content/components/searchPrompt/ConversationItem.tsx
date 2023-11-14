@@ -2,6 +2,8 @@ import { CommandItem } from "@src/components/ui/command";
 import { MessageIcon, MessageIconWithSelection } from "@src/components/Icon";
 import { MoreDropdownButton } from "../MoreDropdownButton";
 import { AddToFolderDropdown } from "../actions/AddToFolderDropdown";
+import { loadConversation } from "@src/utils";
+import { useConversation } from "../../hook";
 
 export function ConversationItem({
   conversation,
@@ -10,8 +12,8 @@ export function ConversationItem({
   toggle,
   selectionEnabled,
 }: {
-  conversation: Conversation & { keywordCount: number };
-  onSelect: () => void;
+  conversation: Conversation & { keywordCount?: number };
+  onSelect?: () => void;
   selected?: boolean;
   toggle?: (id: string) => void;
   selectionEnabled?: boolean;
@@ -21,17 +23,18 @@ export function ConversationItem({
     e.preventDefault();
     toggle(conversation.id);
   };
+  // const { pinned, active } = useConversation(conversation.id);
   return (
-    <CommandItem
+    <div
       style={{
         padding: "8px 16px",
       }}
-      key={conversation.id}
-      value={conversation.id}
-      onSelect={onSelect}
-      className="card"
+      className="card text-sm cursor-default"
+      onClick={(e) => {
+        console.log("click conversation item");
+      }}
     >
-      <div className="flex items-center w-full cursor-pointer">
+      <div className="flex items-center w-full">
         <MessageIconWithSelection
           size="sm"
           selected={selected}
@@ -40,9 +43,14 @@ export function ConversationItem({
           handleToggle={handleToggle}
         />
         {/* <MessageIcon size="sm" /> */}
-        <span className="ml-2 flex-1 inline-block min-w-0 truncate">
+        <div
+          className="ml-2 flex-1 inline-block min-w-0 truncate cursor-pointer"
+          onClick={() => {
+            loadConversation(conversation.id);
+          }}
+        >
           {conversation.title}
-        </span>
+        </div>
         <div className="flex items-center flex-none gap-3">
           <MoreDropdownButton
             triggerClassName="opacity-0 card-hover-show"
@@ -52,11 +60,13 @@ export function ConversationItem({
               </>
             }
           />
-          <span className="inline-block text-green-500 font-semibold">
-            {conversation.keywordCount}
-          </span>
+          {!!conversation.keywordCount && (
+            <span className="inline-block text-green-500 font-semibold">
+              {conversation.keywordCount}
+            </span>
+          )}
         </div>
       </div>
-    </CommandItem>
+    </div>
   );
 }

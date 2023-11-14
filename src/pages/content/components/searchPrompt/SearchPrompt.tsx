@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Command } from "@src/components/ui/command";
+import { useRef, useEffect, useCallback } from "react";
 import { useAtom } from "jotai";
 import { searchOpenAtom } from "../../context";
 import { useBgMessage } from "../../hook";
@@ -7,18 +6,18 @@ import { MESSAGE_ACTIONS } from "@src/constants";
 import { search } from "../../messages";
 import { CommandLoading } from "cmdk";
 import { loadConversation } from "@src/utils";
-import { Tabs, TabsList, TabsTrigger } from "@src/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@src/components/ui/tabs";
 import { SearchForm, SearchFormValues } from "./SearchForm";
-import { SEARCH_TABS } from "./config";
+import { DIALOG_ANIMATION_DURATION, SEARCH_TABS } from "./config";
 import ConversationTabContent from "./tabs/ConversationTabContent";
 import AllTabContent from "./tabs/AllTabContent";
 import FolderTabContent from "./tabs/FolderTabContent";
-import { Dialog, DialogContent } from "@src/components/ui/dialog";
-
-type SearchResult = {
-  conversations: (Conversation & { keywordCount: number })[];
-  folders: Folder[];
-};
+import { SearchResultTabAtom, SearchStateAtom } from "./context";
 
 const TabSubText = ({
   tab,
@@ -28,11 +27,11 @@ const TabSubText = ({
   result: SearchResult;
 }) => {
   return (
-    <div className="tracking-wide text-sm mr-6">
+    <div className="tracking-wide text-sm mr-4">
       {tab !== "all" && (
         <span>
           Total items:
-          <span className="inline-block ml-2 font-bold">
+          <span className="inline-block ml-2 font-medium">
             {result[tab].length}
           </span>
         </span>
@@ -41,23 +40,87 @@ const TabSubText = ({
   );
 };
 
-export function SearchPrompt() {
-  const [open, setOpen] = useAtom(searchOpenAtom);
-  const [tab, setTab] = useState<keyof typeof SEARCH_TABS>("all");
+export function TabContent() {
+  const [{ result, loading }] = useAtom(SearchStateAtom);
+  const [tab, setTab] = useAtom(SearchResultTabAtom);
 
-  const [state, setState] = useState<{
-    loading: boolean;
-    result: SearchResult | null;
-    query: string;
-  }>({
-    loading: false,
-    result: null,
-    query: "",
-  });
+  console.log("render search prompt tab content", result);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  function handleConversationSelect(conversationId: string) {
+    loadConversation(conversationId);
+  }
 
-  const handleSeachSubmit = (data: SearchFormValues) => {
+  return (
+    <Tabs
+      defaultValue="all"
+      value={tab}
+      className="flex flex-col relative px-2"
+      onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
+    >
+      <div className="flex items-center justify-between pt-2 flex-none">
+        <TabsList>
+          {Object.keys(SEARCH_TABS).map((t, i) => (
+            <TabsTrigger value={t} key={i}>
+              {SEARCH_TABS[t].label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabSubText tab={tab} result={result} />
+      </div>
+
+      <div
+        style={{
+          height: "500px",
+          overflowY: "scroll",
+          position: "relative",
+        }}
+      >
+        {loading ? (
+          <CommandLoading />
+        ) : (
+          <>
+            <TabsContent value="all">
+              <AllTabContent
+                {...result}
+                setTab={setTab}
+                handleConversationSelect={handleConversationSelect}
+              />
+            </TabsContent>
+            <TabsContent
+              value="conversations"
+              style={{
+                position: "absolute",
+                inset: 0,
+                overflowY: "scroll",
+              }}
+            >
+              <ConversationTabContent
+                conversations={result.conversations}
+                handleConversationSelect={handleConversationSelect}
+              />
+            </TabsContent>
+            <TabsContent
+              value="folders"
+              style={{
+                position: "absolute",
+                inset: 0,
+                overflowY: "scroll",
+              }}
+            >
+              <FolderTabContent folders={result.folders} />
+            </TabsContent>
+          </>
+        )}
+      </div>
+    </Tabs>
+  );
+}
+
+export function SearchPromptContent() {
+  const [state, setState] = useAtom(SearchStateAtom);
+  const [_, setTab] = useAtom(SearchResultTabAtom);
+
+  const handleSeachSubmit = useCallback((data: SearchFormValues) => {
     const trimedQuery = data.query.trim();
     if (trimedQuery === "") {
       setState(() => ({
@@ -75,7 +138,7 @@ export function SearchPrompt() {
       loading: true,
       query: data.query,
     }));
-  };
+  }, []);
 
   useBgMessage({
     [MESSAGE_ACTIONS.SEARCH]: (request, sender, _) => {
@@ -88,77 +151,43 @@ export function SearchPrompt() {
     },
   });
 
-  console.log("render search prompt", state);
-
-  const conversations = state.result?.conversations;
-  const folders = state.result?.folders;
-
-  function handleConversationSelect(conversationId: string) {
-    loadConversation(conversationId);
-  }
-
-  function handleOpenChange(n) {
-    setOpen(() => n);
-
-    // if (!n) {
-    //   setState(() => ({
-    //     loading: false,
-    //     result: null,
-    //   }));
-    //   setTab("all");
-    // }
-  }
-
-  let content = null;
-  if (state.result !== null && !!state.query) {
-    content = loading ? (
-      <CommandLoading />
-    ) : (
-      <>
-        <Tabs
-          defaultValue="all"
-          value={tab}
-          className="flex flex-col relative"
-          style={{
-            height: "540px",
-          }}
-          onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
-        >
-          <div className="flex items-center justify-between px-2 pt-2 flex-none">
-            <TabsList>
-              {Object.keys(SEARCH_TABS).map((t, i) => (
-                <TabsTrigger value={t} key={i}>
-                  {SEARCH_TABS[t].label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            <TabSubText tab={tab} result={state.result} />
-          </div>
-
-          <AllTabContent
-            {...state.result}
-            setTab={setTab}
-            handleConversationSelect={handleConversationSelect}
-          />
-          <ConversationTabContent
-            conversations={conversations}
-            handleConversationSelect={handleConversationSelect}
-          />
-          <FolderTabContent folders={folders} />
-        </Tabs>
-      </>
-    );
-  }
+  console.log("render search prompt content", state);
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="p-0 overflow-hidden bg-transparent search-prompt">
-        <Command className="flex flex-col">
-          {/* <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5"> */}
-          <SearchForm onSubmit={handleSeachSubmit} query={state.query} />
-          {content}
-        </Command>
-      </DialogContent>
-    </Dialog>
+    <div className="flex flex-col">
+      <SearchForm onSubmit={handleSeachSubmit} query={state.query} />
+      {state.query !== "" && <TabContent />}
+    </div>
+  );
+}
+
+export function SearchPrompt() {
+  const [open, setOpen] = useAtom(searchOpenAtom);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (dialogRef.current) {
+      if (!open) {
+        setTimeout(() => {
+          dialogRef.current.setAttribute("data-state", "");
+        }, DIALOG_ANIMATION_DURATION);
+      }
+    }
+  }, [dialogRef.current, open]);
+  console.log("render search prompt container", open);
+
+  return (
+    <div
+      ref={dialogRef}
+      style={
+        {
+          "--duration": DIALOG_ANIMATION_DURATION + "ms",
+        } as React.CSSProperties
+      }
+      className="fixed z-50 grid w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden bg-transparent search-prompt border rounded-lg border-background/50"
+      data-state={open ? "open" : "closed"}
+    >
+      <SearchPromptContent />
+    </div>
   );
 }

@@ -66,3 +66,9 @@ type RefreshResponseData = {
   folders: Folder[];
   pinConversations: Conversation[];
 };
+
+// Search Prompt
+type SearchResult = {
+  conversations: (Conversation & { keywordCount: number })[];
+  folders: Folder[];
+};

@@ -135,6 +135,10 @@ if (window.location.pathname.includes("auth/login")) {
   --ring: 212.7 26.8% 83.9%;
 
 }
+
+// *::-webkit-scrollbar-thumb {
+//   background-color: hsl(var(--muted));
+// }
 `}
       </style>
       <App />

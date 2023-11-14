@@ -18,20 +18,23 @@
 }
 
 .search-prompt {
-  top: 0px;
+  top: 0%;
+  left: 50%;
+  display: none;
   --open-y-offset: 20vh;
   --closed-y-offset: 21vh;
   --open-scale: 1;
   --closed-scale: 0.95;
-  --duration: 100ms;
 }
 
 .search-prompt[data-state="open"] {
   animation: sp-enter var(--duration) linear forwards !important;
+  display: block;
 }
 
 .search-prompt[data-state="closed"] {
   animation: sp-leave var(--duration) linear forwards !important;
+  display: block;
 }
 
 @keyframes sp-enter {

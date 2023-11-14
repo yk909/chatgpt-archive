@@ -143,7 +143,7 @@ export function List({
   selectionEnabled: boolean;
 }) {
   return (
-    <div className="flex flex-col w-full gap-2">
+    <div className="flex flex-col w-full gap-1">
       {data.map((item) => (
         <ConversationCard
           key={item.id}

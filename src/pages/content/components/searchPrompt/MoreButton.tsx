@@ -14,15 +14,17 @@ export function MoreButton({
   return (
     data &&
     data.length > ALL_TAB_GROUP_SIZE && (
-      <CommandItem
-        key={key + "-more"}
-        value={key + "-more"}
-        onSelect={onSelect}
+      <div
+        // key={key + "-more"}
+        // value={key + "-more"}
+        // onSelect={onSelect}
+        onClick={() => onSelect()}
+        className="flex items-center justify-center card cursor-pointer"
       >
-        <span className="flex items-center justify-center flex-1 text-sm cursor-pointer text-muted-foreground">
+        <span className="text-sm  text-muted-foreground select-none">
           See all {data.length} results
         </span>
-      </CommandItem>
+      </div>
     )
   );
 }
