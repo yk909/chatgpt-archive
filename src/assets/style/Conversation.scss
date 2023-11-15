@@ -1,0 +1,19 @@
+.conversation {
+  --card-py: 12px;
+}
+
+.conversation[data-pin="true"] {
+  border-color: hsl(var(--primary)) !important;
+}
+
+.conversation[data-active="true"] {
+  background-color: hsl(var(--primary) / 0.2);
+}
+
+.conversation[data-active="true"]:hover {
+  background-color: hsl(var(--card-bg)) !important;
+}
+
+.conversation {
+  cursor: pointer;
+}

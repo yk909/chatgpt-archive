@@ -100,7 +100,8 @@ if (window.location.pathname.includes("auth/login")) {
   --radius: 0.5rem;
 
   --page-px: 8px;
-  --content-px: 12px;
+  --card-px: 12px;
+  --card-py: 8px;
   --header-h: 4rem;
 
   background-color: hsl(var(--background));

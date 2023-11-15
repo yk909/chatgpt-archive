@@ -3,8 +3,10 @@ import React from "react";
 import { EmptyResult } from "../EmptyResult";
 import { MoreButton } from "../MoreButton";
 import { ALL_TAB_GROUP_SIZE, SEARCH_TABS } from "../config";
-import { FolderItem } from "../FolderItem";
-import { ConversationItem } from "../ConversationItem";
+import {
+  ConversationItemWithoutSelect,
+} from "@src/pages/content/pages/data/ConversationPage/Conversation";
+import { FolderItem } from "@src/pages/content/pages/data/FolderPage/Folder";
 
 function GroupTitle({ title }: { title: string }) {
   return (
@@ -30,15 +32,14 @@ export default function AllTabContent({
       <div>
         <GroupTitle title="Conversations" />
         {conversations && conversations.length !== 0 ? (
-          conversations.slice(0, ALL_TAB_GROUP_SIZE).map((conversation, i) => (
-            <ConversationItem
-              key={conversation.id}
-              conversation={conversation}
-              onSelect={() => {
-                handleConversationSelect(conversation.id);
-              }}
-            />
-          ))
+          conversations
+            .slice(0, ALL_TAB_GROUP_SIZE)
+            .map((conversation, i) => (
+              <ConversationItemWithoutSelect
+                key={conversation.id}
+                conversation={conversation}
+              />
+            ))
         ) : (
           <EmptyResult name="conversation" />
         )}
@@ -56,9 +57,7 @@ export default function AllTabContent({
         {folders && folders.length !== 0 ? (
           folders
             .slice(0, ALL_TAB_GROUP_SIZE)
-            .map((f) => (
-              <FolderItem key={f.id} folder={f} onSelect={() => {}} />
-            ))
+            .map((f) => <FolderItem key={f.id} folder={f} />)
         ) : (
           <EmptyResult name="folder" />
         )}

@@ -1,6 +1,5 @@
 import { conversationListAtom } from "@src/pages/content/context";
-import { List as ConversationList } from "@src/pages/content/components/Conversation";
-import { ListView } from "@src/pages/content/components/ListView";
+import { ListView } from "@src/components/ListView";
 import { categorizeConversations } from "@src/utils";
 import { useState } from "react";
 import { useAtom } from "jotai";
@@ -16,13 +15,9 @@ import {
   SelectAllButton,
   SelectionActionBar,
 } from "@src/pages/content/components/SelectionActionBar";
-import { fetchConversations } from "../../messages";
-import {
-  ConversationMoreDropdownButton,
-  MoreDropdownButton,
-} from "../../components/MoreDropdownButton";
-import { AddToFolderDropdown } from "../../components/actions/AddToFolderDropdown";
-import { PinConversationList } from "../../components/PinConversation";
+import { MoreDropdownButton } from "@src/pages/content/components/MoreDropdownButton";
+import { AddToFolderDropdown } from "@src/pages/content/components/actions/AddToFolderDropdown";
+import { ConversationItem } from "./Conversation";
 
 const SortByOptions: Record<
   string,
@@ -142,20 +137,26 @@ export function ConversationPage() {
                   <div className="relative" key={i}>
                     <div
                       className="sticky top-0 py-3 text-sm text-muted-foreground bg-background trans"
-                      style={{
-                        paddingLeft: "12px",
-                        fontSize: "13px",
-                        zIndex: `${10 + i * 2}`,
-                      }}
+                      style={
+                        {
+                          paddingLeft: "12px",
+                          fontSize: "13px",
+                          zIndex: `${10 + i * 2}`,
+                        } as React.CSSProperties
+                      }
                     >
                       {key}
                     </div>
-                    <ConversationList
-                      data={value}
-                      selectionEnabled={selection.size !== 0}
-                      toggle={toggle}
-                      selection={selection}
-                    />
+                    <div className="flex flex-col w-full gap-1">
+                      {data.map((item: Conversation) => (
+                        <ConversationItem
+                          conversation={item}
+                          selectionEnabled={selection.size !== 0}
+                          selected={selection.has(item.id)}
+                          toggle={toggle}
+                        />
+                      ))}
+                    </div>
                   </div>
                 );
               }
@@ -166,6 +167,7 @@ export function ConversationPage() {
         renderSelectionBar={({ selection, setSelection }) => (
           <SelectionActionBar
             enabled={selection.size !== 0}
+            selection={selection}
             left={() => {
               return (
                 <>

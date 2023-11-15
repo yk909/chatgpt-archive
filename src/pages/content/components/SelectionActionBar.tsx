@@ -5,18 +5,20 @@ import { cn } from "@src/lib/utils";
 export function SelectionActionBar({
   className,
   enabled,
+  selection,
   left,
   right,
 }: {
   className?: string;
   enabled: boolean;
+  selection: Set<string>;
   left: () => React.ReactNode;
   right: () => React.ReactNode;
 }) {
   return (
     <div
       className={cn(
-        "absolute bottom-0 left-0 right-0 z-20 flex items-center h-12 rounded-md bg-2 page-px page-mx trans",
+        "absolute bottom-0 left-0 right-0 z-20 flex items-center h-12 rounded-md bg-2 trans",
         className
       )}
       style={{
@@ -25,11 +27,20 @@ export function SelectionActionBar({
         transform: enabled ? "translateY(0)" : "translateY(50%)",
       }}
     >
-      <div className="flex items-center gap-2">{left && left()}</div>
+      <div className="flex items-center gap-2 relative left-2 z-10">
+        {left && left()}
+      </div>
 
-      <div className="flex-1 min-w-0"></div>
+      <div className="flex-1 min-w-0 flex justify-center items-center absolute inset-0">
+        <div className="text-sm text-muted-foreground">
+          <span className="font-medium">{selection.size + " "}</span> items
+          selected
+        </div>
+      </div>
 
-      <div className="flex items-center gap-2">{right && right()}</div>
+      <div className="flex items-center gap-2 absolute right-2 z-10">
+        {right && right()}
+      </div>
     </div>
   );
 }

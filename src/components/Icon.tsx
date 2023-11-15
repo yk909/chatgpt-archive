@@ -1,6 +1,7 @@
 import {
   Check,
   ChevronRight,
+  Delete,
   Folder,
   Info,
   MessageSquare,
@@ -24,10 +25,14 @@ const sizeMap = {
   lg: 24,
 };
 
-export function MessageIcon({ size }: { size: "sm" | "md" | "lg" }) {
+export function MessageIcon({
+  size = "md",
+}: {
+  size: "sm" | "md" | "lg" | number;
+}) {
   return (
     <MessageSquare
-      className="flex-none mr-2"
+      className="flex-none"
       style={{
         width: sizeMap[size],
         height: sizeMap[size],
@@ -44,7 +49,7 @@ export function FolderIcon({ size }: { size: "sm" | "md" | "lg" }) {
   };
   return (
     <Folder
-      className="flex-none mr-2"
+      className="flex-none"
       style={{
         width: sizeMap[size],
         height: sizeMap[size],
@@ -167,5 +172,20 @@ export function InfoIcon({ size }: { size: "sm" | "md" | "lg" }) {
         }}
       />
     </div>
+  );
+}
+
+export function DeleteIcon({
+  size = "md",
+}: { size?: "sm" | "md" | "lg" } & React.ComponentPropsWithoutRef<
+  typeof Delete
+>) {
+  return (
+    <Delete
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+    />
   );
 }

@@ -4,6 +4,7 @@
 
 // @import url("./global.css");
 @import url("./icon.scss");
+@import url("./Conversation.scss");
 
 .crx-class {
   color: pink;
@@ -91,7 +92,7 @@
   --radius: 0.5rem;
 
   --page-px: 8px;
-  --content-px: 12px;
+  --card-px: 12px;
   --header-h: 4rem;
 
   background-color: hsl(var(--background));
@@ -145,9 +146,9 @@
   padding-right: var(--page-px);
 }
 
-.content-px {
-  padding-left: var(--content-px);
-  padding-right: var(--content-px);
+.card-px {
+  padding-left: var(--card-px);
+  padding-right: var(--card-px);
 }
 
 .button-primary {

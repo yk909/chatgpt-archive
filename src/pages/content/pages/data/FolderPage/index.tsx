@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ListView } from "@src/pages/content/components/ListView";
-import { bgResponseStatusAtom, folderListAtom } from "../../context";
-import { MESSAGE_ACTIONS } from "@src/constants";
-import { FolderList } from "@src/pages/content/components/Folder";
-import {
-  createNewFolder,
-  deleteFolder,
-  fetchMoreFolders,
-} from "../../messages";
+import { ListView } from "@src/components/ListView";
 import { MoreHorizontal, Plus, Trash2 } from "lucide-react";
 import {
   ClearSelectionButton,
@@ -18,7 +10,12 @@ import {
 import { Dialog, DialogTrigger } from "@src/components/ui/dialog";
 import { DialogForm } from "@src/components/DialogForm";
 import { useAtom } from "jotai";
-import { Spinner } from "@src/components/Spinner";
+import { createNewFolder, deleteFolder } from "@src/pages/content/messages";
+import {
+  bgResponseStatusAtom,
+  folderListAtom,
+} from "@src/pages/content/context";
+import { FolderItem } from "./Folder";
 
 type CreateNewFolderForm = {
   newFolderName: string;
@@ -77,17 +74,23 @@ export function FolderPage() {
       <ListView
         dataAtom={folderListAtom}
         renderData={({ data, selection, toggle }) => (
-          <FolderList
-            data={data}
-            selectionEnabled={selection.size !== 0}
-            toggle={toggle}
-            selection={selection}
-          />
+          <div className="flex flex-col w-full">
+            {data.map((item) => (
+              <FolderItem
+                key={item.id}
+                folder={item}
+                selected={selection.has(item.id)}
+                toggle={toggle}
+                selectionEnabled={selection.size !== 0}
+              />
+            ))}
+          </div>
         )}
         id="folder-list"
         renderSelectionBar={({ selection, setSelection }) => (
           <SelectionActionBar
             enabled={selection.size !== 0}
+            selection={selection}
             left={() => {
               return (
                 <>

@@ -1,4 +1,3 @@
-import { ConversationItem } from "../ConversationItem";
 import { EmptyResult } from "../EmptyResult";
 import {
   ClearSelectionButton,
@@ -8,6 +7,7 @@ import {
 import { MoreDropdownButton } from "../../MoreDropdownButton";
 import { AddToFolderDropdown } from "../../actions/AddToFolderDropdown";
 import { useState } from "react";
+import { ConversationItem } from "@src/pages/content/pages/data/ConversationPage/Conversation";
 
 export default function ConversationTabContent({
   conversations,
@@ -39,9 +39,6 @@ export default function ConversationTabContent({
           <ConversationItem
             key={conversation.id}
             conversation={conversation}
-            onSelect={() => {
-              handleConversationSelect(conversation.id);
-            }}
             selected={selection.has(conversation.id)}
             toggle={toggle}
             selectionEnabled={selection.size !== 0}
@@ -51,7 +48,8 @@ export default function ConversationTabContent({
 
       <SelectionActionBar
         enabled={selection.size !== 0}
-        className="bottom-2 left-2 right-4 fixed"
+        className="bottom-2 left-2 right-2 fixed"
+        selection={selection}
         left={() => {
           return (
             <>
