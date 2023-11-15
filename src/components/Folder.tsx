@@ -5,13 +5,13 @@ import {
   CardDescription,
   CardTitle,
 } from "@src/components/Card";
-import { ConversationDetailPopover } from "@src/components/ConversationDetailPopover";
+import { ConversationDetailOptionButton } from "@src/components/actions/ConversationDetailPopover";
 import { MoreDropdownButton } from "@src/pages/content/components/MoreDropdownButton";
-import { AddToFolderDropdown } from "@src/pages/content/components/actions/AddToFolderDropdown";
+import { AddToFolderDropdown } from "@src/components/actions/AddToFolder";
 import {
-  TogglePinConversationButton,
+  TogglePinConversationOptionButton,
   TogglePinConversationDropdown,
-} from "@src/pages/content/components/actions/TogglePinConversation";
+} from "@src/components/actions/TogglePinConversation";
 import { useConversation } from "@src/pages/content/hook";
 import { loadConversation } from "@src/utils";
 import { SelectionIcon } from "@src/components/Selection";
@@ -50,13 +50,10 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
       right={
         <>
           <div className="flex items-center flex-none gap-1">
-            <ConversationDetailPopover
-              conversation={conversation}
-              className="icon-container icon-container-sm"
+            <ConversationDetailOptionButton conversation={conversation} />
+            <TogglePinConversationOptionButton
+              conversationId={conversation.id}
             />
-            <div className="icon-container icon-container-sm">
-              <TogglePinConversationButton conversationId={conversation.id} />
-            </div>
             <MoreDropdownButton
               items={
                 <>

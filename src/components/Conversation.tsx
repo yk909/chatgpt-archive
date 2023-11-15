@@ -1,12 +1,12 @@
 import React from "react";
 import { CardContainer, CardContent, CardTitle } from "@src/components/Card";
-import { ConversationDetailPopover } from "@src/components/ConversationDetailPopover";
+import { ConversationDetailOptionButton } from "@src/components/actions/ConversationDetailPopover";
 import { MoreDropdownButton } from "@src/pages/content/components/MoreDropdownButton";
-import { AddToFolderDropdown } from "@src/pages/content/components/actions/AddToFolderDropdown";
+import { AddToFolderDropdown } from "@src/components/actions/AddToFolder";
 import {
-  TogglePinConversationButton,
+  TogglePinConversationOptionButton,
   TogglePinConversationDropdown,
-} from "@src/pages/content/components/actions/TogglePinConversation";
+} from "@src/components/actions/TogglePinConversation";
 import { useConversation } from "@src/pages/content/hook";
 import { loadConversation } from "@src/utils";
 import { SelectionIcon } from "@src/components/Selection";
@@ -19,6 +19,7 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
   selected,
   toggle,
   selectionEnabled,
+  optionButtons,
 }: {
   conversation: Conversation;
   pinned: boolean;
@@ -26,6 +27,11 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
   selected: boolean | null;
   toggle: (id: string) => void | null;
   selectionEnabled: boolean | null;
+  optionButtons: ({
+    conversation,
+  }: {
+    conversation: Conversation;
+  }) => React.ReactNode;
 }) {
   console.log("render Conversation");
   return (
@@ -46,30 +52,7 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
           className: "conversation",
         },
       }}
-      right={
-        <>
-          <div className="flex items-center flex-none gap-1">
-            <ConversationDetailPopover
-              conversation={conversation}
-              className="opacity-0 card-hover-show icon-container icon-container-sm"
-            />
-            <div className="opacity-0 card-hover-show icon-container icon-container-sm">
-              <TogglePinConversationButton conversationId={conversation.id} />
-            </div>
-            <MoreDropdownButton
-              triggerClassName="opacity-0 card-hover-show"
-              items={
-                <>
-                  <AddToFolderDropdown conversationIdList={[conversation.id]} />
-                  <TogglePinConversationDropdown
-                    conversationId={conversation.id}
-                  />
-                </>
-              }
-            />
-          </div>
-        </>
-      }
+      right={optionButtons({ conversation })}
       key={conversation.id}
     >
       <CardContent
@@ -90,11 +73,17 @@ export function ConversationItem({
   selected = null,
   toggle = null,
   selectionEnabled = null,
+  optionButtons = DefaultConversationOptions,
 }: {
   conversation: Conversation;
   selected?: boolean;
   toggle?: (id: string) => void;
   selectionEnabled?: boolean;
+  optionButtons?: ({
+    conversation,
+  }: {
+    conversation: Conversation;
+  }) => React.ReactNode;
 }) {
   const { pinned, active } = useConversation(conversation.id);
   return (
@@ -105,6 +94,7 @@ export function ConversationItem({
       pinned={pinned}
       active={active}
       selectionEnabled={selectionEnabled}
+      optionButtons={optionButtons}
     />
   );
 }
@@ -114,10 +104,16 @@ const ConversationPresentorWithoutSelect = React.memo(
     conversation,
     pinned,
     active,
+    optionButtons,
   }: {
     conversation: Conversation;
     pinned: boolean;
     active: boolean;
+    optionButtons: ({
+      conversation,
+    }: {
+      conversation: Conversation;
+    }) => React.ReactNode;
   }) {
     console.log("render Conversation");
     return (
@@ -130,31 +126,7 @@ const ConversationPresentorWithoutSelect = React.memo(
             className: "conversation",
           },
         }}
-        right={
-          <>
-            <div className="flex items-center flex-none gap-1">
-              <ConversationDetailPopover
-                conversation={conversation}
-                className="icon-container icon-container-sm"
-              />
-              <div className="icon-container icon-container-sm">
-                <TogglePinConversationButton conversationId={conversation.id} />
-              </div>
-              <MoreDropdownButton
-                items={
-                  <>
-                    <AddToFolderDropdown
-                      conversationIdList={[conversation.id]}
-                    />
-                    <TogglePinConversationDropdown
-                      conversationId={conversation.id}
-                    />
-                  </>
-                }
-              />
-            </div>
-          </>
-        }
+        right={optionButtons({ conversation })}
         key={conversation.id}
       >
         <CardContent
@@ -173,8 +145,14 @@ const ConversationPresentorWithoutSelect = React.memo(
 
 export function ConversationItemWithoutSelect({
   conversation,
+  optionButtons = DefaultConversationOptions,
 }: {
   conversation: Conversation;
+  optionButtons?: ({
+    conversation,
+  }: {
+    conversation: Conversation;
+  }) => React.ReactNode;
 }) {
   const { pinned, active } = useConversation(conversation.id);
   return (
@@ -182,6 +160,28 @@ export function ConversationItemWithoutSelect({
       conversation={conversation}
       pinned={pinned}
       active={active}
+      optionButtons={optionButtons}
     />
+  );
+}
+
+export function DefaultConversationOptions({
+  conversation,
+}: {
+  conversation: Conversation;
+}) {
+  return (
+    <>
+      <ConversationDetailOptionButton conversation={conversation} />
+      <TogglePinConversationOptionButton conversationId={conversation.id} />
+      <MoreDropdownButton
+        items={
+          <>
+            <AddToFolderDropdown conversationIdList={[conversation.id]} />
+            <TogglePinConversationDropdown conversationId={conversation.id} />
+          </>
+        }
+      />
+    </>
   );
 }

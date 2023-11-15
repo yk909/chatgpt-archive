@@ -72,3 +72,7 @@ type SearchResult = {
   conversations: (Conversation & { keywordCount: number })[];
   folders: Folder[];
 };
+
+
+// icon
+type IconSize = "sm" | "md" | "lg";

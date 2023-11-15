@@ -1,6 +1,6 @@
 import { PANEL_NAV_ITEMS } from "@src/pages/content/config";
 import { NavLink, Outlet } from "react-router-dom";
-import { PinConversationList } from "../components/PinConversation";
+import { PinConversationList } from "../../../components/PinConversation";
 
 export function DataPage() {
   return (

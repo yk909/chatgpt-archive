@@ -5,6 +5,7 @@ import {
   Folder,
   Info,
   MessageSquare,
+  MoreHorizontal,
   Pin,
   PinOff,
 } from "lucide-react";
@@ -164,14 +165,12 @@ export function MessageIconWithSelection({
 
 export function InfoIcon({ size }: { size: "sm" | "md" | "lg" }) {
   return (
-    <div className="flex items-center justify-center rounded-full select-none trans hover:bg-muted">
-      <Info
-        style={{
-          width: sizeMap[size],
-          height: sizeMap[size],
-        }}
-      />
-    </div>
+    <Info
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+    />
   );
 }
 
@@ -182,6 +181,21 @@ export function DeleteIcon({
 >) {
   return (
     <Delete
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+    />
+  );
+}
+
+export function MoreIcon({
+  size = "md",
+}: { size?: "sm" | "md" | "lg" } & React.ComponentPropsWithoutRef<
+  typeof MoreHorizontal
+>) {
+  return (
+    <MoreHorizontal
       style={{
         width: sizeMap[size],
         height: sizeMap[size],

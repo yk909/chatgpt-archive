@@ -1,4 +1,4 @@
-import { FolderItem } from "@src/pages/content/pages/data/FolderPage/Folder";
+import { FolderItem } from "@src/components/Folder";
 import { EmptyResult } from "../EmptyResult";
 
 export default function FolderTabContent({ folders }: { folders: Folder[] }) {

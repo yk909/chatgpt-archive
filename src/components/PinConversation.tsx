@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
-import { pinConversationListAtom } from "../context";
-import { ConversationItemWithoutSelect } from "../pages/data/ConversationPage/Conversation";
+import { pinConversationListAtom } from "../pages/content/context";
+import { ConversationItemWithoutSelect } from "./Conversation";
 
 export function PinConversationList() {
   const [pinConversations, _] = useAtom(pinConversationListAtom);

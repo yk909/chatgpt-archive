@@ -14,10 +14,10 @@ import {
   ClearSelectionButton,
   SelectAllButton,
   SelectionActionBar,
-} from "@src/pages/content/components/SelectionActionBar";
+} from "@src/components/SelectionActionBar";
 import { MoreDropdownButton } from "@src/pages/content/components/MoreDropdownButton";
-import { AddToFolderDropdown } from "@src/pages/content/components/actions/AddToFolderDropdown";
-import { ConversationItem } from "./Conversation";
+import { AddToFolderDropdown } from "@src/components/actions/AddToFolder";
+import { ConversationItem } from "../../../../../components/Conversation";
 
 const SortByOptions: Record<
   string,

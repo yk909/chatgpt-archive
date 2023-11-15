@@ -1,8 +1,8 @@
 import { DropdownMenuItem } from "@src/components/ui/dropdown-menu";
 import { useAtom } from "jotai";
-import { pinConversationIdSetAtom } from "../../context";
+import { pinConversationIdSetAtom } from "../../pages/content/context";
 import { Pin, PinOff } from "lucide-react";
-import { togglePinConversation } from "../../messages";
+import { togglePinConversation } from "../../pages/content/messages";
 import { PinIcon } from "@src/components/Icon";
 
 export function TogglePinConversationDropdown({
@@ -24,22 +24,26 @@ export function TogglePinConversationDropdown({
   );
 }
 
-export function TogglePinConversationButton({
+export function TogglePinConversationOptionButton({
   conversationId,
+  size = "sm",
   ...rest
 }: {
   conversationId: string;
+  size?: IconSize;
 } & Omit<React.ComponentPropsWithoutRef<typeof PinIcon>, "pinned">) {
   const [pinSet, _] = useAtom(pinConversationIdSetAtom);
   const pinned = pinSet.has(conversationId);
   return (
-    <PinIcon
-      pinned={pinned}
-      size="sm"
-      onClick={() => {
-        togglePinConversation(conversationId);
-      }}
-      {...rest}
-    />
+    <div className={`icon-container icon-container-${size}`}>
+      <PinIcon
+        pinned={pinned}
+        size={size}
+        onClick={() => {
+          togglePinConversation(conversationId);
+        }}
+        {...rest}
+      />
+    </div>
   );
 }

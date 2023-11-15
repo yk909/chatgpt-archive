@@ -7,14 +7,14 @@ import {
   CommandList,
 } from "@src/components/ui/command";
 import { useAtom } from "jotai";
-import { folderListAtom } from "../../context";
+import { folderListAtom } from "../../pages/content/context";
 import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from "@src/components/ui/dropdown-menu";
 import { Check, FolderInput } from "lucide-react";
-import { addConversationsToFolder } from "../../messages";
+import { addConversationsToFolder } from "../../pages/content/messages";
 
 export function AddToFolderDropdown({
   conversationIdList,

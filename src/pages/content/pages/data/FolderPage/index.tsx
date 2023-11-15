@@ -5,7 +5,7 @@ import {
   ClearSelectionButton,
   SelectAllButton,
   SelectionActionBar,
-} from "@src/pages/content/components/SelectionActionBar";
+} from "@src/components/SelectionActionBar";
 
 import { Dialog, DialogTrigger } from "@src/components/ui/dialog";
 import { DialogForm } from "@src/components/DialogForm";
@@ -15,7 +15,7 @@ import {
   bgResponseStatusAtom,
   folderListAtom,
 } from "@src/pages/content/context";
-import { FolderItem } from "./Folder";
+import { FolderItem } from "../../../../../components/Folder";
 
 type CreateNewFolderForm = {
   newFolderName: string;

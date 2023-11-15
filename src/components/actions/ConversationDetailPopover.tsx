@@ -1,6 +1,6 @@
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { InfoIcon } from "./Icon";
-import { DropdownMenuItem } from "./ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { InfoIcon } from "../Icon";
+import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { cn } from "@src/lib/utils";
 
 export function formatDates(s: string): string {
@@ -17,13 +17,11 @@ export function formatDates(s: string): string {
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <div className="w-[84px]">{children}</div>;
+  return <div className="text-foreground w-[84px]">{children}</div>;
 }
 
 function Value({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex-1 min-h-0 truncate text-foreground">{children}</div>
-  );
+  return <div className="flex-1 min-h-0 truncate">{children}</div>;
 }
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -35,16 +33,20 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function ConversationDetailPopover({
+export function ConversationDetailOptionButton({
   conversation,
+  size = "sm",
   className = "",
 }: {
   conversation: Conversation;
+  size?: IconSize;
 } & React.ComponentProps<typeof PopoverTrigger>) {
   return (
     <Popover>
-      <PopoverTrigger className={className}>
-        <InfoIcon size="md" />
+      <PopoverTrigger
+        className={cn(`icon-container icon-container-${size}`, className)}
+      >
+        <InfoIcon size={size} />
       </PopoverTrigger>
       <PopoverContent className="w-[320px]">
         <div>

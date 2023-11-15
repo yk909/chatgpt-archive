@@ -3,11 +3,11 @@ import {
   ClearSelectionButton,
   SelectAllButton,
   SelectionActionBar,
-} from "../../SelectionActionBar";
+} from "../../../../../components/SelectionActionBar";
 import { MoreDropdownButton } from "../../MoreDropdownButton";
-import { AddToFolderDropdown } from "../../actions/AddToFolderDropdown";
+import { AddToFolderDropdown } from "../../../../../components/actions/AddToFolder";
 import { useState } from "react";
-import { ConversationItem } from "@src/pages/content/pages/data/ConversationPage/Conversation";
+import { ConversationItem } from "@src/components/Conversation";
 
 export default function ConversationTabContent({
   conversations,

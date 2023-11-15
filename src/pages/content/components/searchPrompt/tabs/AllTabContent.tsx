@@ -5,8 +5,8 @@ import { MoreButton } from "../MoreButton";
 import { ALL_TAB_GROUP_SIZE, SEARCH_TABS } from "../config";
 import {
   ConversationItemWithoutSelect,
-} from "@src/pages/content/pages/data/ConversationPage/Conversation";
-import { FolderItem } from "@src/pages/content/pages/data/FolderPage/Folder";
+} from "@src/components/Conversation";
+import { FolderItem } from "@src/components/Folder";
 
 function GroupTitle({ title }: { title: string }) {
   return (

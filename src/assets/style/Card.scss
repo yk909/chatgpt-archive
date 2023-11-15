@@ -71,6 +71,7 @@
 .card .card-right {
   display: flex;
   align-items: center;
+  gap: 4px;
   flex: none;
   background: hsl(var(--card-bg) / 1);
 }
