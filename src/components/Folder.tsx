@@ -22,11 +22,7 @@ import {
   MessageIcon,
   ToggleIcon,
 } from "@src/components/Icon";
-import { DeleteFromFolderDropdown } from "./actions/DeleteFromFolder";
-
-const DeleteFromFolderButton = ({ folder }: { folder: Folder }) => {
-  return <DeleteIcon className="icon-container icon-container-sm" />;
-};
+import { DeleteFromFolderOptionButton } from "./actions/DeleteFromFolder";
 
 const ConversationPresentor = React.memo(function ConversationCardPresentor({
   conversation,
@@ -53,12 +49,12 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
       right={
         <>
           <ConversationDetailOptionButton conversation={conversation} />
-          <TogglePinConversationOptionButton conversationId={conversation.id} />
+          {/* <TogglePinConversationOptionButton conversationId={conversation.id} /> */}
+          <DeleteFromFolderOptionButton
+            conversationId={conversation.id}
+            folderId={folderId}
+          />
           <MoreDropdownButton>
-            <DeleteFromFolderDropdown
-              conversationId={conversation.id}
-              folderId={folderId}
-            />
             <AddToFolderDropdown conversationIdList={[conversation.id]} />
             <TogglePinConversationDropdown conversationId={conversation.id} />
           </MoreDropdownButton>

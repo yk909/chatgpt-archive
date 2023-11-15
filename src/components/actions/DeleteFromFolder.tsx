@@ -12,12 +12,34 @@ export function DeleteFromFolderDropdown({
   return (
     <DropdownMenuItem
       onSelect={() => {
-        console.log("delete from folder");
+        console.debug("delete from folder", { folderId, conversationId });
         deleteConversationsFromFolder([conversationId], folderId);
       }}
     >
       <DeleteIcon className="icon-dropdown-menu-item" size="sm" />
       <span>Delete from folder</span>
     </DropdownMenuItem>
+  );
+}
+
+export function DeleteFromFolderOptionButton({
+  folderId,
+  conversationId,
+  size = "sm",
+}: {
+  folderId: string;
+  conversationId: string;
+  size?: IconSize;
+}) {
+  return (
+    <button
+      onClick={() => {
+        console.debug("delete from folder", { folderId, conversationId });
+        deleteConversationsFromFolder([conversationId], folderId);
+      }}
+      className={`icon-container icon-container-${size}`}
+    >
+      <DeleteIcon size={size} />
+    </button>
   );
 }

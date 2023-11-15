@@ -9,6 +9,7 @@ import {
 import { useAtom } from "jotai";
 import { folderListAtom } from "../../pages/content/context";
 import {
+  DropdownMenuPortal,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,

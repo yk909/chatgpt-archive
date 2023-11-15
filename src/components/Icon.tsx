@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
   Pin,
   PinOff,
+  Trash2,
 } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import { cn } from "@src/lib/utils";
@@ -181,7 +182,7 @@ export function DeleteIcon({
   typeof Delete
 >) {
   return (
-    <Delete
+    <Trash2
       style={{
         width: sizeMap[size],
         height: sizeMap[size],
