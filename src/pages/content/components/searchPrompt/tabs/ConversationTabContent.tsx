@@ -69,14 +69,11 @@ export default function ConversationTabContent({
                 contentProps={{
                   side: "top",
                 }}
-                items={
-                  <>
-                    <AddToFolderDropdown
-                      conversationIdList={new Array(...selection)}
-                    />
-                  </>
-                }
-              />
+              >
+                <AddToFolderDropdown
+                  conversationIdList={new Array(...selection)}
+                />
+              </MoreDropdownButton>
             </div>
           </>
         )}

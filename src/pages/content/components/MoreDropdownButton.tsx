@@ -39,12 +39,12 @@ export function MoreDropdownButton({
     align: "end",
     className: "w-[200px]",
   },
-  items,
+  children,
 }: {
   triggerClassName?: string;
   size?: IconSize;
   contentProps?: React.ComponentProps<typeof DropdownMenuContent>;
-  items: React.ReactNode;
+  children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -64,7 +64,7 @@ export function MoreDropdownButton({
       </DropdownMenuTrigger>
       {open && (
         <ConversationDropdownContent setOpen={setOpen} {...contentProps}>
-          {items}
+          {children}
         </ConversationDropdownContent>
       )}
     </DropdownMenu>

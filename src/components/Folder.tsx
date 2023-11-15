@@ -54,20 +54,14 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
         <>
           <ConversationDetailOptionButton conversation={conversation} />
           <TogglePinConversationOptionButton conversationId={conversation.id} />
-          <MoreDropdownButton
-            items={
-              <>
-                <DeleteFromFolderDropdown
-                  conversationId={conversation.id}
-                  folderId={folderId}
-                />
-                <AddToFolderDropdown conversationIdList={[conversation.id]} />
-                <TogglePinConversationDropdown
-                  conversationId={conversation.id}
-                />
-              </>
-            }
-          />
+          <MoreDropdownButton>
+            <DeleteFromFolderDropdown
+              conversationId={conversation.id}
+              folderId={folderId}
+            />
+            <AddToFolderDropdown conversationIdList={[conversation.id]} />
+            <TogglePinConversationDropdown conversationId={conversation.id} />
+          </MoreDropdownButton>
         </>
       }
       key={conversation.id}

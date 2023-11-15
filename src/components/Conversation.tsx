@@ -174,14 +174,10 @@ export function DefaultConversationOptions({
     <>
       <ConversationDetailOptionButton conversation={conversation} />
       <TogglePinConversationOptionButton conversationId={conversation.id} />
-      <MoreDropdownButton
-        items={
-          <>
-            <AddToFolderDropdown conversationIdList={[conversation.id]} />
-            <TogglePinConversationDropdown conversationId={conversation.id} />
-          </>
-        }
-      />
+      <MoreDropdownButton>
+        <AddToFolderDropdown conversationIdList={[conversation.id]} />
+        <TogglePinConversationDropdown conversationId={conversation.id} />
+      </MoreDropdownButton>
     </>
   );
 }
