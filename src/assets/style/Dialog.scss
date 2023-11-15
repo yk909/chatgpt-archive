@@ -1,0 +1,45 @@
+.dialog {
+  top: 0%;
+  left: 50%;
+  display: none;
+  --open-y-offset: 20vh;
+  --closed-y-offset: 21vh;
+  --open-scale: 1;
+  --closed-scale: 0.95;
+}
+
+.dialog[data-state="open"] {
+  animation: dl-enter var(--duration) linear forwards !important;
+  display: block;
+}
+
+.dialog[data-state="closed"] {
+  animation: dl-leave var(--duration) linear forwards !important;
+  display: block;
+}
+
+@keyframes dl-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--closed-y-offset)) translateX(-50%)
+      scale(var(--closed-scale));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(var(--open-y-offset)) translateX(-50%)
+      scale(var(--open-scale));
+  }
+}
+
+@keyframes dl-leave {
+  0% {
+    opacity: 1;
+    transform: translateY(var(--open-y-offset)) translateX(-50%)
+      scale(var(--open-scale));
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--closed-y-offset)) translateX(-50%)
+      scale(var(--closed-scale));
+  }
+}

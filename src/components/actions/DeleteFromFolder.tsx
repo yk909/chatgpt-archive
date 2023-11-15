@@ -32,7 +32,7 @@ export function DeleteFromFolderOptionButton({
   size?: IconSize;
 }) {
   return (
-    <button
+    <div
       onClick={() => {
         console.debug("delete from folder", { folderId, conversationId });
         deleteConversationsFromFolder([conversationId], folderId);
@@ -40,6 +40,6 @@ export function DeleteFromFolderOptionButton({
       className={`icon-container icon-container-${size}`}
     >
       <DeleteIcon size={size} />
-    </button>
+    </div>
   );
 }

@@ -20,9 +20,13 @@ import {
   DeleteIcon,
   FolderIcon,
   MessageIcon,
+  RenameFolderIcon,
   ToggleIcon,
 } from "@src/components/Icon";
 import { DeleteFromFolderOptionButton } from "./actions/DeleteFromFolder";
+import { RenameFolderDropdown } from "./actions/RenameFolder";
+import { deleteFolder, renameFolder } from "@src/pages/content/messages";
+import { DropdownMenuItem } from "./ui/dropdown-menu";
 
 const ConversationPresentor = React.memo(function ConversationCardPresentor({
   conversation,
@@ -98,11 +102,13 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
   selected,
   toggle,
   selectionEnabled,
+  OptionButtons,
 }: {
   folder: Folder;
   selected: boolean | null;
   toggle: (id: string) => void | null;
   selectionEnabled: boolean | null;
+  OptionButtons: React.FC<{ folderId: string }>;
 }) {
   console.log("render Conversation");
   const [open, setOpen] = React.useState(false);
@@ -120,10 +126,8 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
         }
         right={
           <>
-            <div className="flex items-center flex-none gap-1">
-              {/* <FolderMoreButton folderId={data.id} /> */}
-              <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} />
-            </div>
+            <OptionButtons folderId={folder.id} />
+            <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} />
           </>
         }
       >
@@ -159,11 +163,13 @@ export function FolderItem({
   selected = null,
   toggle = null,
   selectionEnabled = null,
+  OptionButtons = FolderMoreOptionButton,
 }: {
   folder: Folder;
   selected?: boolean;
   toggle?: (id: string) => void;
   selectionEnabled?: boolean;
+  OptionButtons?: React.FC<{ folderId: string }>;
 }) {
   return (
     <FolderPresentor
@@ -171,14 +177,17 @@ export function FolderItem({
       selected={selected}
       toggle={toggle}
       selectionEnabled={selectionEnabled}
+      OptionButtons={OptionButtons}
     />
   );
 }
 
 export const FolderWithoutSelect = React.memo(function FolderCardPresentor({
   folder,
+  OptionButtons,
 }: {
   folder: Folder;
+  OptionButtons: React.FC<{ folderId: string }>;
 }) {
   console.log("render folder");
   const [open, setOpen] = React.useState(false);
@@ -188,7 +197,7 @@ export const FolderWithoutSelect = React.memo(function FolderCardPresentor({
       right={
         <>
           <div className="flex items-center flex-none gap-1">
-            {/* <FolderMoreButton folderId={data.id} /> */}
+            <OptionButtons folderId={folder.id} />
             <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} />
           </div>
         </>
@@ -201,3 +210,48 @@ export const FolderWithoutSelect = React.memo(function FolderCardPresentor({
     </CardContainer>
   );
 });
+
+function FolderMoreOptionButton({ folderId }: { folderId: string }) {
+  const OptionInputsMap = {
+    rename: {
+      title: "Rename folder",
+      inputs: [
+        {
+          label: "New Name",
+          name: "name",
+          type: "text",
+          placeholder: "Enter a new name",
+          autoComplete: "off",
+        },
+      ],
+      onSubmit: (data: any) => {
+        console.log(`rename folder ${folderId}`, data);
+        renameFolder(folderId, data.name);
+      },
+    },
+  };
+  return (
+    <MoreDropdownButton OptionInputsMap={OptionInputsMap}>
+      {({ setSelected }) => (
+        <>
+          <DropdownMenuItem
+            onSelect={() => {
+              setSelected("rename");
+            }}
+          >
+            <RenameFolderIcon className="icon-dropdown-menu-item" />
+            <span>Rename folder</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => {
+              deleteFolder([folderId]);
+            }}
+          >
+            <DeleteIcon className="icon-dropdown-menu-item" />
+            <span>Delete folder</span>
+          </DropdownMenuItem>
+        </>
+      )}
+    </MoreDropdownButton>
+  );
+}

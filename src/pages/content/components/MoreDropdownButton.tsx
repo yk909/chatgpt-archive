@@ -4,12 +4,15 @@ import { bgResponseStatusAtom } from "../context";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@src/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { AddToFolderDropdown } from "../../../components/actions/AddToFolder";
 import { cn } from "@src/lib/utils";
 import { MoreIcon } from "@src/components/Icon";
+import { DialogForm } from "@src/components/DialogForm";
+import { Dialog } from "@src/components/ui/dialog";
 
 function ConversationDropdownContent({
   setOpen,
@@ -33,40 +36,140 @@ function ConversationDropdownContent({
 }
 
 export function MoreDropdownButton({
-  triggerClassName = "",
-  size = "sm",
+  children,
+  OptionInputsMap = {},
   contentProps = {
     align: "end",
     className: "w-[200px]",
   },
-  children,
+  size = "sm",
 }: {
-  triggerClassName?: string;
-  size?: IconSize;
+  children:
+    | React.ReactNode
+    | (({
+        setSelected,
+      }: {
+        setSelected: React.Dispatch<React.SetStateAction<string | null>>;
+      }) => React.ReactNode);
+  OptionInputsMap?: any;
   contentProps?: React.ComponentProps<typeof DropdownMenuContent>;
-  children: React.ReactNode;
+  size?: IconSize;
 }) {
   const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
 
-  // console.log("render MoreDropdownButton");
+  // const OptionInputsMap = {
+  //   rename: {
+  //     title: "Rename folder",
+  //     inputs: [
+  //       {
+  //         label: "New Name",
+  //         name: "name",
+  //         type: "text",
+  //         placeholder: "Enter a new name",
+  //         autoComplete: "off",
+  //       },
+  //     ],
+  //     onSubmit: (data: any) => {
+  //       console.log(`rename folder ${folderId}`, data);
+  //       renameFolder(folderId, data.name);
+  //     },
+  //   },
+  // };
+
+  useEffect(() => {
+    if (selectedOption) {
+      console.log("setting dialog open to true");
+      setDialogOpen(true);
+    }
+  }, [selectedOption]);
+
+  useEffect(() => {
+    if (dialogOpen) {
+      // when the dialog opens, close the dropdown
+      setOpen(false);
+    } else {
+      // when the dialog closes, set the selected option to null
+      setSelectedOption(null);
+    }
+  }, [dialogOpen]);
+
+  useEffect(() => {
+    if (!responseStatus) {
+      return;
+    }
+    if (open) {
+      setOpen(false);
+    }
+    if (dialogOpen) {
+      setDialogOpen(false);
+    }
+  }, [responseStatus]);
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger>
-        <div
-          className={cn(
-            `icon-container icon-container-${size} text-foreground`,
-            triggerClassName
-          )}
-        >
-          <MoreIcon size={size} />
-        </div>
-      </DropdownMenuTrigger>
-      {open && (
-        <ConversationDropdownContent setOpen={setOpen} {...contentProps}>
-          {children}
-        </ConversationDropdownContent>
-      )}
-    </DropdownMenu>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
+          <div
+            className={cn(
+              `icon-container icon-container-${size} text-foreground`
+            )}
+          >
+            <MoreIcon size={size} />
+          </div>
+        </DropdownMenuTrigger>
+        {open && (
+          <DropdownMenuContent {...contentProps}>
+            {typeof children === "function"
+              ? children({ setSelected: setSelectedOption })
+              : children}
+          </DropdownMenuContent>
+        )}
+        {dialogOpen && !!OptionInputsMap[selectedOption] && (
+          <DialogForm {...OptionInputsMap[selectedOption]} setOpen={setOpen} />
+        )}
+      </DropdownMenu>
+    </Dialog>
   );
 }
+
+// export function MoreDropdownButton1({
+//   triggerClassName = "",
+//   size = "sm",
+//   contentProps = {
+//     align: "end",
+//     className: "w-[200px]",
+//   },
+//   children,
+// }: {
+//   triggerClassName?: string;
+//   size?: IconSize;
+//   contentProps?: React.ComponentProps<typeof DropdownMenuContent>;
+//   children: React.ReactNode;
+// }) {
+//   const [open, setOpen] = useState(false);
+
+//   // console.log("render MoreDropdownButton");
+
+//   return (
+//     <DropdownMenu open={open} onOpenChange={setOpen}>
+//       <DropdownMenuTrigger>
+//         <div
+//           className={cn(
+//             `icon-container icon-container-${size} text-foreground`,
+//             triggerClassName
+//           )}
+//         >
+//           <MoreIcon size={size} />
+//         </div>
+//       </DropdownMenuTrigger>
+//       {open && (
+//         <ConversationDropdownContent setOpen={setOpen} {...contentProps}>
+//           {children}
+//         </ConversationDropdownContent>
+//       )}
+//     </DropdownMenu>
+//   );
+// }

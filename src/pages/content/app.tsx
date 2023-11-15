@@ -12,6 +12,7 @@ import {
   conversationListAtom,
   currentConversationIdAtom,
   folderListAtom,
+  globalDialogAtom,
   panelOpenAtom,
   pinConversationListAtom,
   searchOpenAtom,
@@ -22,6 +23,7 @@ import { Toaster } from "@src/components/ui/toaster";
 import { useToast } from "@src/components/ui/use-toast";
 import { SuccessIcon } from "@src/components/Icon";
 import { SearchPrompt } from "./components/searchPrompt";
+import { Dialog } from "@src/components/ui/dialog";
 
 const router = createMemoryRouter([
   {
@@ -71,6 +73,7 @@ export default function App() {
   const [currentConversationId, setCurrentConversationId] = useAtom(
     currentConversationIdAtom
   );
+  const [dialogOpen, setDialogOpen] = useAtom(globalDialogAtom);
   const { triggerRefresh } = useRefresh();
   const { toast } = useToast();
 

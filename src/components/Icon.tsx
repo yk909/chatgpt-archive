@@ -3,6 +3,7 @@ import {
   ChevronRight,
   Delete,
   Folder,
+  FolderEdit,
   Info,
   MessageSquare,
   MoreHorizontal,
@@ -203,6 +204,23 @@ export function MoreIcon({
         width: sizeMap[size],
         height: sizeMap[size],
       }}
+    />
+  );
+}
+
+export function RenameFolderIcon({
+  size = "md",
+  className,
+}: { size?: "sm" | "md" | "lg" } & React.ComponentPropsWithoutRef<
+  typeof FolderEdit
+>) {
+  return (
+    <FolderEdit
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+      className={className}
     />
   );
 }
