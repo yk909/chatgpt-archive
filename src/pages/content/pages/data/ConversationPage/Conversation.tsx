@@ -10,7 +10,6 @@ import {
 import { useConversation } from "@src/pages/content/hook";
 import { loadConversation } from "@src/utils";
 import { SelectionIcon } from "@src/components/Selection";
-import { MessageSquare } from "lucide-react";
 import { MessageIcon } from "@src/components/Icon";
 
 const ConversationPresentor = React.memo(function ConversationCardPresentor({
