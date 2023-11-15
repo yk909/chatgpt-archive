@@ -286,6 +286,7 @@ export class BackgroundManager {
         message: `Successfully deleted ${conversationIdList.length} conversation(s) from folder`,
       },
     });
+    await this.sendAllFolderData(sender.tab.id);
   };
 
   handleRenameFolder = async (request, sender, _) => {

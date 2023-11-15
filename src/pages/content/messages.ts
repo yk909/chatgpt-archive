@@ -71,7 +71,7 @@ export function deleteFolder(folderIdList: string[]) {
 }
 
 export function deleteConversationsFromFolder(
-  conversationIdList: string,
+  conversationIdList: string[],
   folderId: string
 ) {
   chrome.runtime.sendMessage({

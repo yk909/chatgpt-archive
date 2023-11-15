@@ -176,6 +176,7 @@ export function InfoIcon({ size }: { size: "sm" | "md" | "lg" }) {
 
 export function DeleteIcon({
   size = "md",
+  className,
 }: { size?: "sm" | "md" | "lg" } & React.ComponentPropsWithoutRef<
   typeof Delete
 >) {
@@ -185,6 +186,7 @@ export function DeleteIcon({
         width: sizeMap[size],
         height: sizeMap[size],
       }}
+      className={cn("text-red-500", className)}
     />
   );
 }

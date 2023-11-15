@@ -22,6 +22,7 @@ import {
   MessageIcon,
   ToggleIcon,
 } from "@src/components/Icon";
+import { DeleteFromFolderDropdown } from "./actions/DeleteFromFolder";
 
 const DeleteFromFolderButton = ({ folder }: { folder: Folder }) => {
   return <DeleteIcon className="icon-container icon-container-sm" />;
@@ -29,10 +30,12 @@ const DeleteFromFolderButton = ({ folder }: { folder: Folder }) => {
 
 const ConversationPresentor = React.memo(function ConversationCardPresentor({
   conversation,
+  folderId,
   pinned,
   active,
 }: {
   conversation: Conversation;
+  folderId: string;
   pinned: boolean;
   active: boolean;
 }) {
@@ -49,22 +52,22 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
       }}
       right={
         <>
-          <div className="flex items-center flex-none gap-1">
-            <ConversationDetailOptionButton conversation={conversation} />
-            <TogglePinConversationOptionButton
-              conversationId={conversation.id}
-            />
-            <MoreDropdownButton
-              items={
-                <>
-                  <AddToFolderDropdown conversationIdList={[conversation.id]} />
-                  <TogglePinConversationDropdown
-                    conversationId={conversation.id}
-                  />
-                </>
-              }
-            />
-          </div>
+          <ConversationDetailOptionButton conversation={conversation} />
+          <TogglePinConversationOptionButton conversationId={conversation.id} />
+          <MoreDropdownButton
+            items={
+              <>
+                <DeleteFromFolderDropdown
+                  conversationId={conversation.id}
+                  folderId={folderId}
+                />
+                <AddToFolderDropdown conversationIdList={[conversation.id]} />
+                <TogglePinConversationDropdown
+                  conversationId={conversation.id}
+                />
+              </>
+            }
+          />
         </>
       }
       key={conversation.id}
@@ -84,8 +87,10 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
 
 export function ConversationItem({
   conversation,
+  folderId,
 }: {
   conversation: Conversation;
+  folderId: string;
 }) {
   const { pinned, active } = useConversation(conversation.id);
   return (
@@ -93,6 +98,7 @@ export function ConversationItem({
       conversation={conversation}
       pinned={pinned}
       active={active}
+      folderId={folderId}
     />
   );
 }
@@ -146,6 +152,7 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
             <ConversationItem
               key={item.id}
               conversation={item}
+              folderId={folder.id}
               //   selected={selection.has(item.id)}
               //   toggle={toggle}
               //   selectionEnabled={selectionEnabled}
