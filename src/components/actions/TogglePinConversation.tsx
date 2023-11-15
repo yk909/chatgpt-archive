@@ -1,7 +1,6 @@
 import { DropdownMenuItem } from "@src/components/ui/dropdown-menu";
 import { useAtom } from "jotai";
 import { pinConversationIdSetAtom } from "../../pages/content/context";
-import { Pin, PinOff } from "lucide-react";
 import { togglePinConversation } from "../../pages/content/messages";
 import { PinIcon } from "@src/components/Icon";
 
