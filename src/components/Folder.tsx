@@ -24,7 +24,6 @@ import {
   ToggleIcon,
 } from "@src/components/Icon";
 import { DeleteFromFolderOptionButton } from "./actions/DeleteFromFolder";
-import { RenameFolderDropdown } from "./actions/RenameFolder";
 import { deleteFolder, renameFolder } from "@src/pages/content/messages";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 
