@@ -1,8 +1,6 @@
 import { useAtom } from "jotai";
 import { panelOpenAtom } from "../context";
-import { cn } from "../../../lib/utils";
 import Header from "./Header";
-import BottomNavBar from "./BottomNavBar";
 import { Outlet } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 import { Spinner } from "@src/components/Spinner";
@@ -18,7 +16,7 @@ export default function Panel() {
 
   return (
     <CustomDialog
-      className={"page-px flex-col overflow-hidden bg-background z-40"}
+      className={"page-px flex-col bg-background z-40"}
       open={open}
       duration={200}
       style={{
