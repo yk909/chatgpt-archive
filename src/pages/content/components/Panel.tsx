@@ -20,7 +20,6 @@ export default function Panel() {
     <CustomDialog
       className={"page-px flex-col overflow-hidden bg-background z-40"}
       open={open}
-      closedXOffset="25%"
       duration={200}
       style={{
         position: "fixed",

@@ -1,10 +1,12 @@
 #panel {
   right: 0px;
+  --closed-x-offset: 25% !important;
 }
 
 .thumb[data-side="left"] ~ #panel {
   right: auto;
   left: 0px;
+  --closed-x-offset: -25% !important;
 }
 
 #panel[data-state="open"] {
