@@ -8,14 +8,10 @@ import {
 import { ConversationDetailOptionButton } from "@src/components/actions/ConversationDetailPopover";
 import { MoreDropdownButton } from "@src/pages/content/components/MoreDropdownButton";
 import { AddToFolderDropdown } from "@src/components/actions/AddToFolder";
-import {
-  TogglePinConversationOptionButton,
-  TogglePinConversationDropdown,
-} from "@src/components/actions/TogglePinConversation";
+import { TogglePinConversationDropdown } from "@src/components/actions/TogglePinConversation";
 import { useConversation } from "@src/pages/content/hook";
 import { loadConversation } from "@src/utils";
 import { SelectionIcon } from "@src/components/Selection";
-import { MessageSquare } from "lucide-react";
 import {
   DeleteIcon,
   FolderIcon,
@@ -68,7 +64,6 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
       <CardContent
         className="conversation-content"
         onClick={() => {
-          console.log("click conversation");
           loadConversation(conversation.id);
         }}
       >
@@ -126,11 +121,14 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
         right={
           <>
             <OptionButtons folderId={folder.id} />
-            <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} />
+            {/* <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} /> */}
           </>
         }
       >
-        <CardContent>
+        <CardContent
+          onClick={() => setOpen((p) => !p)}
+          className="cursor-pointer"
+        >
           <CardTitle>{folder.name}</CardTitle>
           <CardDescription>{`${folder.children.length} items`}</CardDescription>
         </CardContent>
@@ -140,7 +138,7 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
         className="animate-dynamic-h-container"
         data-open={open ? "true" : "false"}
       >
-        <div className="flex flex-col ml-8 animate-dynamic-h-content">
+        <div className="flex flex-col ml-7 animate-dynamic-h-content">
           {folder.children.map((item) => (
             <ConversationItem
               key={item.id}
