@@ -3,6 +3,7 @@ import {
   CardContainer,
   CardContent,
   CardDescription,
+  CardRightOptions,
   CardTitle,
 } from "@src/components/Card";
 import { ConversationDetailOptionButton } from "@src/components/actions/ConversationDetailPopover";
@@ -45,20 +46,6 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
           className: "conversation",
         },
       }}
-      right={
-        <>
-          <ConversationDetailOptionButton conversation={conversation} />
-          {/* <TogglePinConversationOptionButton conversationId={conversation.id} /> */}
-          <DeleteFromFolderOptionButton
-            conversationId={conversation.id}
-            folderId={folderId}
-          />
-          <MoreDropdownButton>
-            <AddToFolderDropdown conversationIdList={[conversation.id]} />
-            <TogglePinConversationDropdown conversationId={conversation.id} />
-          </MoreDropdownButton>
-        </>
-      }
       key={conversation.id}
     >
       <CardContent
@@ -69,6 +56,18 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
       >
         <CardTitle>{conversation.title}</CardTitle>
       </CardContent>
+      <CardRightOptions>
+        <ConversationDetailOptionButton conversation={conversation} />
+        {/* <TogglePinConversationOptionButton conversationId={conversation.id} /> */}
+        <DeleteFromFolderOptionButton
+          conversationId={conversation.id}
+          folderId={folderId}
+        />
+        <MoreDropdownButton>
+          <AddToFolderDropdown conversationIdList={[conversation.id]} />
+          <TogglePinConversationDropdown conversationId={conversation.id} />
+        </MoreDropdownButton>
+      </CardRightOptions>
     </CardContainer>
   );
 });

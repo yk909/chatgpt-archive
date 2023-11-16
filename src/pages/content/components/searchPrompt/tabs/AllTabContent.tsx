@@ -5,6 +5,7 @@ import { MoreButton } from "../MoreButton";
 import { ALL_TAB_GROUP_SIZE, SEARCH_TABS } from "../config";
 import {
   ConversationItemWithoutSelect,
+  DefaultConversationOptions,
 } from "@src/components/Conversation";
 import { FolderItem } from "@src/components/Folder";
 
@@ -32,14 +33,22 @@ export default function AllTabContent({
       <div>
         <GroupTitle title="Conversations" />
         {conversations && conversations.length !== 0 ? (
-          conversations
-            .slice(0, ALL_TAB_GROUP_SIZE)
-            .map((conversation, i) => (
-              <ConversationItemWithoutSelect
-                key={conversation.id}
-                conversation={conversation}
-              />
-            ))
+          conversations.slice(0, ALL_TAB_GROUP_SIZE).map((conversation, i) => (
+            <ConversationItemWithoutSelect
+              key={conversation.id}
+              conversation={conversation}
+              optionButtons={() => (
+                <>
+                  <div className="absolute right-10 flex items-center gap-1">
+                    <DefaultConversationOptions conversation={conversation} />
+                  </div>
+                  <div className="text-primary font-medium mr-2 text-sm">
+                    {conversation.keywordCount}
+                  </div>
+                </>
+              )}
+            />
+          ))
         ) : (
           <EmptyResult name="conversation" />
         )}

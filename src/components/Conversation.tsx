@@ -1,5 +1,10 @@
 import React from "react";
-import { CardContainer, CardContent, CardTitle } from "@src/components/Card";
+import {
+  CardContainer,
+  CardContent,
+  CardRightOptions,
+  CardTitle,
+} from "@src/components/Card";
 import { ConversationDetailOptionButton } from "@src/components/actions/ConversationDetailPopover";
 import { MoreDropdownButton } from "@src/pages/content/components/MoreDropdownButton";
 import { AddToFolderDropdown } from "@src/components/actions/AddToFolder";
@@ -52,7 +57,6 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
           className: "conversation",
         },
       }}
-      right={optionButtons({ conversation })}
       key={conversation.id}
     >
       <CardContent
@@ -64,6 +68,7 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
       >
         <CardTitle>{conversation.title}</CardTitle>
       </CardContent>
+      {optionButtons({ conversation })}
     </CardContainer>
   );
 });
@@ -126,7 +131,6 @@ const ConversationPresentorWithoutSelect = React.memo(
             className: "conversation",
           },
         }}
-        right={optionButtons({ conversation })}
         key={conversation.id}
       >
         <CardContent
@@ -138,6 +142,7 @@ const ConversationPresentorWithoutSelect = React.memo(
         >
           <CardTitle>{conversation.title}</CardTitle>
         </CardContent>
+        {optionButtons({ conversation })}
       </CardContainer>
     );
   }
@@ -165,7 +170,7 @@ export function ConversationItemWithoutSelect({
   );
 }
 
-export function DefaultConversationOptions({
+export function ConversationDefaultRightOptions({
   conversation,
 }: {
   conversation: Conversation;
@@ -179,5 +184,17 @@ export function DefaultConversationOptions({
         <TogglePinConversationDropdown conversationId={conversation.id} />
       </MoreDropdownButton>
     </>
+  );
+}
+
+export function DefaultConversationOptions({
+  conversation,
+}: {
+  conversation: Conversation;
+}) {
+  return (
+    <CardRightOptions>
+      <ConversationDefaultRightOptions conversation={conversation} />
+    </CardRightOptions>
   );
 }

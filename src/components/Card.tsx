@@ -29,10 +29,6 @@ export const CardContainer = React.memo(function CardContainer({
     >
       <div className="card-icon">{icon}</div>
       {children}
-      <div className="card-right-container card-hover-show">
-        <div className="card-right-before"></div>
-        <div className="card-right">{right}</div>
-      </div>
     </div>
   );
 });
@@ -73,6 +69,30 @@ export function CardDescription({
   return (
     <div className={"card-description " + className} {...descriptionProps}>
       {children}
+    </div>
+  );
+}
+
+export function CardRightOptions({
+  hoverShow = true,
+  children,
+  className = "",
+  ...props
+}: {
+  hoverShow?: boolean;
+  children: React.ReactNode;
+} & React.ComponentPropsWithoutRef<"div">) {
+  return (
+    <div
+      className={cn(
+        `card-right-container`,
+        hoverShow && "card-hover-show",
+        className
+      )}
+      {...props}
+    >
+      <div className="card-right-before"></div>
+      <div className="card-right">{children}</div>
     </div>
   );
 }

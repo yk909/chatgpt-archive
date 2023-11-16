@@ -7,7 +7,10 @@ import {
 import { MoreDropdownButton } from "../../MoreDropdownButton";
 import { AddToFolderDropdown } from "../../../../../components/actions/AddToFolder";
 import { useState } from "react";
-import { ConversationItem } from "@src/components/Conversation";
+import {
+  ConversationItem,
+  DefaultConversationOptions,
+} from "@src/components/Conversation";
 
 export default function ConversationTabContent({
   conversations,
@@ -42,6 +45,16 @@ export default function ConversationTabContent({
             selected={selection.has(conversation.id)}
             toggle={toggle}
             selectionEnabled={selection.size !== 0}
+            optionButtons={() => (
+              <>
+                <div className="absolute right-10 flex items-center gap-1">
+                  <DefaultConversationOptions conversation={conversation} />
+                </div>
+                <div className="text-primary font-medium mr-2 text-sm">
+                  {conversation.keywordCount}
+                </div>
+              </>
+            )}
           />
         ))
       )}
