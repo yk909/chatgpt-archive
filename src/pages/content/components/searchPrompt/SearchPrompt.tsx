@@ -18,6 +18,7 @@ import ConversationTabContent from "./tabs/ConversationTabContent";
 import AllTabContent from "./tabs/AllTabContent";
 import FolderTabContent from "./tabs/FolderTabContent";
 import { SearchResultTabAtom, SearchStateAtom } from "./context";
+import CustomDialog from "@src/components/CustomDialog";
 
 const TabSubText = ({
   tab,
@@ -163,38 +164,18 @@ export function SearchPromptContent() {
 
 export function SearchPrompt() {
   const [open, setOpen] = useAtom(searchOpenAtom);
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const initRef = useRef<boolean>(true);
-
-  useEffect(() => {
-    if (initRef.current) {
-      initRef.current = false;
-      return;
-    }
-    if (dialogRef.current) {
-      if (!open) {
-        dialogRef.current.setAttribute("data-state", "closed");
-        setTimeout(() => {
-          dialogRef.current.setAttribute("data-state", "");
-        }, DIALOG_ANIMATION_DURATION);
-      } else {
-        dialogRef.current.setAttribute("data-state", "open");
-      }
-    }
-  }, [open]);
-  console.log("render search prompt container", open);
 
   return (
-    <div
-      ref={dialogRef}
-      style={
-        {
-          "--duration": DIALOG_ANIMATION_DURATION + "ms",
-        } as React.CSSProperties
-      }
-      className="fixed z-50 w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden bg-transparent search-prompt border rounded-lg border-background-2 hidden"
+    <CustomDialog
+      open={open}
+      duration={DIALOG_ANIMATION_DURATION}
+      openYOffset={"20vh"}
+      closedYOffset={"21vh"}
+      openXOffset="-50%"
+      closedXOffset="-50%"
+      className="top-0 left-1/2 fixed z-50 w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden search-prompt border rounded-lg border-background-2 hidden"
     >
       <SearchPromptContent />
-    </div>
+    </CustomDialog>
   );
 }

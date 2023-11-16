@@ -1,49 +1,52 @@
 #panel {
-    width: 400px;
+  right: 0px;
 }
 
-.side-toggle-hover {
-    transform: translateX(100%);
-    opacity: 0;
-    z-index: 40;
-    transition: all 0.2s ease-out;
+.thumb[data-side="left"] ~ #panel {
+  right: auto;
+  left: 0px;
 }
 
-#panel.open {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+#panel[data-state="open"] {
+  // opacity: 1;
+  // transform: translateX(0px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
 }
 
-.side-toggle-hover.open {
-    opacity: 1;
-    transform: translateX(0);
-}
+// .thumb ~ #panel[data-state="closed"] {
+//   transform: translateX(100%);
+// }
+
+// .thumb[data-side="left"] ~ #panel[data-state="closed"] {
+//   transform: translateX(-100%);
+// }
 
 .side-toggle-main-window {
-    transition: all 0.2s ease-out;
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+  transition: all 0.2s ease-out;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }
 
 .side-toggle-main-window.side-open {
-    right: 400px;
+  right: 400px;
 }
 
-
 #panel .con-list {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 
 #panel .con-list::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 #panel .con-list::-webkit-scrollbar-thumb {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 #panel:hover .con-list::-webkit-scrollbar-thumb {
-    visibility: visible;
+  visibility: visible;
 }

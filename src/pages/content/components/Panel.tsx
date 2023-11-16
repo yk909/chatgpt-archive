@@ -8,6 +8,7 @@ import ProgressBar from "./ProgressBar";
 import { Spinner } from "@src/components/Spinner";
 import { useRefresh } from "../hook";
 import Footer from "./Footer";
+import CustomDialog from "@src/components/CustomDialog";
 
 export default function Panel() {
   const [open] = useAtom(panelOpenAtom);
@@ -16,17 +17,16 @@ export default function Panel() {
   console.log("render Panel", { refreshing });
 
   return (
-    <div
-      className={cn(
-        "flex page-px flex-col overflow-hidden side-toggle-hover bg-background",
-        open ? "open" : ""
-      )}
+    <CustomDialog
+      className={"page-px flex-col overflow-hidden bg-background z-40"}
+      open={open}
+      closedXOffset="25%"
+      duration={200}
       style={{
         position: "fixed",
         top: 0,
-        right: 0,
         height: "100vh",
-        transform: open ? "translateX(0%)" : "translateX(100%)",
+        width: "400px",
       }}
       id="panel"
     >
@@ -37,6 +37,6 @@ export default function Panel() {
       </div>
       {/* <BottomNavBar /> */}
       <Footer />
-    </div>
+    </CustomDialog>
   );
 }

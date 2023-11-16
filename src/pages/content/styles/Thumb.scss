@@ -1,14 +1,31 @@
 .thumb {
   --thumb-hover-radius: calc(var(--radius) + 6px);
+  --thumb-width: 50px;
   position: fixed;
   display: flex;
   flex-direction: column;
   top: 80px;
-  right: 0px;
+  left: calc(100% - var(--thumb-width));
+  width: 50px;
   border-radius: var(--radius) 0px 0px var(--radius);
-  transition: all 0.3s ease-out;
+  transition-property: background-color, border-radius;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.thumb[data-side="left"] {
+  left: 0px;
+  border-radius: 0px var(--radius) var(--radius) 0px;
+}
+
+.thumb[data-side="left"]:hover {
+  border-radius: 0px var(--thumb-hover-radius) var(--thumb-hover-radius) 0px;
+}
+
+.thumb[data-side="left"][data-state="hidden"] {
+  transform: translateX(-100%);
 }
 
 .thumb:hover {
@@ -23,6 +40,11 @@
   transform: translateX(100%);
 }
 
+.thumb[data-drag-state="dragging"],
+.thumb[data-state="left"][data-drag-state="dragging"] {
+  border-radius: 25px !important;
+}
+
 .thumb .thumb-item {
   width: 50px;
   height: 40px;
@@ -30,7 +52,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-//   padding: 10px;
   cursor: pointer;
   transition: all 0.3s ease-out;
   background: hsl(var(--background));
