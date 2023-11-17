@@ -22,7 +22,21 @@
   transition: all 0.2s ease-out;
 }
 
+
+
 #chatgpt-archive-content-view-container {
+  // Humanist
+  // font-family: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
+
+  // Neo Sans
+  font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+
+  // Classical Humanist
+  // font-family: Optima, Candara, 'Noto Sans', source-sans-pro, sans-serif;
+
+  // Geometric Humanist
+  // font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+
   --bg-main: rgb(52, 53, 65);
   --bg-main-2: rgb(32, 33, 35);
   --fg-main: rgb(217, 217, 227);
