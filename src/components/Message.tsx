@@ -17,9 +17,30 @@ function getSnippet(content, keyword) {
   const end = Math.min(content.length, keywordIndex + keyword.length + 30);
 
   // Extract the 60-character snippet
-  const snippet = content.substring(start, end);
+  let snippet = content.substring(start, end);
 
-  return snippet;
+  const prefix = start > 0 ? "..." : "";
+  const suffix = end < content.length ? "..." : "";
+
+  // Split the snippet into parts by the keyword, and wrap each occurrence of the keyword in a <span> tag
+  const parts = snippet.split(new RegExp(`(${keyword})`, "gi"));
+
+  // Return the snippet with each occurrence of the keyword highlighted
+  return (
+    <>
+      {prefix}
+      {parts.map((part, index) =>
+        part.toLowerCase() === keyword.toLowerCase() ? (
+          <span key={index} className="bg-primary text-foreground">
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+      {suffix}
+    </>
+  );
 }
 
 export function MessageItem({
