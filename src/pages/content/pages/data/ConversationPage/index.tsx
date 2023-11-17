@@ -134,7 +134,7 @@ export function ConversationPage() {
               ([key, value], i) => {
                 if (value.length === 0) return <></>;
                 return (
-                  <ListGroup title={key} i={i}>
+                  <ListGroup title={key} i={i} count={value.length}>
                     {value.map((item: Conversation) => (
                       <ConversationItem
                         conversation={item}

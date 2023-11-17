@@ -132,10 +132,12 @@ export function ListView({
 
 export function ListGroup({
   title,
+  count,
   children,
   i,
 }: {
   title: string;
+  count;
   children: React.ReactNode;
   i: number;
 }) {
@@ -143,7 +145,7 @@ export function ListGroup({
   return (
     <div className="relative">
       <div
-        className="sticky top-0 py-3 text-sm text-muted-foreground bg-background trans flex items-center justify-between cursor-pointer"
+        className="sticky top-0 py-3 text-sm text-muted-foreground bg-background trans flex items-center justify-between cursor-pointer group select-none hover:bg-muted"
         style={
           {
             paddingLeft: "12px",
@@ -153,8 +155,11 @@ export function ListGroup({
         }
         onClick={() => setOpen((p) => !p)}
       >
-        <span>{title}</span>
-        <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} />
+        <div className="flex">
+          <div className="group-hover:text-foreground">{title}</div>
+          <span className="ml-2 text-muted-foreground group-hover:text-foreground">{`(${count})`}</span>
+        </div>
+        <ToggleIcon open={open} />
       </div>
       <div className="animate-dynamic-h-container" data-open={open}>
         <div className="animate-dynamic-h-content">

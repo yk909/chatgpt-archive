@@ -65,18 +65,21 @@ export function FolderIcon({ size }: { size: "sm" | "md" | "lg" }) {
 
 export function ToggleIcon({
   onClick,
+  style,
   open,
+  ...props
 }: {
-  onClick: () => void;
   open: boolean;
-}) {
+} & React.ComponentPropsWithoutRef<"div">) {
   return (
     <div
       className="transition-transform icon-container icon-container-sm"
       onClick={onClick}
       style={{
         transform: open ? "rotate(90deg)" : "",
+        ...style,
       }}
+      {...props}
     >
       <ChevronRight
         style={{
