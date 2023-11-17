@@ -93,7 +93,7 @@ export default function Header() {
       }}
     >
       <RefreshButton />
-      <ForceRefreshButton />
+      {/* <ForceRefreshButton /> */}
       <div
         className="icon-container icon-container-md"
         onClick={() => {
