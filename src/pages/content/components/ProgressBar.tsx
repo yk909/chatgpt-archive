@@ -1,6 +1,4 @@
 import { atom, useAtom } from "jotai";
-import React from "react";
-import { useEffect } from "react/ts5.0";
 import { useBgMessage } from "../hook";
 import { MESSAGE_ACTIONS } from "@src/constants";
 
