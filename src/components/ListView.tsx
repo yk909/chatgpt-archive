@@ -6,6 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { PrimitiveAtom, useAtom } from "jotai";
+import { ToggleIcon } from "./Icon";
 
 const PAGE_SIZE = 50;
 
@@ -125,6 +126,41 @@ export function ListView({
       <div className="flex-none w-full h-12"></div>
       <div className="flex-none w-full h-8" ref={ref}></div>
       {renderSelectionBar && renderSelectionBar({ selection, setSelection })}
+    </div>
+  );
+}
+
+export function ListGroup({
+  title,
+  children,
+  i,
+}: {
+  title: string;
+  children: React.ReactNode;
+  i: number;
+}) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="relative">
+      <div
+        className="sticky top-0 py-3 text-sm text-muted-foreground bg-background trans flex items-center justify-between cursor-pointer"
+        style={
+          {
+            paddingLeft: "12px",
+            fontSize: "13px",
+            zIndex: `${10 + i * 2}`,
+          } as React.CSSProperties
+        }
+        onClick={() => setOpen((p) => !p)}
+      >
+        <span>{title}</span>
+        <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} />
+      </div>
+      <div className="animate-dynamic-h-container" data-open={open}>
+        <div className="animate-dynamic-h-content">
+          <div className="flex flex-col w-full gap-1">{children}</div>
+        </div>
+      </div>
     </div>
   );
 }

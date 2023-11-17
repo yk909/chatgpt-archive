@@ -1,5 +1,5 @@
 import { conversationListAtom } from "@src/pages/content/context";
-import { ListView } from "@src/components/ListView";
+import { ListGroup, ListView } from "@src/components/ListView";
 import { categorizeConversations } from "@src/utils";
 import { useState } from "react";
 import { useAtom } from "jotai";
@@ -134,30 +134,16 @@ export function ConversationPage() {
               ([key, value], i) => {
                 if (value.length === 0) return <></>;
                 return (
-                  <div className="relative" key={i}>
-                    <div
-                      className="sticky top-0 py-3 text-sm text-muted-foreground bg-background trans"
-                      style={
-                        {
-                          paddingLeft: "12px",
-                          fontSize: "13px",
-                          zIndex: `${10 + i * 2}`,
-                        } as React.CSSProperties
-                      }
-                    >
-                      {key}
-                    </div>
-                    <div className="flex flex-col w-full gap-1">
-                      {data.map((item: Conversation) => (
-                        <ConversationItem
-                          conversation={item}
-                          selectionEnabled={selection.size !== 0}
-                          selected={selection.has(item.id)}
-                          toggle={toggle}
-                        />
-                      ))}
-                    </div>
-                  </div>
+                  <ListGroup title={key} i={i}>
+                    {value.map((item: Conversation) => (
+                      <ConversationItem
+                        conversation={item}
+                        selectionEnabled={selection.size !== 0}
+                        selected={selection.has(item.id)}
+                        toggle={toggle}
+                      />
+                    ))}
+                  </ListGroup>
                 );
               }
             )
