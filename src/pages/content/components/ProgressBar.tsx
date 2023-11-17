@@ -25,7 +25,7 @@ export default function ProgressBar() {
   return (
     <div className="animate-dynamic-h-container" data-open={current !== total}>
       <div className="animate-dynamic-h-content">
-        <div className="flex flex-col gap-3 px-4 py-4 mb-4 rounded-lg bg-secondary">
+        <div className="flex flex-col gap-3 px-4 py-4 mb-4 rounded-lg bg-muted">
           <div className="flex justify-between text-sm">
             <div className="">Downloading conversations...</div>
             <div className="">
