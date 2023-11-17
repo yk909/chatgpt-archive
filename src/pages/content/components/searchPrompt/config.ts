@@ -7,6 +7,9 @@ export const SEARCH_TABS = {
   conversations: {
     label: "Conversations",
   },
+  messages: {
+    label: "Messages",
+  },
   folders: {
     label: "Folders",
   },

@@ -14,9 +14,11 @@ import {
 
 export default function ConversationTabContent({
   conversations,
+  keyword,
   handleConversationSelect,
 }: {
   conversations: (Conversation & { keywordCount: number })[];
+  keyword: string;
   handleConversationSelect: (id: string) => void;
 }) {
   const [selection, setSelection] = useState<Set<string>>(new Set());

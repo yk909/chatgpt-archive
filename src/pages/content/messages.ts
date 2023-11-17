@@ -6,6 +6,15 @@ export function refresh() {
   });
 }
 
+export function refreshForce() {
+  chrome.runtime.sendMessage({
+    type: MESSAGE_ACTIONS.REFRESH,
+    data: {
+      force: true,
+    },
+  });
+}
+
 export function search(query: string) {
   chrome.runtime.sendMessage({
     type: MESSAGE_ACTIONS.SEARCH,

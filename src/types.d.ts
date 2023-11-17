@@ -2,11 +2,13 @@ type Conversation = {
   id: string;
   title: string;
   current_node: string | null;
-  mapping: null;
   update_time: string;
   create_time: string;
-  messageStr: string | undefined;
-  messages: Message[] | undefined;
+  mapping?: {
+    [key: string]: Message;
+  };
+  messageStr?: string | undefined;
+  messages?: Message[] | undefined;
 };
 
 type ConversationWithKeywordCount = Conversation & {
@@ -25,11 +27,17 @@ type PinConversation = {
 
 type Message = {
   id: string;
-  conversationId: string;
-  content: string;
-  create_time: string;
-  update_time: string;
-  folderId: string | null;
+  parent: string;
+  conversation_id: string;
+  conversation_title: string;
+  contentStr?: string;
+  message: {
+    create_time: string;
+    content: {
+      content_type: string;
+      parts: string[];
+    };
+  };
 };
 
 type FetchFilteredConversationData = {
@@ -71,8 +79,8 @@ type RefreshResponseData = {
 type SearchResult = {
   conversations: (Conversation & { keywordCount: number })[];
   folders: Folder[];
+  messages: Message[];
 };
-
 
 // icon
 type IconSize = "sm" | "md" | "lg";

@@ -8,6 +8,7 @@ import {
   DefaultConversationOptions,
 } from "@src/components/Conversation";
 import { FolderItem } from "@src/components/Folder";
+import { MessageItem } from "@src/components/Message";
 
 function GroupTitle({ title }: { title: string }) {
   return (
@@ -18,13 +19,13 @@ function GroupTitle({ title }: { title: string }) {
 }
 
 export default function AllTabContent({
-  conversations,
-  folders,
+  result: { conversations, folders, messages },
+  keyword,
   handleConversationSelect,
   setTab,
 }: {
-  conversations: (Conversation & { keywordCount: number })[];
-  folders: Folder[];
+  result: SearchResult;
+  keyword: string;
   handleConversationSelect: (id: string) => void;
   setTab: React.Dispatch<React.SetStateAction<keyof typeof SEARCH_TABS>>;
 }) {
@@ -58,6 +59,26 @@ export default function AllTabContent({
           name="conversations"
           onSelect={() => {
             setTab("conversations");
+          }}
+        />
+      </div>
+      <div>
+        <GroupTitle title="Messages" />
+        {messages && messages.length !== 0 ? (
+          messages
+            .slice(0, ALL_TAB_GROUP_SIZE)
+            .map((m) => (
+              <MessageItem key={m.id} message={m} keyword={keyword} />
+            ))
+        ) : (
+          <EmptyResult name="message" />
+        )}
+
+        <MoreButton
+          data={messages}
+          name="messages"
+          onSelect={() => {
+            setTab("messages");
           }}
         />
       </div>

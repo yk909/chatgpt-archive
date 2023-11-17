@@ -1,12 +1,16 @@
 import { useAtom } from "jotai";
 import { panelOpenAtom, searchOpenAtom } from "../context";
-import { refresh } from "../messages";
+import { refresh, refreshForce } from "../messages";
 import { Moon, RotateCw, Search, Sun, X } from "lucide-react";
 import { Switch } from "@src/components/ui/switch";
 import { useState } from "react";
 import { useRefresh } from "../hook";
 import { shadowRoot } from "../root";
-import { getDarkModeEnabledFromLocalStorage, setDarkModeEnabledToLocalStorage } from "../utils";
+import {
+  getDarkModeEnabledFromLocalStorage,
+  setDarkModeEnabledToLocalStorage,
+} from "../utils";
+import { ForceRefreshIcon } from "@src/components/Icon";
 
 function DarkModeSwitch() {
   console.log("render DarkModeSwitch", { shadowRoot });
@@ -55,6 +59,28 @@ function RefreshButton() {
   );
 }
 
+function ForceRefreshButton() {
+  const { refreshing, triggerRefresh } = useRefresh();
+
+  function handleRefresh() {
+    if (!refreshing) {
+      triggerRefresh();
+      refreshForce();
+    }
+  }
+
+  return (
+    <div
+      className={
+        "icon-container icon-container-md " + (refreshing ? "spinning" : "")
+      }
+      onClick={handleRefresh}
+    >
+      <ForceRefreshIcon />
+    </div>
+  );
+}
+
 export default function Header() {
   const [open, setOpen] = useAtom(panelOpenAtom);
   const [searchBoxOpen, setSearchBoxOpen] = useAtom(searchOpenAtom);
@@ -67,6 +93,7 @@ export default function Header() {
       }}
     >
       <RefreshButton />
+      <ForceRefreshButton />
       <div
         className="icon-container icon-container-md"
         onClick={() => {

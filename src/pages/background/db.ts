@@ -1,4 +1,5 @@
 import Dexie from "dexie";
+import { extractMessageString, extractMessages } from "./utils";
 
 type ConversationToFolderData = {
   conversationId: string;
@@ -17,6 +18,7 @@ type messageToFolderData = {
 
 export class RootDB extends Dexie {
   conversations: Dexie.Table<Conversation, string>;
+  messages: Dexie.Table<Message, string>;
   folders: Dexie.Table<FolderWithoutChildren, string>;
   conversationToFolder: Dexie.Table<ConversationToFolderData, number>;
   messageToFolder: Dexie.Table<messageToFolderData, number>;
@@ -26,6 +28,7 @@ export class RootDB extends Dexie {
     super("ca-db-" + username);
     this.version(1).stores({
       conversations: "&id, title, create_time, update_time",
+      messages: "&id, parent, message.create_time, conversation_id",
       folders: "&id, name, create_time, update_time",
       conversationToFolder:
         "++id, conversationId, folderId, create_time, update_time",
@@ -55,10 +58,13 @@ export class RootDB extends Dexie {
     if (limit) {
       q = q.limit(limit);
     }
-    return (await q.toArray()).map((c) => ({
-      ...c,
-      messageStr: undefined,
-    }));
+    const conversations = await q.toArray();
+    for (let i = 0; i < conversations.length; i++) {
+      const c = conversations[i];
+      const messageCount = await this.messages.where({ parent: c.id }).count();
+      c["messageCount"] = messageCount;
+    }
+    return conversations;
   }
 
   async getConversationWithoutMessage(): Promise<string[]> {
@@ -72,6 +78,49 @@ export class RootDB extends Dexie {
 
   putManyConversations(conversations: Conversation[]) {
     return this.conversations.bulkPut(conversations);
+    // return this.transaction(
+    //   "rw",
+    //   this.conversations,
+    //   this.messages,
+    //   async () => {
+    //     const conversationData = conversations.map((c) => {
+    //       return {
+    //         ...c,
+    //         messageStr: extractMessageString(c),
+    //         mapping: undefined,
+    //       };
+    //     });
+    //     const messageData = conversations
+    //       .map((c) => {
+    //         return extractMessages(c);
+    //       })
+    //       .flat();
+    //     await this.conversations.bulkPut(conversationData);
+    //     await this.messages.bulkPut(messageData);
+    //     console.log(
+    //       `Saved ${conversations.length} conversations, ${messageData.length} messages`
+    //     );
+    //   }
+    // );
+  }
+
+  async updateConversationDetail(conversationId: string, data: any) {
+    return this.transaction(
+      "rw",
+      this.conversations,
+      this.messages,
+      async () => {
+        const messageData = extractMessages(data);
+        this.conversations.update(conversationId, {
+          messageStr: extractMessageString(data),
+          messageCount: messageData.length,
+        });
+        await this.messages.bulkPut(messageData);
+        console.log(
+          `Saved ${messageData.length} messages for conversation ${conversationId}`
+        );
+      }
+    );
   }
 
   getLatestConversation() {
@@ -291,6 +340,29 @@ export class RootDB extends Dexie {
     return data;
   }
 
+  async searchMessages(query: string, sortBy = "message.create_time") {
+    const data = (await this.messages.orderBy(sortBy).reverse().toArray())
+      .map((m) => {
+        const regex2 = new RegExp(query, "gi");
+        const count = (m.contentStr?.match(regex2) || []).length;
+        return {
+          ...m,
+          keywordCount: count,
+        };
+      })
+      .filter((m) => m.keywordCount > 0);
+    data.sort((a: any, b: any) => {
+      if (a.keywordCount !== b.keywordCount) {
+        return b.keywordCount - a.keywordCount;
+      }
+      return (
+        new Date(b.update_time).getTime() - new Date(a.update_time).getTime()
+      );
+    });
+
+    return data;
+  }
+
   // Pin conversations
 
   async getPinConversations() {
@@ -325,6 +397,7 @@ let db: RootDB;
 
 export function initDB(username: string) {
   db = new RootDB(username);
+  console.log("DB initialized", db);
 }
 
 export { db };

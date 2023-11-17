@@ -19,6 +19,7 @@ import AllTabContent from "./tabs/AllTabContent";
 import FolderTabContent from "./tabs/FolderTabContent";
 import { SearchResultTabAtom, SearchStateAtom } from "./context";
 import CustomDialog from "@src/components/CustomDialog";
+import { MessageTabContent } from "./tabs/MessagesTabContent";
 
 const TabSubText = ({
   tab,
@@ -42,7 +43,7 @@ const TabSubText = ({
 };
 
 export function TabContent() {
-  const [{ result, loading }] = useAtom(SearchStateAtom);
+  const [{ result, loading, query }] = useAtom(SearchStateAtom);
   const [tab, setTab] = useAtom(SearchResultTabAtom);
 
   console.log("render search prompt tab content", result);
@@ -82,7 +83,8 @@ export function TabContent() {
           <>
             <TabsContent value="all">
               <AllTabContent
-                {...result}
+                result={result}
+                keyword={query}
                 setTab={setTab}
                 handleConversationSelect={handleConversationSelect}
               />
@@ -97,8 +99,19 @@ export function TabContent() {
             >
               <ConversationTabContent
                 conversations={result.conversations}
+                keyword={query}
                 handleConversationSelect={handleConversationSelect}
               />
+            </TabsContent>
+            <TabsContent
+              value="messages"
+              style={{
+                position: "absolute",
+                inset: 0,
+                overflowY: "scroll",
+              }}
+            >
+              <MessageTabContent messages={result.messages} keyword={query} />
             </TabsContent>
             <TabsContent
               value="folders"

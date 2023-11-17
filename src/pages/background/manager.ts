@@ -1,4 +1,4 @@
-import { db, initDB } from "@src/db";
+import { db, initDB } from "@src/pages/background/db";
 import { ACCESS_TOKEN_KEY, MESSAGE_ACTIONS } from "@src/constants";
 import {
   fetchAllConversations,
@@ -130,7 +130,7 @@ export class BackgroundManager {
     });
 
     const latestConItem = await db.getLatestConversation();
-    if (!latestConItem) {
+    if (request.data?.force || !latestConItem) {
       // no conversation, fetch all conversations
       const conList = await fetchAllConversations(ac);
       await db.putManyConversations(conList);
@@ -163,7 +163,19 @@ export class BackgroundManager {
 
     if (!state.inProgress) {
       state.inProgress = true;
-      const conWithoutDetails = await db.getConversationWithoutMessage();
+
+      let conWithoutDetails = await db.getConversationWithoutMessage();
+      if (request.data?.force) {
+        conWithoutDetails = (
+          await db.conversations.orderBy("update_time").toArray()
+        ).map((c) => c.id);
+        console.log(
+          "force fetching conversation details for",
+          conWithoutDetails.length
+        );
+      } else {
+        conWithoutDetails = await db.getConversationWithoutMessage();
+      }
       state.total = conWithoutDetails.length;
       state.current = 0;
       console.log(
@@ -171,10 +183,7 @@ export class BackgroundManager {
         conWithoutDetails.length
       );
       const onUpdate = async (current: number, total: number, curVal: any) => {
-        const msgStr = extractMessageString(curVal);
-        await db.conversations.update(curVal.conversation_id, {
-          messageStr: msgStr,
-        });
+        await db.updateConversationDetail(curVal.conversation_id, curVal);
         console.log("conversation detail update", {
           current,
           total,
@@ -326,10 +335,11 @@ export class BackgroundManager {
     if (!db) initDB(this.currentUser.info.id);
     const conversations = await db.searchConversations(query);
     const folders = await db.searchFolders(query);
-    console.log("finishe search", { conversations, folders });
+    const messages = await db.searchMessages(query);
+    console.log("finishe search", { conversations, folders, messages });
     sendMessageToTab(sender.tab.id, {
       type: MESSAGE_ACTIONS.SEARCH,
-      data: { conversations, folders },
+      data: { conversations, folders, messages },
     });
   };
 

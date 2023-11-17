@@ -5,10 +5,12 @@ import {
   Folder,
   FolderEdit,
   Info,
+  MessageCircle,
   MessageSquare,
   MoreHorizontal,
   Pin,
   PinOff,
+  RefreshCcw,
   Trash2,
 } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
@@ -216,6 +218,40 @@ export function RenameFolderIcon({
 >) {
   return (
     <FolderEdit
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+      className={className}
+    />
+  );
+}
+
+export function MessageCircleIcon({
+  size = "md",
+  className,
+}: { size?: "sm" | "md" | "lg" } & React.ComponentPropsWithoutRef<
+  typeof MessageSquare
+>) {
+  return (
+    <MessageCircle
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+      className={className}
+    />
+  );
+}
+
+export function ForceRefreshIcon({
+  size = "md",
+  className,
+}: { size?: "sm" | "md" | "lg" } & React.ComponentPropsWithoutRef<
+  typeof RefreshCcw
+>) {
+  return (
+    <RefreshCcw
       style={{
         width: sizeMap[size],
         height: sizeMap[size],
