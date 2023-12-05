@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+const colors = require("tailwindcss/colors");
+
 module.exports = {
-  darkMode: ["class"],
+  darkMode: ["class", "#chatgpt-archive-content-view-container.dark"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -23,6 +25,7 @@ module.exports = {
         "background-2": "hsl(var(--background-2))",
         foreground: "hsl(var(--foreground))",
         primary: {
+          ...colors.green,
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },

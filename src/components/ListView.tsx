@@ -145,7 +145,7 @@ export function ListGroup({
   return (
     <div className="relative">
       <div
-        className="sticky top-0 py-3 text-sm text-muted-foreground bg-background trans flex items-center justify-between cursor-pointer group select-none hover:bg-muted"
+        className="sticky top-0 h-12 text-sm text-muted-foreground bg-background trans flex items-center justify-between cursor-pointer group select-none hover:bg-muted"
         style={
           {
             paddingLeft: "12px",
@@ -155,9 +155,9 @@ export function ListGroup({
         }
         onClick={() => setOpen((p) => !p)}
       >
-        <div className="flex">
-          <div className="group-hover:text-foreground">{title}</div>
-          <span className="ml-2 text-muted-foreground group-hover:text-foreground">{`(${count})`}</span>
+        <div className="flex items-center">
+          <div className="group-hover:text-primary">{title}</div>
+          <span className="ml-3 px-2 py-1 bg-slate-100 dark:bg-slate-700 text-muted-foreground rounded-lg group-hover:text-foreground group-hover:bg-primary-300 dark:group-hover:bg-primary-600 trans">{`${count}`}</span>
         </div>
         <ToggleIcon open={open} />
       </div>
