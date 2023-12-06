@@ -6,7 +6,7 @@ export function DataPage() {
   return (
     <>
       <PinConversationList />
-      <div className="flex">
+      <div className="flex h-[48px]" id="data-page-header">
         <div className="pill-group">
           {PANEL_NAV_ITEMS[0].children.map((item, i) => {
             return (

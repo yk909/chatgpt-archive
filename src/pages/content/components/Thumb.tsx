@@ -118,7 +118,7 @@ export function Thumb() {
       </span>
       <div
         role="button"
-        className="thumb-item"
+        className="thumb-item hover:text-background hover:bg-primary-400 dark:hover:bg-primary"
         onMouseUp={() => {
           // console.log("mouse up thumb button", {
           //   state: thumbRef.current.getAttribute("data-drag-state"),

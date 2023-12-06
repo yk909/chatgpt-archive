@@ -63,9 +63,3 @@
 .thumb[data-side="left"] .thumb-item {
   border-radius: 0px var(--radius) var(--radius) 0px;
 }
-
-.thumb .thumb-item:hover {
-  background: hsl(var(--primary));
-  color: hsl(var(--background));
-  // width: var(--thumb-width-hover);
-}
