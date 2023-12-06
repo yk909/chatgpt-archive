@@ -3,7 +3,7 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
 
 import { cn } from "@src/lib/utils";
-import { shadowRoot } from "@src/pages/content/root";
+import { reactShadowRoot } from "@src/pages/content/root";
 
 const Select = SelectPrimitive.Root;
 
@@ -35,7 +35,7 @@ const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, position = "popper", ...props }, ref) => (
-  <SelectPrimitive.Portal container={shadowRoot}>
+  <SelectPrimitive.Portal container={reactShadowRoot}>
     <SelectPrimitive.Content
       ref={ref}
       className={cn(

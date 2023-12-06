@@ -2,6 +2,7 @@ import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 import { cn } from "@src/lib/utils";
+import { reactShadowRoot } from "@src/pages/content/root";
 
 const Tabs = TabsPrimitive.Root;
 
@@ -51,3 +52,18 @@ const TabsContent = React.forwardRef<
 TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 export { Tabs, TabsList, TabsTrigger, TabsContent };
+
+
+function TabButton({
+  key
+}: {
+  key: string
+}) {
+  const handlerClick = (key: string) => {
+    const activeTabKey = reactShadowRoot.querySelector('*[data-tab-')
+  }
+  return (
+    <div role="button" data-tab-button="true" data-tab-key={key} onClick={() => handlerClick(key)}></div>
+
+  )
+}

@@ -5,6 +5,8 @@ import { SpinnerIcon } from "@src/components/Spinner";
 import { useRefresh } from "../hook";
 import { Logo } from "@src/components/Logo";
 import { useEffect, useRef } from "react";
+import { X } from "lucide-react";
+import { deleteReactRoot, reactShadowRoot } from "../root";
 
 const DRAGGING_STATES = {
   DRAGGING: "dragging",
@@ -87,7 +89,33 @@ export function Thumb() {
   }, []);
 
   return (
-    <div ref={thumbRef} className="thumb" data-state={open ? "hidden" : "show"}>
+    <div
+      ref={thumbRef}
+      className="thumb group"
+      data-state={open ? "hidden" : "show"}
+    >
+      <span
+        className="invisible group-hover:visible bg-black/40 hover:bg-black/60 z-10"
+        style={{
+          top: "-4px",
+          left: "-4px",
+          position: "absolute",
+          height: 16,
+          width: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          borderRadius: "50%",
+          color: "white",
+          transition: "background-color 0.2s ease-in-out",
+        }}
+        onClick={() => {
+          deleteReactRoot();
+        }}
+      >
+        <X size={12} />
+      </span>
       <div
         role="button"
         className="thumb-item"

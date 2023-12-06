@@ -1,21 +1,23 @@
 .thumb {
   --thumb-hover-radius: calc(var(--radius) + 6px);
   --thumb-width: 50px;
+  --thumb-width-hover: 60px;
   position: fixed;
   display: flex;
   flex-direction: column;
   top: 80px;
-  left: calc(100% - var(--thumb-width));
-  width: 50px;
+  right: 0px;
+  left: auto;
   border-radius: var(--radius) 0px 0px var(--radius);
   transition-property: background-color, border-radius;
   transition-duration: 0.3s;
   transition-timing-function: ease-out;
-  overflow: hidden;
+  // overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .thumb[data-side="left"] {
+  right: auto;
   left: 0px;
   border-radius: 0px var(--radius) var(--radius) 0px;
 }
@@ -46,7 +48,7 @@
 }
 
 .thumb .thumb-item {
-  width: 50px;
+  width: var(--thumb-width);
   height: 40px;
   display: flex;
   flex-direction: column;
@@ -56,9 +58,14 @@
   transition: all 0.3s ease-out;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
+  border-radius: var(--radius) 0px 0px var(--radius);
+}
+.thumb[data-side="left"] .thumb-item {
+  border-radius: 0px var(--radius) var(--radius) 0px;
 }
 
 .thumb .thumb-item:hover {
   background: hsl(var(--primary));
   color: hsl(var(--background));
+  // width: var(--thumb-width-hover);
 }

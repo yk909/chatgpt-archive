@@ -5,7 +5,7 @@ import { Moon, RotateCw, Search, Sun, X } from "lucide-react";
 import { Switch } from "@src/components/ui/switch";
 import { useState } from "react";
 import { useRefresh } from "../hook";
-import { shadowRoot } from "../root";
+import { reactShadowRoot } from "../root";
 import {
   getDarkModeEnabledFromLocalStorage,
   setDarkModeEnabledToLocalStorage,
@@ -13,7 +13,7 @@ import {
 import { ForceRefreshIcon } from "@src/components/Icon";
 
 function DarkModeSwitch() {
-  console.log("render DarkModeSwitch", { shadowRoot });
+  console.log("render DarkModeSwitch", { shadowRoot: reactShadowRoot });
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     return getDarkModeEnabledFromLocalStorage();
   });
@@ -26,9 +26,9 @@ function DarkModeSwitch() {
           setDarkModeEnabledToLocalStorage(value);
           setDarkMode(value);
           if (value) {
-            shadowRoot.classList.add("dark");
+            reactShadowRoot.classList.add("dark");
           } else {
-            shadowRoot.classList.remove("dark");
+            reactShadowRoot.classList.remove("dark");
           }
         }}
       />

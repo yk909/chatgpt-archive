@@ -20,5 +20,4 @@ export const bgResponseStatusAtom = atom<{ status?: string; message?: string }>(
   {}
 );
 
-
 export const globalDialogAtom = atom<boolean>(false);

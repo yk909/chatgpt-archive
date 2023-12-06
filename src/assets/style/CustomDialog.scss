@@ -19,13 +19,14 @@
   }
   100% {
     opacity: 0;
-    transform: translateY(var(--closed-y-offset)) translateX(var(--closed-x-offset))
-      scale(var(--closed-scale));
+    transform: translateY(var(--closed-y-offset))
+      translateX(var(--closed-x-offset)) scale(var(--closed-scale));
   }
 }
 
 .custom-dialog {
   display: none;
+  --timing-function: ease-in-out;
   --open-y-offset: 20vh;
   --closed-y-offset: 21vh;
   --open-x-offset: 0px;
@@ -36,11 +37,11 @@
 }
 
 .custom-dialog[data-state="open"] {
-  animation: sp-enter var(--duration) linear forwards !important;
+  animation: sp-enter var(--duration) var(--timing-function) forwards;
   display: block;
 }
 
 .custom-dialog[data-state="closed"] {
-  animation: sp-leave var(--duration) linear forwards !important;
+  animation: sp-leave var(--duration) var(--timing-function) forwards;
   display: block;
 }

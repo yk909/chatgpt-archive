@@ -156,8 +156,8 @@ export function ListGroup({
         onClick={() => setOpen((p) => !p)}
       >
         <div className="flex items-center">
-          <div className="group-hover:text-primary">{title}</div>
-          <span className="ml-3 px-2 py-1 bg-slate-100 dark:bg-slate-700 text-muted-foreground rounded-lg group-hover:text-foreground group-hover:bg-primary-300 dark:group-hover:bg-primary-600 trans">{`${count}`}</span>
+          <div className="group-hover:text-primary trans">{title}</div>
+          <span className="ml-4 px-2 py-1 bg-slate-100 dark:bg-slate-700 text-muted-foreground rounded-lg group-hover:text-foreground group-hover:bg-primary-300 dark:group-hover:bg-primary-600 trans">{`${count}`}</span>
         </div>
         <ToggleIcon open={open} />
       </div>

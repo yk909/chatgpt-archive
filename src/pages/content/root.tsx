@@ -1,6 +1,13 @@
 import { CONTENT_VIEW_CONTAINER_ID } from "@src/constants";
 
+export let reactShadowRoot;
 export let shadowRoot;
+
+export function deleteReactRoot() {
+  if (reactShadowRoot) {
+    reactShadowRoot.innerHTML = "";
+  }
+}
 
 export function initializeShadowRoot() {
   const root = document.createElement("div");
@@ -10,6 +17,7 @@ export function initializeShadowRoot() {
   const reactRoot = document.createElement("div");
   reactRoot.id = CONTENT_VIEW_CONTAINER_ID;
   root.shadowRoot.appendChild(reactRoot);
-  shadowRoot = reactRoot;
-  return shadowRoot;
+  reactShadowRoot = reactRoot;
+  shadowRoot = root.shadowRoot;
+  return reactShadowRoot;
 }

@@ -3,7 +3,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
 import { cn } from "@src/lib/utils";
-import { shadowRoot } from "@src/pages/content/root";
+import { reactShadowRoot } from "@src/pages/content/root";
 
 const Dialog = DialogPrimitive.Root;
 
@@ -14,7 +14,7 @@ export const DialogPortal = ({
   ...props
 }: DialogPrimitive.DialogPortalProps) => (
   <DialogPrimitive.Portal
-    container={shadowRoot}
+    container={reactShadowRoot}
     className={cn(className)}
     {...props}
   />
