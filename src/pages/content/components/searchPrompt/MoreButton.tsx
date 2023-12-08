@@ -1,4 +1,3 @@
-import { CommandItem } from "@src/components/ui/command";
 import { ALL_TAB_GROUP_SIZE } from "./config";
 
 export function MoreButton({

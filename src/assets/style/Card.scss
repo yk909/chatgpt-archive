@@ -32,7 +32,7 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  margin-right: 12px;
+  margin-right: var(--card-px);
 }
 
 .card .card-content {

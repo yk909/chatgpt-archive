@@ -51,7 +51,14 @@ export function MessageItem({
   keyword: string;
 }) {
   return (
-    <CardContainer icon={<MessageCircleIcon size="sm" />}>
+    <CardContainer
+      icon={<MessageCircleIcon size="sm" />}
+      props={{
+        container: {
+          className: "message",
+        },
+      }}
+    >
       <CardContent
         onClick={() => {
           loadConversation(message.conversation_id);

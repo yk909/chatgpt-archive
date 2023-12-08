@@ -5,6 +5,7 @@
 // @import url("./global.css");
 @import url("./icon.scss");
 @import url("./Conversation.scss");
+@import url("./Message.scss");
 @import url("./Card.scss");
 @import url("./CustomDialog.scss");
 
@@ -107,6 +108,7 @@
 
   --page-px: 8px;
   --card-px: 12px;
+  --card-py: 8px;
   --header-h: 4rem;
 
   background-color: hsl(var(--background));

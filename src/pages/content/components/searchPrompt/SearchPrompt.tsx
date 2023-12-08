@@ -95,6 +95,7 @@ export function TabContent() {
                 position: "absolute",
                 inset: 0,
                 overflowY: "scroll",
+                marginBottom: "8px",
               }}
             >
               <ConversationTabContent
@@ -109,6 +110,7 @@ export function TabContent() {
                 position: "absolute",
                 inset: 0,
                 overflowY: "scroll",
+                marginBottom: "8px",
               }}
             >
               <MessageTabContent messages={result.messages} keyword={query} />
@@ -119,6 +121,7 @@ export function TabContent() {
                 position: "absolute",
                 inset: 0,
                 overflowY: "scroll",
+                marginBottom: "8px",
               }}
             >
               <FolderTabContent folders={result.folders} />
