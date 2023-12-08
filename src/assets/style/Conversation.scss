@@ -12,19 +12,19 @@
 }
 
 .conversation[data-pin="true"] {
-  @apply hover:bg-primary-200 border-primary-400;
+  @apply hover:bg-primary-200 border-primary-400 dark:hover:bg-primary-800 dark:border-primary-500;
 }
 
 .conversation[data-pin="true"]:hover .card-right {
-  @apply bg-primary-200;
+  @apply bg-primary-200 dark:bg-primary-800;
 }
 
 .conversation[data-active="true"] {
-  @apply bg-primary-100 hover:bg-primary-200;
+  @apply bg-primary-100 hover:bg-primary-200 dark:bg-primary-800 dark:hover:bg-primary-700;
 }
 
 .conversation[data-active="true"]:hover .card-right {
-  @apply bg-primary-200;
+  @apply bg-primary-200 dark:bg-primary-800;
 }
 
 .conversation {
@@ -32,9 +32,9 @@
 }
 
 .conversation[data-active="true"]:hover .card-right-before {
-  @apply bg-gradient-to-r from-transparent to-primary-200;
+  @apply bg-gradient-to-r from-transparent to-primary-200 dark:to-primary-800;
 }
 
 .conversation[data-pin="true"]:hover .card-right-before {
-  @apply bg-gradient-to-r from-transparent to-primary-200;
+  @apply bg-gradient-to-r from-transparent to-primary-200 dark:to-primary-800;
 }
