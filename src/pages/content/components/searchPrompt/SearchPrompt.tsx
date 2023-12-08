@@ -143,6 +143,7 @@ export function SearchPromptContent() {
       setState(() => ({
         loading: false,
         result: null,
+        showResult: false,
         query: "",
       }));
       setTab("all");
@@ -163,6 +164,7 @@ export function SearchPromptContent() {
       setState((p) => ({
         ...p,
         loading: false,
+        showResult: true,
         result: data,
       }));
     },
@@ -172,8 +174,19 @@ export function SearchPromptContent() {
 
   return (
     <div className="flex flex-col">
-      <SearchForm onSubmit={handleSeachSubmit} query={state.query} />
-      {state.query !== "" && <TabContent />}
+      <SearchForm
+        onSubmit={handleSeachSubmit}
+        query={state.query}
+        setQuery={(v: string) => {
+          setState((p) => ({
+            ...p,
+            query: v,
+            showResult: p.showResult ? v !== "" : false,
+            result: v === "" ? null : p.result,
+          }));
+        }}
+      />
+      {(state.loading || state.showResult) && <TabContent />}
     </div>
   );
 }
