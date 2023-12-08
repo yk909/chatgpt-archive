@@ -4,7 +4,7 @@ import { searchOpenAtom } from "../../context";
 import { useBgMessage } from "../../hook";
 import { MESSAGE_ACTIONS } from "@src/constants";
 import { search } from "../../messages";
-import { CommandLoading } from "cmdk";
+// import { CommandLoading } from "cmdk";
 import { loadConversation } from "@src/utils";
 import {
   Tabs,
@@ -20,6 +20,7 @@ import FolderTabContent from "./tabs/FolderTabContent";
 import { SearchResultTabAtom, SearchStateAtom } from "./context";
 import CustomDialog from "@src/components/CustomDialog";
 import { MessageTabContent } from "./tabs/MessagesTabContent";
+import { Loading } from "./Loading";
 
 const TabSubText = ({
   tab,
@@ -78,7 +79,7 @@ export function TabContent() {
         }}
       >
         {loading ? (
-          <CommandLoading />
+          <Loading />
         ) : (
           <>
             <TabsContent value="all">
