@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useCallback, useState, memo } from "react";
 import { useAtom } from "jotai";
 import { searchOpenAtom } from "../../context";
 import { useBgMessage } from "../../hook";
@@ -143,7 +143,7 @@ export function TabContent() {
   );
 }
 
-export function SearchPromptContent() {
+export const SearchPromptContent = memo(function SearchPromptContent() {
   const [state, setState] = useAtom(SearchStateAtom);
   const [_, setTab] = useAtom(SearchResultTabAtom);
 
@@ -199,10 +199,10 @@ export function SearchPromptContent() {
       {(state.loading || state.showResult) && <TabContent />}
     </div>
   );
-}
+});
 
 export function SearchPrompt() {
-  const [open, setOpen] = useAtom(searchOpenAtom);
+  const [open] = useAtom(searchOpenAtom);
 
   return (
     <CustomDialog

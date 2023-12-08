@@ -7,13 +7,26 @@ import { Spinner } from "@src/components/Spinner";
 import { useRefresh } from "../hook";
 import Footer from "./Footer";
 import CustomDialog from "@src/components/CustomDialog";
+import { memo } from "react";
+
+const PanelConent = memo(function PanelContent() {
+  const { refreshing } = useRefresh();
+  console.log("render Panel", { refreshing });
+  return (
+    <>
+      <Header />
+      <ProgressBar />
+      <div className="relative flex flex-col flex-1 min-h-0">
+        {!refreshing ? <Outlet /> : <Spinner />}
+      </div>
+      {/* <BottomNavBar /> */}
+      <Footer />
+    </>
+  );
+});
 
 export default function Panel() {
   const [open] = useAtom(panelOpenAtom);
-  const { refreshing } = useRefresh();
-
-  console.log("render Panel", { refreshing });
-
   return (
     <CustomDialog
       className={"page-px flex-col bg-background z-40"}
@@ -27,13 +40,7 @@ export default function Panel() {
       }}
       id="panel"
     >
-      <Header />
-      <ProgressBar />
-      <div className="relative flex flex-col flex-1 min-h-0">
-        {!refreshing ? <Outlet /> : <Spinner />}
-      </div>
-      {/* <BottomNavBar /> */}
-      <Footer />
+      <PanelConent />
     </CustomDialog>
   );
 }
