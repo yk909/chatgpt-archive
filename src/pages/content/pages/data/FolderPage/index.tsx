@@ -43,8 +43,8 @@ function CreateNewFolderButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="icon-container icon-container-md">
-          <FolderPlusIcon />
+        <div className="icon-container icon-container-md" role="button">
+          <FolderPlusIcon size="sm" />
         </div>
         {/* <Button size="icon" variant="outline">
           <Plus className="icon-sm" />

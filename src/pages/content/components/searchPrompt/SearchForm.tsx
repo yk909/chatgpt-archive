@@ -35,7 +35,7 @@ export const SearchForm = React.memo(function SearchForm({
 
   return (
     <form
-      className="flex items-center px-3 py-1 border-b border-background-2"
+      className="flex items-center px-3 py-1"
       onSubmit={(e) => {
         e.preventDefault();
         const query = ref.current?.value || "";

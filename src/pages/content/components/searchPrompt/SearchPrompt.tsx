@@ -54,83 +54,92 @@ export function TabContent() {
   }
 
   return (
-    <Tabs
-      defaultValue="all"
-      value={tab}
-      className="flex flex-col relative px-2"
-      onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
-    >
-      <div className="flex items-center justify-between pt-2 flex-none">
-        <TabsList>
-          {Object.keys(SEARCH_TABS).map((t, i) => (
-            <TabsTrigger value={t} key={i}>
-              {SEARCH_TABS[t].label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <TabSubText tab={tab} result={result} />
-      </div>
-
+    <>
       <div
+        className="bg-background-2"
         style={{
-          height: "500px",
-          overflowY: "scroll",
-          position: "relative",
+          height: "1px",
+          width: "100%",
         }}
+      ></div>
+      <Tabs
+        defaultValue="all"
+        value={tab}
+        className="flex flex-col relative px-2"
+        onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
       >
-        {loading ? (
-          <Loading />
-        ) : (
-          <>
-            <TabsContent value="all">
-              <AllTabContent
-                result={result}
-                keyword={query}
-                setTab={setTab}
-                handleConversationSelect={handleConversationSelect}
-              />
-            </TabsContent>
-            <TabsContent
-              value="conversations"
-              style={{
-                position: "absolute",
-                inset: 0,
-                overflowY: "scroll",
-                marginBottom: "8px",
-              }}
-            >
-              <ConversationTabContent
-                conversations={result.conversations}
-                keyword={query}
-                handleConversationSelect={handleConversationSelect}
-              />
-            </TabsContent>
-            <TabsContent
-              value="messages"
-              style={{
-                position: "absolute",
-                inset: 0,
-                overflowY: "scroll",
-                marginBottom: "8px",
-              }}
-            >
-              <MessageTabContent messages={result.messages} keyword={query} />
-            </TabsContent>
-            <TabsContent
-              value="folders"
-              style={{
-                position: "absolute",
-                inset: 0,
-                overflowY: "scroll",
-                marginBottom: "8px",
-              }}
-            >
-              <FolderTabContent folders={result.folders} />
-            </TabsContent>
-          </>
-        )}
-      </div>
-    </Tabs>
+        <div className="flex items-center justify-between pt-2 flex-none">
+          <TabsList>
+            {Object.keys(SEARCH_TABS).map((t, i) => (
+              <TabsTrigger value={t} key={i}>
+                {SEARCH_TABS[t].label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <TabSubText tab={tab} result={result} />
+        </div>
+
+        <div
+          style={{
+            height: "500px",
+            overflowY: "scroll",
+            position: "relative",
+          }}
+        >
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <TabsContent value="all">
+                <AllTabContent
+                  result={result}
+                  keyword={query}
+                  setTab={setTab}
+                  handleConversationSelect={handleConversationSelect}
+                />
+              </TabsContent>
+              <TabsContent
+                value="conversations"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  overflowY: "scroll",
+                  marginBottom: "8px",
+                }}
+              >
+                <ConversationTabContent
+                  conversations={result.conversations}
+                  keyword={query}
+                  handleConversationSelect={handleConversationSelect}
+                />
+              </TabsContent>
+              <TabsContent
+                value="messages"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  overflowY: "scroll",
+                  marginBottom: "8px",
+                }}
+              >
+                <MessageTabContent messages={result.messages} keyword={query} />
+              </TabsContent>
+              <TabsContent
+                value="folders"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  overflowY: "scroll",
+                  marginBottom: "8px",
+                }}
+              >
+                <FolderTabContent folders={result.folders} />
+              </TabsContent>
+            </>
+          )}
+        </div>
+      </Tabs>
+    </>
   );
 }
 
