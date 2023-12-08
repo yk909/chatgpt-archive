@@ -15,10 +15,10 @@ const manifest: chrome.runtime.ManifestV3 = {
     service_worker: "src/pages/background/index.js",
     type: "module",
   },
-  action: {
-    default_popup: "src/pages/popup/index.html",
-    default_icon: "icon-34.png",
-  },
+  // browser_action: {
+  //   default_popup: "src/pages/popup/index.html",
+  //   default_icon: "icon-34.png",
+  // },
   icons: {
     "128": "icon-128.png",
   },
@@ -28,7 +28,6 @@ const manifest: chrome.runtime.ManifestV3 = {
       matches: ["https://*/*", "http://*/*", "<all_urls>"],
       js: ["src/pages/content/index.js"],
       // KEY for cache invalidation
-      // css: ["assets/css/Style.chunk.css"],
       css: [],
     },
   ],

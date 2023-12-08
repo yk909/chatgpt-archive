@@ -110,6 +110,9 @@ export default function App() {
     [MESSAGE_ACTIONS.CURRENT_CONVERSATION_CHANGE]: (request, sender, _) => {
       setCurrentConversationId(request.data);
     },
+    [MESSAGE_ACTIONS.TOGGLE_PANEL]: (request, sender, _) => {
+      setOpen((prev) => !prev);
+    },
   });
 
   const keyFunctions = {

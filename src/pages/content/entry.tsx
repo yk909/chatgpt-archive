@@ -9,7 +9,7 @@ refreshOnUpdate("pages/content");
 
 const reactShadowRoot = initializeShadowRoot();
 
-const cssPath = "assets/css/Style.chunk.css";
+const cssPath = "assets/css/contentStyle.chunk.css";
 const cssFullPath = chrome.runtime.getURL(cssPath);
 const cssLink = document.createElement("link");
 cssLink.setAttribute("rel", "stylesheet");

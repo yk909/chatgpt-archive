@@ -60,11 +60,27 @@
   bottom: 0px;
   right: 100%;
   width: 32px;
+  transition: all 0.2s ease-in-out;
 
   background: linear-gradient(
     -90deg,
-    hsl(var(--card-bg) / 1) 0%,
-    hsl(var(--card-bg) / 0) 100%
+    hsl(var(--card-bg)) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.card .card-right-before {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 100%;
+  width: 32px;
+  transition: all 0.2s ease-in-out;
+
+  background: linear-gradient(
+    -90deg,
+    hsl(var(--card-bg)) 0%,
+    rgba(0, 0, 0, 0) 100%
   );
 }
 
@@ -73,7 +89,8 @@
   align-items: center;
   gap: 4px;
   flex: none;
-  background: hsl(var(--card-bg) / 1);
+  background: hsl(var(--card-bg));
+  background: transparent;
 }
 
 .card .card-title {

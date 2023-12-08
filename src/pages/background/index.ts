@@ -11,7 +11,7 @@ reloadOnUpdate("pages/background");
  */
 reloadOnUpdate("pages/content/style.scss");
 
-console.log("background loaded 6");
+console.log("background loaded");
 
 const backgroundManager = new BackgroundManager();
 
@@ -25,5 +25,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         data: newCId,
       });
     }
+  }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === MESSAGE_ACTIONS.TOGGLE_PANEL) {
+    console.log("TOGGLE_PANEL");
   }
 });

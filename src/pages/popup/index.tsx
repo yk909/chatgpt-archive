@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "@pages/popup/index.css";
 import Popup from "@pages/popup/Popup";
 import refreshOnUpdate from "virtual:reload-on-update-in-view";
+import { MESSAGE_ACTIONS } from "@src/constants";
 
 refreshOnUpdate("pages/popup");
 
@@ -15,4 +16,6 @@ function init() {
   root.render(<Popup />);
 }
 
-init();
+// init();
+
+chrome.runtime.sendMessage({ type: MESSAGE_ACTIONS.TOGGLE_PANEL });

@@ -95,6 +95,7 @@ export default function Header() {
       <RefreshButton />
       {/* <ForceRefreshButton /> */}
       <div
+        role="button"
         className="icon-container icon-container-md"
         onClick={() => {
           setSearchBoxOpen(!searchBoxOpen);
@@ -102,7 +103,7 @@ export default function Header() {
       >
         <Search />
       </div>
-      <div className="flex-1"></div>
+      <div className="flex-1 min-w-0"></div>
       <div className="flex items-center gap-2">
         <DarkModeSwitch />
         <div
