@@ -16,6 +16,7 @@ import {
   folderListAtom,
 } from "@src/pages/content/context";
 import { FolderItem } from "../../../../../components/Folder";
+import { FolderPlusIcon } from "@src/components/Icon";
 
 type CreateNewFolderForm = {
   newFolderName: string;
@@ -40,7 +41,7 @@ function CreateNewFolderButton() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div className="icon-container icon-container-md">
-          <Plus />
+          <FolderPlusIcon />
         </div>
         {/* <Button size="icon" variant="outline">
           <Plus className="icon-sm" />

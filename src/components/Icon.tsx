@@ -4,6 +4,7 @@ import {
   Delete,
   Folder,
   FolderEdit,
+  FolderPlus,
   Info,
   MessageCircle,
   MessageSquare,
@@ -260,6 +261,25 @@ export function ForceRefreshIcon({
         height: sizeMap[size],
       }}
       className={className}
+    />
+  );
+}
+
+export function FolderPlusIcon({
+  size = "md",
+  className,
+  ...props
+}: { size?: "sm" | "md" | "lg" } & React.ComponentPropsWithoutRef<
+  typeof RefreshCcw
+>) {
+  return (
+    <FolderPlus
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+      className={className}
+      {...props}
     />
   );
 }
