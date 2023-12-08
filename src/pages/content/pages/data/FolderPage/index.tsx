@@ -15,7 +15,10 @@ import {
   bgResponseStatusAtom,
   folderListAtom,
 } from "@src/pages/content/context";
-import { FolderItem } from "../../../../../components/Folder";
+import {
+  FolderItem,
+  FolderMoreOptionButton,
+} from "../../../../../components/Folder";
 import { FolderPlusIcon } from "@src/components/Icon";
 
 type CreateNewFolderForm = {
@@ -83,6 +86,7 @@ export function FolderPage() {
                 selected={selection.has(item.id)}
                 toggle={toggle}
                 selectionEnabled={selection.size !== 0}
+                OptionButtons={FolderMoreOptionButton}
               />
             ))}
           </div>

@@ -3,14 +3,12 @@ import React from "react";
 
 export const CardContainer = React.memo(function CardContainer({
   icon,
-  right = null,
   children,
   props = {
     container: {},
   },
 }: {
   icon?: React.ReactNode;
-  right?: React.ReactNode;
   children: React.ReactNode;
   props?: {
     container: React.DetailedHTMLProps<

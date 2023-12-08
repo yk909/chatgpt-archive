@@ -72,7 +72,7 @@ const ConversationPresentor = React.memo(function ConversationCardPresentor({
   );
 });
 
-export function ConversationItem({
+export function FolderChildConversationItem({
   conversation,
   folderId,
 }: {
@@ -103,7 +103,7 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
   selectionEnabled: boolean | null;
   OptionButtons: React.FC<{ folderId: string }>;
 }) {
-  console.log("render Conversation");
+  console.log("render folder presentor", { OptionButtons });
   const [open, setOpen] = React.useState(false);
   return (
     <div className="relative flex flex-col flex-1 min-w-0">
@@ -117,12 +117,6 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
             selected={selected}
           />
         }
-        right={
-          <>
-            <OptionButtons folderId={folder.id} />
-            {/* <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} /> */}
-          </>
-        }
       >
         <CardContent
           onClick={() => setOpen((p) => !p)}
@@ -131,6 +125,9 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
           <CardTitle>{folder.name}</CardTitle>
           <CardDescription>{`${folder.children.length} items`}</CardDescription>
         </CardContent>
+        <CardRightOptions>
+          <OptionButtons folderId={folder.id} />
+        </CardRightOptions>
       </CardContainer>
 
       <div
@@ -139,7 +136,7 @@ const FolderPresentor = React.memo(function FolderCardPresentor({
       >
         <div className="flex flex-col ml-7 animate-dynamic-h-content">
           {folder.children.map((item) => (
-            <ConversationItem
+            <FolderChildConversationItem
               key={item.id}
               conversation={item}
               folderId={folder.id}
@@ -186,28 +183,20 @@ export const FolderWithoutSelect = React.memo(function FolderCardPresentor({
   OptionButtons: React.FC<{ folderId: string }>;
 }) {
   console.log("render folder");
-  const [open, setOpen] = React.useState(false);
   return (
-    <CardContainer
-      icon={<FolderIcon size="sm" />}
-      right={
-        <>
-          <div className="flex items-center flex-none gap-1">
-            <OptionButtons folderId={folder.id} />
-            <ToggleIcon onClick={() => setOpen((p) => !p)} open={open} />
-          </div>
-        </>
-      }
-    >
+    <CardContainer icon={<FolderIcon size="sm" />}>
       <CardContent>
         <CardTitle>{folder.name}</CardTitle>
         <CardDescription>{`${folder.children.length} items`}</CardDescription>
       </CardContent>
+      <CardRightOptions>
+        <OptionButtons folderId={folder.id} />
+      </CardRightOptions>
     </CardContainer>
   );
 });
 
-function FolderMoreOptionButton({ folderId }: { folderId: string }) {
+export function FolderMoreOptionButton({ folderId }: { folderId: string }) {
   const OptionInputsMap = {
     rename: {
       title: "Rename folder",
@@ -235,7 +224,7 @@ function FolderMoreOptionButton({ folderId }: { folderId: string }) {
               setSelected("rename");
             }}
           >
-            <RenameFolderIcon className="icon-dropdown-menu-item" />
+            <RenameFolderIcon className="icon-dropdown-menu-item" size="sm" />
             <span>Rename folder</span>
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -243,7 +232,7 @@ function FolderMoreOptionButton({ folderId }: { folderId: string }) {
               deleteFolder([folderId]);
             }}
           >
-            <DeleteIcon className="icon-dropdown-menu-item" />
+            <DeleteIcon className="icon-dropdown-menu-item" size="sm" />
             <span>Delete folder</span>
           </DropdownMenuItem>
         </>
