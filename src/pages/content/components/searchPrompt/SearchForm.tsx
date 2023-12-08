@@ -1,6 +1,6 @@
 import { Input } from "@src/components/ui/input";
 import { useAtom } from "jotai";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import React from "react";
 import { searchOpenAtom } from "../../context";
 import { useEffect } from "react";
@@ -17,7 +17,7 @@ export const SearchForm = React.memo(function SearchForm({
   onSubmit: (data: SearchFormValues) => void;
   query: string;
 }) {
-  const [open] = useAtom(searchOpenAtom);
+  const [open, setOpen] = useAtom(searchOpenAtom);
   console.log("render SearchForm");
   const ref = React.useRef<HTMLInputElement>(null);
 
@@ -46,6 +46,12 @@ export const SearchForm = React.memo(function SearchForm({
           });
         }}
       />
+      <div
+        className="icon-container icon-container-sm opacity-50 hover:opacity-100 trans"
+        onClick={() => setOpen(!open)}
+      >
+        <X />
+      </div>
     </form>
   );
 });
