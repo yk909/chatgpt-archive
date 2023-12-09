@@ -56,7 +56,7 @@ export function TabContent() {
   return (
     <>
       <div
-        className="bg-background-2"
+        className="bg-muted"
         style={{
           height: "1px",
           width: "100%",
@@ -90,7 +90,12 @@ export function TabContent() {
             <Loading />
           ) : (
             <>
-              <TabsContent value="all">
+              <TabsContent
+                value="all"
+                style={{
+                  marginBottom: "8px",
+                }}
+              >
                 <AllTabContent
                   result={result}
                   keyword={query}
@@ -100,6 +105,7 @@ export function TabContent() {
               </TabsContent>
               <TabsContent
                 value="conversations"
+                className="space-y-2"
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -115,6 +121,7 @@ export function TabContent() {
               </TabsContent>
               <TabsContent
                 value="messages"
+                className="space-y-2"
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -126,6 +133,7 @@ export function TabContent() {
               </TabsContent>
               <TabsContent
                 value="folders"
+                className="space-y-2"
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -212,7 +220,7 @@ export function SearchPrompt() {
       closedYOffset={"21vh"}
       openXOffset="-50%"
       closedXOffset="-50%"
-      className="top-0 left-1/2 fixed z-50 w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden search-prompt border rounded-lg border-background-2 hidden"
+      className="top-0 left-1/2 fixed z-50 w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden search-prompt border rounded-lg border-muted hidden"
     >
       <SearchPromptContent />
     </CustomDialog>

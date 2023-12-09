@@ -18,7 +18,7 @@ export function SelectionActionBar({
   return (
     <div
       className={cn(
-        "absolute bottom-0 left-0 right-0 z-20 flex items-center h-12 rounded-md bg-2 trans",
+        "absolute bottom-0 left-0 right-0 z-20 flex items-center h-12 rounded-md bg-muted trans",
         className
       )}
       style={{

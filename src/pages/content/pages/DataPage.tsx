@@ -18,7 +18,9 @@ export function DataPage() {
                     ? "hsl(var(--background))"
                     : "transparent",
                 })}
-                className="pill"
+                className={({ isActive }) =>
+                  isActive ? "pill active" : "pill"
+                }
               >
                 {item.name}
               </NavLink>
