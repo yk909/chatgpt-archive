@@ -1,7 +1,7 @@
 {
   "name": "ChatGPT-Archive",
   "version": "0.0.1",
-  "description": "ChatGPT Archive enhances the ChatGPT experience by providing folder organization and quick search capabilities.",
+  "description": "ChatGPT Archive enhances the ChatGPT experience by allowing you to manage conversations with ease.",
   "license": "MIT",
   "type": "module",
   "scripts": {
