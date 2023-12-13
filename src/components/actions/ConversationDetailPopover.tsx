@@ -33,6 +33,10 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
+function Title({ children }: { children: React.ReactNode }) {
+  return <div className="line-clamp-2 text-base text-white">{children}</div>;
+}
+
 export function ConversationDetailOptionButton({
   conversation,
   size = "sm",
@@ -48,7 +52,8 @@ export function ConversationDetailOptionButton({
       >
         <InfoIcon size={size} />
       </PopoverTrigger>
-      <PopoverContent className="w-[320px]">
+      <PopoverContent className="w-[320px] space-y-2">
+        <Title>{conversation.title}</Title>
         <div>
           <Row
             label="Create time:"
