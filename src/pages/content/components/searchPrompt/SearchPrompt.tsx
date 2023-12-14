@@ -30,7 +30,7 @@ const TabSubText = ({
   result: SearchResult;
 }) => {
   return (
-    <div className="tracking-wide text-sm mr-4">
+    <div className="mr-4 text-sm tracking-wide">
       {tab !== "all" && (
         <span>
           Total items:
@@ -65,10 +65,10 @@ export function TabContent() {
       <Tabs
         defaultValue="all"
         value={tab}
-        className="flex flex-col relative px-2"
+        className="relative flex flex-col px-2"
         onValueChange={(v: keyof typeof SEARCH_TABS) => setTab(() => v)}
       >
-        <div className="flex items-center justify-between pt-2 flex-none">
+        <div className="flex items-center justify-between flex-none pt-2">
           <TabsList>
             {Object.keys(SEARCH_TABS).map((t, i) => (
               <TabsTrigger value={t} key={i}>
@@ -82,7 +82,6 @@ export function TabContent() {
         <div
           style={{
             height: "500px",
-            overflowY: "scroll",
             position: "relative",
           }}
         >
@@ -220,7 +219,7 @@ export function SearchPrompt() {
       closedYOffset={"21vh"}
       openXOffset="-50%"
       closedXOffset="-50%"
-      className="top-0 left-1/2 fixed z-50 w-full max-w-xl gap-4 bg-background shadow-lg sm:rounded-lg md:w-full p-0 overflow-hidden search-prompt border rounded-lg border-muted hidden"
+      className="fixed top-0 z-50 hidden w-full max-w-xl gap-4 p-0 overflow-hidden border rounded-lg shadow-lg left-1/2 bg-background sm:rounded-lg md:w-full search-prompt border-muted"
     >
       <SearchPromptContent />
     </CustomDialog>
