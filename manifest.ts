@@ -6,7 +6,7 @@ import packageJson from "./package.json";
  */
 const manifest: chrome.runtime.ManifestV3 = {
   manifest_version: 3,
-  name: packageJson.name,
+  name: "ChatGPT Archive",
   version: packageJson.version,
   description: packageJson.description,
   permissions: ["storage"],
