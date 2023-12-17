@@ -1,5 +1,6 @@
 export const CHATGPT_DOMAIN_URL = "https://chat.openai.com";
-export const FEEDBACK_URL = "https://v4b3vycbbo3.typeform.com/to/ZscB71E0";
+export const FEEDBACK_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdFSu2NKqraFu0mjyfxaZ8QL6BB275iJhRdUjupug0QfRh1_Q/viewform?usp=sf_link";
 
 export const ACCESS_TOKEN_KEY = "accessToken";
 
