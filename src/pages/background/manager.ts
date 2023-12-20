@@ -89,19 +89,29 @@ export class BackgroundManager {
     // set up listeners for messages from from content script
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("background received message ", request);
-      if (!db && !!this.currentUser.info) initDB(this.currentUser.info.id);
-      if (this.messageHandlerMap[request.type]) {
-        try {
-          this.messageHandlerMap[request.type](request, sender, sendResponse);
-        } catch (err) {
-          console.error("error during handling message", err);
-          this.sendResponseStatus(sender, {
-            status: "ERROR",
-            message: err.message,
-          });
+
+      const runHandler = () => {
+        if (this.messageHandlerMap[request.type]) {
+          try {
+            this.messageHandlerMap[request.type](request, sender, sendResponse);
+          } catch (err) {
+            console.error("error during handling message", err);
+            this.sendResponseStatus(sender, {
+              status: "ERROR",
+              message: err.message,
+            });
+          }
+        } else {
+          console.log("unknown request type", request.type);
         }
+      };
+
+      if (!!this.currentUser.info) {
+        initDB(this.currentUser.info.id).then(() => {
+          runHandler();
+        });
       } else {
-        console.log("unknown request type", request.type);
+        runHandler();
       }
     });
 
@@ -332,7 +342,6 @@ export class BackgroundManager {
 
   handleSearch = async (request, sender, _) => {
     const { query } = request.data;
-    if (!db) initDB(this.currentUser.info.id);
     const conversations = await db.searchConversations(query);
     const folders = await db.searchFolders(query);
     const messages = await db.searchMessages(query);

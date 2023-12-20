@@ -395,8 +395,13 @@ export class RootDB extends Dexie {
 
 let db: RootDB;
 
-export function initDB(username: string) {
-  db = new RootDB(username);
+export async function initDB(username: string) {
+  if (!db) {
+    db = new RootDB(username);
+  }
+  if (!db.isOpen()) {
+    await db.open()
+  }
   console.log("DB initialized", db);
 }
 
