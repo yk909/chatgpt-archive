@@ -4,6 +4,7 @@ import refreshOnUpdate from "virtual:reload-on-update-in-view";
 import { Provider } from "jotai";
 import { initializeShadowRoot, shadowRoot } from "./root";
 import { getDarkModeEnabledFromLocalStorage } from "./utils";
+import { TooltipProvider } from "@src/components/ui/tooltip";
 
 refreshOnUpdate("pages/content");
 
@@ -32,7 +33,9 @@ if (window.location.pathname.includes("auth/login")) {
 } else {
   createRoot(reactShadowRoot).render(
     <Provider>
-      <App />
+      <TooltipProvider>
+        <App />
+      </TooltipProvider>
     </Provider>
   );
 }

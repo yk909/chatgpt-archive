@@ -2,6 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { InfoIcon } from "../Icon";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { cn } from "@src/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export function formatDates(s: string): string {
   const date = new Date(s);
@@ -26,7 +27,7 @@ function Value({ children }: { children: React.ReactNode }) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex text-sm text-muted-foreground">
+    <div className="flex text-xs text-muted-foreground">
       <Label>{label}</Label>
       <Value>{value}</Value>
     </div>
@@ -46,13 +47,13 @@ export function ConversationDetailOptionButton({
   size?: IconSize;
 } & React.ComponentProps<typeof PopoverTrigger>) {
   return (
-    <Popover>
-      <PopoverTrigger
+    <Tooltip>
+      <TooltipTrigger
         className={cn(`icon-container icon-container-${size}`, className)}
       >
         <InfoIcon size={size} />
-      </PopoverTrigger>
-      <PopoverContent className="w-[320px] space-y-2">
+      </TooltipTrigger>
+      <TooltipContent className="w-[320px] space-y-2">
         <Title>{conversation.title}</Title>
         <div>
           <Row
@@ -64,8 +65,8 @@ export function ConversationDetailOptionButton({
             value={formatDates(conversation.update_time)}
           />
         </div>
-      </PopoverContent>
-    </Popover>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
