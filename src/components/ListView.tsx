@@ -159,7 +159,7 @@ export function ListGroup({
           <div className="group-hover:text-primary trans">{title}</div>
           <span className="ml-4 px-2 py-1 bg-slate-100 dark:bg-slate-700 text-muted-foreground rounded-lg group-hover:text-foreground group-hover:bg-primary-400 dark:group-hover:bg-primary trans">{`${count}`}</span>
         </div>
-        <ToggleIcon open={open} />
+        <ToggleIcon open={open} className="group-hover:text-primary-400 dark:group-hover:text-primary" />
       </div>
       <div className="animate-dynamic-h-container" data-open={open}>
         <div className="animate-dynamic-h-content">
