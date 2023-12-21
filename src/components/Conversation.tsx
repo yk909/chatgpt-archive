@@ -6,7 +6,10 @@ import {
   CardTitle,
 } from "@src/components/Card";
 import { ConversationDetailOptionButton } from "@src/components/actions/ConversationDetailPopover";
-import { MoreDropdownButton } from "@src/pages/content/components/MoreDropdownButton";
+import {
+  MoreDropdownButton,
+  SimpleDropdownMenuItemWithIcon,
+} from "@src/pages/content/components/MoreDropdownButton";
 import { AddToFolderDropdown } from "@src/components/actions/AddToFolder";
 import {
   TogglePinConversationOptionButton,
@@ -15,7 +18,8 @@ import {
 import { useConversation } from "@src/pages/content/hook";
 import { loadConversation } from "@src/utils";
 import { SelectionIcon } from "@src/components/Selection";
-import { MessageIcon } from "@src/components/Icon";
+import { MessageIcon, RenameIcon } from "@src/components/Icon";
+import { renameConversation } from "@src/pages/content/messages";
 
 const ConversationPresentor = React.memo(function ConversationCardPresentor({
   conversation,
@@ -175,13 +179,46 @@ export function ConversationDefaultRightOptions({
 }: {
   conversation: Conversation;
 }) {
+  const OptionInputsMap = {
+    rename: {
+      title: "Rename Conversation",
+      inputs: [
+        {
+          label: "New Name",
+          name: "name",
+          type: "text",
+          defaultValue: conversation.title,
+          placeholder: "Enter a new conversation name",
+          autoComplete: "off",
+        },
+      ],
+      onSubmit: (data: any) => {
+        if (data.name !== conversation.title) {
+          console.log(`rename conversation ${conversation.title}`, data);
+          renameConversation(conversation.id, data.name);
+        }
+      },
+    },
+  };
   return (
     <>
       <ConversationDetailOptionButton conversation={conversation} />
       <TogglePinConversationOptionButton conversationId={conversation.id} />
-      <MoreDropdownButton>
-        <AddToFolderDropdown conversationIdList={[conversation.id]} />
-        <TogglePinConversationDropdown conversationId={conversation.id} />
+      <MoreDropdownButton OptionInputsMap={OptionInputsMap}>
+        {({ setSelected }) => (
+          <>
+            <SimpleDropdownMenuItemWithIcon
+              icon={RenameIcon}
+              onSelect={() => {
+                setSelected("rename");
+              }}
+            >
+              Rename
+            </SimpleDropdownMenuItemWithIcon>
+            <AddToFolderDropdown conversationIdList={[conversation.id]} />
+            <TogglePinConversationDropdown conversationId={conversation.id} />
+          </>
+        )}
       </MoreDropdownButton>
     </>
   );

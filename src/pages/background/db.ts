@@ -363,6 +363,18 @@ export class RootDB extends Dexie {
     return data;
   }
 
+  // conversation api actions
+  async renameConversation(conversationId: string, title: string) {
+    const conversation = await db.conversations.get(conversationId);
+    if (!conversation) {
+      throw new Error("No conversation found with id");
+    }
+    await db.conversations.update(conversationId, {
+      title,
+      update_time: Date.now().toString(),
+    });
+  }
+
   // Pin conversations
 
   async getPinConversations() {
@@ -400,7 +412,7 @@ export async function initDB(username: string) {
     db = new RootDB(username);
   }
   if (!db.isOpen()) {
-    await db.open()
+    await db.open();
   }
   console.log("DB initialized", db);
 }

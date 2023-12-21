@@ -5,6 +5,7 @@ import {
   fetchConversationDetails,
   fetchNewConversations,
   getAccessToken,
+  renameConversation,
 } from "@src/api";
 import {
   extractConversationId,
@@ -80,6 +81,7 @@ export class BackgroundManager {
       [MESSAGE_ACTIONS.DELETE_FOLDER]: this.handleDeleteFolder,
       [MESSAGE_ACTIONS.DELETE_CONVERSATIONS_FROM_FOLDER]:
         this.handleDeleteConversationsFromFolder,
+      [MESSAGE_ACTIONS.RENAME_CONVERSATION]: this.handleRenameConversation,
 
       [MESSAGE_ACTIONS.SEARCH]: this.handleSearch,
 
@@ -91,6 +93,7 @@ export class BackgroundManager {
       console.log("background received message ", request);
 
       const runHandler = () => {
+        console.log("run message handler");
         if (this.messageHandlerMap[request.type]) {
           try {
             this.messageHandlerMap[request.type](request, sender, sendResponse);
@@ -147,7 +150,7 @@ export class BackgroundManager {
       await this.sendAllConversations(sender.tab.id);
     } else {
       // only fetch the new ones based on the latest conversation
-
+      // get the latest conversation's update_time
       const latestDate = new Date(latestConItem.update_time);
 
       const newItems = await fetchNewConversations(ac, latestDate);
@@ -264,6 +267,11 @@ export class BackgroundManager {
 
   handleCreateNewFolder = async (request, sender, _) => {
     const { name, color, children } = request.data;
+    console.log("[run message handler][create new folder]", {
+      name,
+      color,
+      children,
+    });
     await db.createNewFolder({
       name,
       color,
@@ -306,6 +314,36 @@ export class BackgroundManager {
       },
     });
     await this.sendAllFolderData(sender.tab.id);
+  };
+
+  handleRenameConversation = async (request, sender, _) => {
+    const { conversationId, name } = request.data;
+
+    const res = await renameConversation(
+      conversationId,
+      name,
+      this.getCurrentUserAccessToken()
+    );
+
+    if (!res.success) {
+      console.log("rename conversation error", { conversationId, name, res });
+      await this.sendResponseStatus(sender, {
+        status: "ERROR",
+        message: res.message,
+      });
+    }
+
+    // await db.renameConversation(conversationId, name);
+    await this.handleInit(request, sender, _);
+
+    sendMessageToTab(sender.tab.id, {
+      type: MESSAGE_ACTIONS.RESPONSE_STATUS,
+      data: {
+        status: "SUCCESS",
+        message: `Successfully renamed conversation`,
+      },
+    });
+    await this.sendAllConversations(sender.tab.id);
   };
 
   handleRenameFolder = async (request, sender, _) => {

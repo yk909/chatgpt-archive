@@ -135,6 +135,23 @@ export function MoreDropdownButton({
   );
 }
 
+export function SimpleDropdownMenuItemWithIcon({
+  onSelect,
+  icon: Icon,
+  children,
+}: {
+  onSelect: (e: Event) => void;
+  icon: React.ComponentType<any>;
+  children: React.ReactNode;
+}) {
+  return (
+    <DropdownMenuItem onSelect={onSelect}>
+      <Icon className="icon-dropdown-menu-item" size="sm" />
+      <span>{children}</span>
+    </DropdownMenuItem>
+  );
+}
+
 // export function MoreDropdownButton1({
 //   triggerClassName = "",
 //   size = "sm",

@@ -7,7 +7,10 @@ import {
   CardTitle,
 } from "@src/components/Card";
 import { ConversationDetailOptionButton } from "@src/components/actions/ConversationDetailPopover";
-import { MoreDropdownButton } from "@src/pages/content/components/MoreDropdownButton";
+import {
+  MoreDropdownButton,
+  SimpleDropdownMenuItemWithIcon,
+} from "@src/pages/content/components/MoreDropdownButton";
 import { AddToFolderDropdown } from "@src/components/actions/AddToFolder";
 import { TogglePinConversationDropdown } from "@src/components/actions/TogglePinConversation";
 import { useConversation } from "@src/pages/content/hook";
@@ -219,14 +222,14 @@ export function FolderMoreOptionButton({ folderId }: { folderId: string }) {
     <MoreDropdownButton OptionInputsMap={OptionInputsMap}>
       {({ setSelected }) => (
         <>
-          <DropdownMenuItem
+          <SimpleDropdownMenuItemWithIcon
+            icon={RenameFolderIcon}
             onSelect={() => {
               setSelected("rename");
             }}
           >
-            <RenameFolderIcon className="icon-dropdown-menu-item" size="sm" />
-            <span>Rename folder</span>
-          </DropdownMenuItem>
+            Rename folder
+          </SimpleDropdownMenuItemWithIcon>
           <DropdownMenuItem
             onSelect={() => {
               deleteFolder([folderId]);

@@ -12,7 +12,7 @@ export default function ProgressBar() {
 
   useBgMessage({
     [MESSAGE_ACTIONS.PROGRESS]: (request, sender, _) => {
-      console.log("progress from bg", request.data);
+      console.log("[useBgMessage][Type: Progress][Component: ProgressBar]", request.data);
       setState({
         current: request.data.current,
         total: request.data.total,

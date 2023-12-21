@@ -18,6 +18,7 @@ import { bgResponseStatusAtom } from "@src/pages/content/context";
 export function DialogForm<FormValues>({
   title,
   inputs,
+  submitButtonText = "Submit",
   onSubmit,
   showLabel,
   setOpen,
@@ -26,6 +27,7 @@ export function DialogForm<FormValues>({
   inputs: ({
     label: string;
   } & React.ComponentProps<"input">)[];
+  submitButtonText?: string;
   onSubmit: (data: FormValues) => void;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   showLabel?: boolean;
@@ -49,7 +51,13 @@ export function DialogForm<FormValues>({
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
       </DialogHeader>
-      <form onSubmit={handleSubmit(onSubmit)} className="">
+      <form
+        onSubmit={handleSubmit((values) => {
+          setLoading(true);
+          onSubmit(values);
+        })}
+        className=""
+      >
         <div className="py-8 space-y-3">
           {inputs.map(({ label, name, ...inputProps }, i) => (
             <div className="space-y-2" key={i}>
@@ -62,7 +70,7 @@ export function DialogForm<FormValues>({
           <div className="flex items-center gap-4">
             {loading && <SpinnerIcon size={24} />}
             <Button variant="default" type="submit">
-              Create
+              {submitButtonText}
             </Button>
           </div>
         </DialogFooter>

@@ -35,7 +35,7 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 function Title({ children }: { children: React.ReactNode }) {
-  return <div className="line-clamp-2 text-base text-white">{children}</div>;
+  return <div className="line-clamp-2 text-base text-foreground">{children}</div>;
 }
 
 export function ConversationDetailOptionButton({

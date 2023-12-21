@@ -178,6 +178,10 @@ export const SearchPromptContent = memo(function SearchPromptContent() {
   useBgMessage({
     [MESSAGE_ACTIONS.SEARCH]: (request, sender, _) => {
       const data = request.data as SearchResult;
+      console.log(
+        "[useBgMessage][Type: Search][Component: SearchPrompt]",
+        data
+      );
       setState((p) => ({
         ...p,
         loading: false,

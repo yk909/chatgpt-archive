@@ -47,6 +47,16 @@ export function fetchMoreFolders(page: number, pageSize: number) {
   });
 }
 
+export function renameConversation(conversationId: string, name: string) {
+  chrome.runtime.sendMessage({
+    type: MESSAGE_ACTIONS.RENAME_CONVERSATION,
+    data: {
+      conversationId,
+      name,
+    },
+  });
+}
+
 export function createNewFolder(data: FolderCreationData) {
   chrome.runtime.sendMessage({
     type: MESSAGE_ACTIONS.CREATE_NEW_FOLDER,

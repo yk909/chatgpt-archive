@@ -31,6 +31,7 @@ function CreateNewFolderButton() {
   const [responseStatus, setResponseStatus] = useAtom(bgResponseStatusAtom);
 
   const onSubmit = (data: CreateNewFolderForm) => {
+    console.log("create new folder", data);
     createNewFolder({ name: data.newFolderName, children: [] });
   };
 

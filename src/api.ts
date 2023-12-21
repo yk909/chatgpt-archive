@@ -155,3 +155,18 @@ export async function fetchNewConversations(token, currentLatestDate) {
 //   });
 //   return batchPromises(promises);
 // }
+
+export async function renameConversation(
+  conversationId: string,
+  newTitle: string,
+  token: string
+) {
+  return await fetchWithToken(
+    token,
+    `${CHATGPT_HOST_URL}/backend-api/conversation/${conversationId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ title: newTitle }),
+    }
+  );
+}

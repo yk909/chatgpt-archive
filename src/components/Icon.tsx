@@ -9,6 +9,7 @@ import {
   MessageCircle,
   MessageSquare,
   MoreHorizontal,
+  Pencil,
   Pin,
   PinOff,
   RefreshCcw,
@@ -280,6 +281,23 @@ export function FolderPlusIcon({
       }}
       className={className}
       {...props}
+    />
+  );
+}
+
+export function RenameIcon({
+  size = "md",
+  className,
+}: { size?: "sm" | "md" | "lg" } & React.ComponentPropsWithoutRef<
+  typeof FolderEdit
+>) {
+  return (
+    <Pencil
+      style={{
+        width: sizeMap[size],
+        height: sizeMap[size],
+      }}
+      className={className}
     />
   );
 }

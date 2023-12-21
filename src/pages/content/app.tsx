@@ -78,15 +78,22 @@ export default function App() {
 
   useBgMessage({
     [MESSAGE_ACTIONS.REFRESH]: (request, sender, _) => {
+      console.log(
+        "[useBgMessage][Type: Refresh][Component: App]",
+        request.data
+      );
       // cast request.data as RefreshResponseData
       const { folders, conversations, pinConversations } =
         request.data as RefreshResponseData;
-      console.log("refresh from bg", request.data);
       setFolders(folders);
       setConversations(conversations);
       setPinConversationIdList(pinConversations);
     },
     [MESSAGE_ACTIONS.RESPONSE_STATUS]: (request, sender, _) => {
+      console.log(
+        "[useBgMessage][Type: ResponseStatus][Component: App]",
+        request.data
+      );
       setResponseStatus(request.data);
       console.log("response status", request.data);
       if (request.data.status === "SUCCESS") {
@@ -99,18 +106,38 @@ export default function App() {
       }
     },
     [MESSAGE_ACTIONS.FETCH_FOLDERS]: (request, sender, _) => {
+      console.log(
+        "[useBgMessage][Type: FetchFolders][Component: App]",
+        request.data
+      );
       setFolders(request.data);
     },
     [MESSAGE_ACTIONS.FETCH_CONVERSATIONS]: (request, sender, _) => {
+      console.log(
+        "[useBgMessage][Type: FetchConversations][Component: App]",
+        request.data
+      );
       setConversations(request.data);
     },
     [MESSAGE_ACTIONS.PIN_CONVERSATION]: (request, sender, _) => {
+      console.log(
+        "[useBgMessage][Type: PinConversation][Component: App]",
+        request.data
+      );
       setPinConversationIdList(request.data);
     },
     [MESSAGE_ACTIONS.CURRENT_CONVERSATION_CHANGE]: (request, sender, _) => {
+      console.log(
+        "[useBgMessage][Type: CurrentConversationChange][Component: App]",
+        request.data
+      );
       setCurrentConversationId(request.data);
     },
     [MESSAGE_ACTIONS.TOGGLE_PANEL]: (request, sender, _) => {
+      console.log(
+        "[useBgMessage][Type: TogglePanel][Component: App]",
+        request.data
+      );
       setOpen((prev) => !prev);
     },
   });

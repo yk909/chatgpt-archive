@@ -11,7 +11,7 @@ import {
 export function useBgMessage(eventMap: Record<string, MessageHandler>) {
   useEffect(() => {
     function handler(request, sender, sendResponse) {
-      console.log("received bg message", request);
+      // console.log("received bg message", request);
       const handler = eventMap[request.type];
       if (handler) {
         handler(request, sender, sendResponse);
